@@ -59,7 +59,7 @@
         }
         .tooltip {
             visibility: hidden;
-            width: 220px; /* Slightly wider */
+            width: 240px; /* Slightly wider */
             background-color: #1F2937; /* Gray-800 */
             color: #fff;
             text-align: left; /* Better for multiline */
@@ -69,7 +69,7 @@
             z-index: 10;
             bottom: 135%; /* Position further above */
             left: 50%;
-            margin-left: -110px; /* Center the tooltip */
+            margin-left: -120px; /* Center the tooltip */
             opacity: 0;
             transition: opacity 0.3s;
             font-size: 0.75rem; /* text-xs */
@@ -175,34 +175,26 @@
             border-bottom: 1px solid #e5e7eb; /* Gray-200 */
             padding-bottom: 0.5rem; /* pb-2 */
         }
-        /* Accordion styles */
-        .accordion-header {
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
+        /* Deduction Grouping */
+        .deduction-group-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #4b5563; /* Gray-600 */
+            margin-top: 1.25rem; /* mt-5 */
+            margin-bottom: 0.75rem; /* mb-3 */
+            padding-bottom: 0.25rem; /* pb-1 */
+            border-bottom: 1px dashed #d1d5db; /* Gray-300 */
         }
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            border-top: 1px solid #e5e7eb; /* Gray-200 */
-            padding-top: 1rem;
-            margin-top: 0.5rem;
+        .deduction-group-title:first-of-type {
+             margin-top: 0; /* Remove top margin for the first group */
         }
-        .accordion-content.open {
-            max-height: 1500px; /* Adjust as needed, large enough for content */
-            transition: max-height 0.5s ease-in;
+        /* Styles for always expanded deductions section */
+        .deductions-content-visible {
+             padding-top: 1rem;
+             border-top: 1px solid #e5e7eb;
+             margin-top: 0.5rem;
         }
-        .accordion-arrow {
-            transition: transform 0.3s ease;
-            width: 1rem;
-            height: 1rem;
-        }
-        .accordion-arrow.rotated {
-            transform: rotate(180deg);
-        }
+
 
         /* Responsive adjustments */
         @media (min-width: 1024px) { /* lg breakpoint */
@@ -284,14 +276,9 @@
                  </div>
 
                 <div class="section-container">
-                    <div class="accordion-header" id="deductionsAccordionHeader">
-                        <h2 class="section-title mb-0 pb-0 border-b-0">Deductions (Primarily Old Regime)</h2>
-                        <svg class="accordion-arrow" id="deductionsAccordionArrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </div>
-                    <div class="accordion-content" id="deductionsAccordionContent">
-                        <p class="text-xs text-gray-500 mb-4 italic">Most deductions below are applicable ONLY under the Old Regime. Exceptions noted in tooltips.</p>
+                    <h2 class="section-title">Deductions <span class="text-sm font-normal text-gray-500">(Primarily for Old Regime)</span></h2>
+                    <div class="deductions-content-visible" id="deductionsContent">
+                        <h3 class="deduction-group-title">Investments & Savings (Sec 80C, 80CCD)</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label for="deduction80C" class="input-label">Sec 80C
@@ -310,12 +297,64 @@
                                 <input type="number" id="deduction80CCD1B" placeholder="Max 50000" class="input-field" min="0">
                             </div>
                              <div>
-                                <label for="deduction80D" class="input-label">Sec 80D - Health Insurance
+                                <label for="deduction80CCD2" class="input-label">Sec 80CCD(2) - Employer NPS
+                                     <span class="info-icon">?
+                                        <span class="tooltip">Employer's contribution to NPS. Limit is 10% of salary (Basic+DA) for private employees, 14% for govt employees. Deduction ALLOWED IN BOTH REGIMES. Enter the contributed amount.</span>
+                                    </span>
+                                </label>
+                                <input type="number" id="deduction80CCD2" placeholder="e.g., 50000" class="input-field" min="0">
+                            </div>
+                            <div>
+                                <label for="deduction80TTA" class="input-label">Sec 80TTA/TTB - Savings Interest
+                                     <span class="info-icon">?
+                                        <span class="tooltip">Deduction on interest from Savings A/c (80TTA, Max ₹10k, non-seniors) or Savings & Deposits (80TTB, Max ₹50k, seniors). Old Regime Only. Enter total eligible interest received; calculator applies the limit.</span>
+                                    </span>
+                                </label>
+                                <input type="number" id="deduction80TTA" placeholder="Total Savings Interest" class="input-field" min="0">
+                            </div>
+                        </div>
+
+                        <h3 class="deduction-group-title">Health & Insurance</h3>
+                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                           <div>
+                                <label for="deduction80D" class="input-label">Sec 80D - Health Insurance Premium
                                      <span class="info-icon">?
                                         <span class="tooltip">Premium for self/family & parents. Limits depend on age. Enter total deductible amount (Old Regime Only).</span>
                                     </span>
                                 </label>
                                 <input type="number" id="deduction80D" placeholder="e.g., 25000" class="input-field" min="0">
+                            </div>
+                        </div>
+
+                        <h3 class="deduction-group-title">Housing & Allowances</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                           <div>
+                                <label for="hraExemption" class="input-label">HRA Exemption Claimed
+                                    <span class="info-icon">?
+                                        <span class="tooltip">Calculated House Rent Allowance exemption based on salary, rent paid, and location (Old Regime Only).</span>
+                                    </span>
+                                </label>
+                                <input type="number" id="hraExemption" placeholder="e.g., 120000" class="input-field" min="0">
+                            </div>
+                             <div>
+                                <label for="ltaExemption" class="input-label">LTA Exemption Claimed
+                                     <span class="info-icon">?
+                                        <span class="tooltip">Leave Travel Allowance exemption based on actual travel costs, subject to conditions (Old Regime Only).</span>
+                                    </span>
+                                </label>
+                                <input type="number" id="ltaExemption" placeholder="e.g., 20000" class="input-field" min="0">
+                            </div>
+                        </div>
+
+                         <h3 class="deduction-group-title">Other Deductions</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="professionalTax" class="input-label">Professional Tax Paid
+                                     <span class="info-icon">?
+                                        <span class="tooltip">Amount paid as professional tax levied by state govt. Max deduction ₹2,500 (Old Regime Only).</span>
+                                    </span>
+                                </label>
+                                <input type="number" id="professionalTax" placeholder="Max 2500" class="input-field" min="0">
                             </div>
                              <div>
                                 <label for="deduction80E" class="input-label">Sec 80E - Edu Loan Interest
@@ -326,52 +365,12 @@
                                 <input type="number" id="deduction80E" placeholder="e.g., 30000" class="input-field" min="0">
                             </div>
                              <div>
-                                <label for="deduction80TTA" class="input-label">Sec 80TTA/TTB - Savings Interest
-                                     <span class="info-icon">?
-                                        <span class="tooltip">Deduction on interest from Savings A/c. Max ₹10,000 (80TTA) for non-seniors or ₹50,000 (80TTB) for senior citizens on savings & FD interest (Old Regime Only). Enter total eligible interest received here; calculator applies the limit.</span>
-                                    </span>
-                                </label>
-                                <input type="number" id="deduction80TTA" placeholder="Total Savings Interest" class="input-field" min="0">
-                            </div>
-                            <div>
-                                <label for="hraExemption" class="input-label">HRA Exemption Claimed
-                                    <span class="info-icon">?
-                                        <span class="tooltip">Calculated House Rent Allowance exemption based on salary, rent paid, and location (Old Regime Only).</span>
-                                    </span>
-                                </label>
-                                <input type="number" id="hraExemption" placeholder="e.g., 120000" class="input-field" min="0">
-                            </div>
-                             <div>
-                                <label for="professionalTax" class="input-label">Professional Tax Paid
-                                     <span class="info-icon">?
-                                        <span class="tooltip">Amount paid as professional tax levied by state govt. Max deduction ₹2,500 (Old Regime Only).</span>
-                                    </span>
-                                </label>
-                                <input type="number" id="professionalTax" placeholder="Max 2500" class="input-field" min="0">
-                            </div>
-                             <div>
-                                <label for="deduction80CCD2" class="input-label">Sec 80CCD(2) - Employer NPS
-                                     <span class="info-icon">?
-                                        <span class="tooltip">Employer's contribution to NPS. Limit is 10% of salary (Basic+DA) for private employees, 14% for govt employees. (Allowed in BOTH Regimes). Enter the contributed amount.</span>
-                                    </span>
-                                </label>
-                                <input type="number" id="deduction80CCD2" placeholder="e.g., 50000" class="input-field" min="0">
-                            </div>
-                             <div>
                                 <label for="otherDeductions" class="input-label">Other Chapter VI-A Deductions
                                      <span class="info-icon">?
                                         <span class="tooltip">Combine other deductions like 80G (Donations), 80U (Disability), 80DD, 80DDB etc. (Mostly Old Regime Only).</span>
                                     </span>
                                 </label>
                                 <input type="number" id="otherDeductions" placeholder="e.g., 10000" class="input-field" min="0">
-                            </div>
-                             <div>
-                                <label for="ltaExemption" class="input-label">LTA Exemption Claimed
-                                     <span class="info-icon">?
-                                        <span class="tooltip">Leave Travel Allowance exemption based on actual travel costs, subject to conditions (Old Regime Only).</span>
-                                    </span>
-                                </label>
-                                <input type="number" id="ltaExemption" placeholder="e.g., 20000" class="input-field" min="0">
                             </div>
                         </div>
                     </div>
@@ -447,25 +446,8 @@
         const getSelectVal = (id) => $(`#${id}`).value; // For select dropdowns
         const formatCurrency = (num) => `₹ ${num.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
 
-        // --- Accordion Logic ---
-        const accordionHeader = $('#deductionsAccordionHeader');
-        const accordionContent = $('#deductionsAccordionContent');
-        const accordionArrow = $('#deductionsAccordionArrow');
-
-        accordionHeader.addEventListener('click', () => {
-            const isOpen = accordionContent.classList.contains('open');
-            if (isOpen) {
-                accordionContent.classList.remove('open');
-                accordionContent.style.maxHeight = '0';
-                accordionArrow.classList.remove('rotated');
-            } else {
-                accordionContent.classList.add('open');
-                // Set max-height dynamically based on scrollHeight for smooth transition
-                accordionContent.style.maxHeight = accordionContent.scrollHeight + "px";
-                accordionArrow.classList.add('rotated');
-            }
-        });
-
+        // --- Accordion Logic Removed ---
+        // No JavaScript needed for accordion functionality anymore
 
         // --- Tax Calculation Logic (Core logic remains largely the same) ---
 
@@ -484,7 +466,7 @@
             let surchargeRate = 0;
             const income = taxableIncome; // Use taxableIncome for surcharge calculation
             if (regime === 'old') {
-                // Old Regime Surcharge Rates (Check exact thresholds if needed)
+                // Old Regime Surcharge Rates
                 if (income > 50000000) surchargeRate = 0.37; // Above 5 Cr
                 else if (income > 20000000) surchargeRate = 0.25; // 2 Cr to 5 Cr
                 else if (income > 10000000) surchargeRate = 0.15; // 1 Cr to 2 Cr
@@ -502,18 +484,19 @@
         // Calculate Tax based on Slabs
         function calculateTaxOnSlabs(income, slabs) {
             let tax = 0;
-            let processedIncome = 0;
             // Iterate slabs from lowest to highest limit
             for (let i = 0; i < slabs.length; i++) {
                 const [lowerLimit, upperLimit, rate] = slabs[i];
                 if (income > lowerLimit) {
+                    // Calculate the income falling within this slab
                     const taxableInSlab = Math.min(income, upperLimit) - lowerLimit;
-                    if (taxableInSlab > 0) {
-                         tax += taxableInSlab * rate;
-                    }
-                } else {
-                    break; // No need to check further slabs if income is below lower limit
+                     // Add tax for this slab's income
+                    tax += taxableInSlab * rate;
                 }
+                 // If income doesn't exceed the upper limit of this slab, stop.
+                 if (income <= upperLimit) {
+                     break;
+                 }
             }
             return tax;
         }
@@ -544,8 +527,6 @@
                 savingsInterestDeduction = Math.min(deductions.savingsInterestInput, 50000);
             } else {
                 // 80TTA for non-seniors on savings interest only
-                // Assuming 'otherIncome' includes savings interest, this needs user input split
-                // For simplicity, we use the input field meant for this deduction directly
                  savingsInterestDeduction = Math.min(deductions.savingsInterestInput, 10000);
             }
 
@@ -563,9 +544,10 @@
             // 3. Net Taxable Income (NTI)
             const nti = Math.max(0, gti - totalDeductions);
 
-            // 4. Calculate Tax based on Slabs (Old Regime) - Corrected Slab Logic
+            // 4. Calculate Tax based on Slabs (Old Regime)
              let slabs;
-             // Format: [Lower Limit, Upper Limit, Rate]
+             // Format: [Lower Limit, Upper Limit (exclusive for calc), Rate]
+             // Using Infinity for the last upper limit simplifies the loop in calculateTaxOnSlabs
              if (category === 'super_senior') { // 80+
                  slabs = [
                      [0, 500000, 0],
@@ -631,7 +613,7 @@
             // 3. Net Taxable Income (NTI)
             const nti = Math.max(0, gti - totalDeductions);
 
-            // 4. Calculate Tax based on Slabs (New Regime FY 2025-26) - Corrected Slab Logic
+            // 4. Calculate Tax based on Slabs (New Regime FY 2025-26)
              const slabs = [
                  [0, 400000, 0],
                  [400000, 800000, 0.05],
