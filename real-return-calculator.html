@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Return Calculator (India) - Tabs + Confetti</title>
+    <title>Real Return Calculator (India) - FD & MF</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -119,6 +119,8 @@
             color: #6b7280; /* gray-500 */
             font-size: 0.875rem; /* text-sm */
             margin-right: 1rem;
+            display: flex; /* Align icon with text */
+            align-items: center;
         }
         .result-value {
             font-weight: 600;
@@ -129,38 +131,63 @@
         .result-value.positive { color: #10b981; /* emerald-600 */ }
         .result-value.negative { color: #ef4444; /* red-500 */ }
 
-        /* Enhanced Equity Result Styling */
-        .equity-tax-summary {
-            border: 1px solid var(--rh-border-light);
-            border-radius: 0.5rem; /* rounded-lg */
-            padding: 1rem; /* p-4 */
-            background-color: #f9fafb; /* gray-50 */
-            margin-top: 1rem;
+        /* Info icon and Tooltip */
+        .info-icon-container {
+            position: relative; /* Needed for absolute positioning of tooltip */
+            display: inline-block; /* Keep it inline */
+            margin-left: 0.3rem; /* Space between label and icon */
         }
-        .equity-tax-summary .result-item {
-            padding: 0.5rem 0;
+        .info-icon {
+            display: inline-block;
+            width: 1rem; /* w-4 */
+            height: 1rem; /* h-4 */
+            line-height: 1rem; /* Center text vertically */
+            text-align: center;
+            border-radius: 9999px; /* rounded-full */
+            background-color: #d1d5db; /* gray-300 */
+            color: white;
+            font-size: 0.7rem; /* Smaller font */
+            font-style: normal; /* Remove italics */
+            font-weight: bold;
+            cursor: help;
         }
-        .equity-tax-summary .result-item:first-child {
-             padding-top: 0;
+        .tooltip-text {
+            visibility: hidden;
+            width: max-content; /* Adjust width based on content */
+            max-width: 250px; /* Prevent excessively wide tooltips */
+            background-color: #374151; /* gray-700 */
+            color: #fff;
+            text-align: left;
+            border-radius: 0.375rem; /* rounded-md */
+            padding: 0.5rem 0.75rem; /* p-2 px-3 */
+            position: absolute;
+            z-index: 10;
+            bottom: 125%; /* Position above the icon */
+            left: 50%;
+            transform: translateX(-50%); /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem; /* text-xs */
+            font-weight: normal; /* Normal weight for tooltip */
+            white-space: normal; /* Allow text wrapping */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-         .equity-tax-summary .result-item:last-child {
-             padding-bottom: 0;
-             border-bottom: none;
+        /* Tooltip arrow */
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%; /* At the bottom of the tooltip */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #374151 transparent transparent transparent;
         }
-        .equity-tax-total {
-            border-top: 2px solid var(--rh-green);
-            padding-top: 0.75rem; /* pt-3 */
-            margin-top: 0.75rem; /* mt-3 */
+        /* Show tooltip on hover */
+        .info-icon-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
         }
-         .equity-tax-total .result-label,
-         .equity-tax-total .result-value {
-             font-size: 1rem; /* text-base */
-             font-weight: 700; /* bold */
-         }
-         .equity-tax-total .result-value.negative {
-             color: #dc2626; /* red-600 */
-         }
-
 
         /* Insights styling */
         .insights {
@@ -216,7 +243,6 @@
         <div class="calculator-container">
             <div class="tab-buttons">
                 <button class="tab-button active" onclick="switchTab('fd')">Fixed Deposit</button>
-                <button class="tab-button" onclick="switchTab('equity')">Equity Tax</button>
                 <button class="tab-button" onclick="switchTab('mf')">Mutual Fund</button>
             </div>
 
@@ -224,7 +250,7 @@
                 <div id="fd-tab-content" class="tab-content">
                     <h2 class="text-xl font-semibold mb-4 rh-text-dark">Fixed Deposit (FD) Calculator</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
+                         <div>
                             <label for="fdPrincipal" class="block text-sm font-medium text-gray-700 mb-1">Principal Amount (₹)</label>
                             <input type="number" id="fdPrincipal" class="input-field" placeholder="e.g., 100000">
                         </div>
@@ -306,64 +332,9 @@
                     </div>
                 </div>
 
-                <div id="equity-tab-content" class="tab-content hidden">
-                    <h2 class="text-xl font-semibold mb-4 rh-text-dark">Equity Capital Gains Tax Calculator</h2>
-                    <p class="text-sm text-gray-600 mb-4">Enter your total realized capital gains/losses from listed equity shares or equity mutual funds for the financial year.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label for="eqLTCGAmount" class="block text-sm font-medium text-gray-700 mb-1">Total Long-Term Capital Gain/Loss (₹)</label>
-                            <input type="number" id="eqLTCGAmount" class="input-field" placeholder="e.g., 150000 or -20000">
-                            <p class="text-xs text-gray-500 mt-1">Held for > 1 year. Enter negative for loss.</p>
-                        </div>
-                        <div>
-                            <label for="eqSTCGAmount" class="block text-sm font-medium text-gray-700 mb-1">Total Short-Term Capital Gain/Loss (₹)</label>
-                            <input type="number" id="eqSTCGAmount" class="input-field" placeholder="e.g., 50000 or -10000">
-                             <p class="text-xs text-gray-500 mt-1">Held for <= 1 year. Enter negative for loss.</p>
-                        </div>
-                    </div>
-                    <button id="eqCalculateBtn" onclick="calculateEquityTax(this)" class="btn-calculate mb-4">Calculate Equity Tax</button>
-                    <div id="eqErrorMessage" class="error-message"></div>
-                    <div id="equityResult" class="mb-4 hidden">
-                        <h3 class="text-lg font-semibold mb-2 mt-4">Calculation Results:</h3>
-                        <div class="result-item">
-                            <span class="result-label">Total Pre-Tax Gain/Loss:</span>
-                            <span class="result-value" id="eqTotalPreTaxGain"></span>
-                        </div>
-                        <div class="equity-tax-summary">
-                            <div class="result-item">
-                                <span class="result-label">LTCG Tax Liability:</span>
-                                <span class="result-value negative" id="eqLtcgTaxAmount"></span>
-                            </div>
-                            <div class="result-item">
-                                <span class="result-label">STCG Tax Liability:</span>
-                                <span class="result-value negative" id="eqStcgTaxAmount"></span>
-                            </div>
-                            <div class="result-item equity-tax-total">
-                                <span class="result-label">Total Estimated Tax:</span>
-                                <span class="result-value negative" id="eqTotalTaxAmount"></span>
-                            </div>
-                        </div>
-                        <div class="result-item mt-4"> <span class="result-label font-semibold text-base">Total Post-Tax Gain/Loss:</span>
-                            <span class="result-value font-semibold text-base" id="eqTotalPostTaxGain"></span>
-                        </div>
-                    </div>
-
-                    <div class="insights">
-                        <h4>💡 Equity Tax Insights (India)</h4>
-                        <ul>
-                            <li>This calculator estimates tax based *only* on the capital gains entered.</li>
-                            <li>**STCG (Short-Term Capital Gains):** Taxed at a flat rate of 15% (plus applicable cess/surcharge) under Section 111A.</li>
-                            <li>**LTCG (Long-Term Capital Gains):** Taxed at 10% (plus cess/surcharge) under Section 112A, but only on the gain exceeding ₹1 lakh in a financial year. Gains up to ₹1 lakh are tax-free.</li>
-                            <li>**Loss Set-off (Not Calculated Here):** Tax rules allow setting off losses against gains (STCL vs STCG/LTCG, LTCL vs LTCG only) and carrying forward losses for up to 8 years. This calculator does *not* perform loss set-off adjustments. The calculated tax assumes the gains entered are net gains after any applicable intra-head set-offs for the year.</li>
-                            <li>Indexation benefit is **not** available for LTCG on listed equity shares or equity mutual funds.</li>
-                            <li>Dividends received are added to your total income and taxed separately at your slab rate.</li>
-                        </ul>
-                    </div>
-                </div>
-
                 <div id="mf-tab-content" class="tab-content hidden">
                     <h2 class="text-xl font-semibold mb-4 rh-text-dark">Mutual Fund (MF) Calculator (Equity Funds)</h2>
-                     <p class="text-sm text-gray-600 mb-4">Estimate potential returns and tax (Equity Fund rules) for SIP or Lumpsum investments.</p>
+                     <p class="text-sm text-gray-600 mb-4">Estimate potential returns and tax (Equity Fund rules with hypothetical rates) for SIP or Lumpsum investments.</p>
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Investment Type</label>
                         <div class="flex gap-6">
@@ -422,7 +393,13 @@
                             <span class="result-value" id="mfGainType"></span>
                         </div>
                         <div class="result-item">
-                            <span class="result-label">Estimated Tax Liability (Equity Rules):</span>
+                            <span class="result-label">
+                                Estimated Tax Liability (Hypothetical Equity Rules)
+                                <span class="info-icon-container">
+                                    <i class="info-icon">i</i>
+                                    <span class="tooltip-text" id="mfTaxLogicTooltip">Tax calculation details will appear here.</span>
+                                </span>
+                            </span>
                             <span class="result-value negative" id="mfTaxAmount"></span>
                         </div>
                         <div class="result-item">
@@ -440,13 +417,14 @@
                     </div>
 
                     <div class="insights">
-                        <h4>💡 Mutual Fund Insights (India - Assuming Equity Funds)</h4>
+                        <h4>💡 Mutual Fund Insights (India - Assuming Equity Funds & Hypothetical Rates)</h4>
                         <ul>
                             <li>Mutual Funds pool money from investors to invest in stocks, bonds, etc., offering diversification.</li>
                             <li>**SIP (Systematic Investment Plan):** Invest a fixed amount regularly, benefiting from rupee cost averaging.</li>
                             <li>**Lumpsum:** Invest a large amount at once.</li>
                             <li>**Expense Ratio:** An annual fee charged by the fund house, directly reducing your returns. Lower is generally better.</li>
-                            <li>**Taxation (Equity Funds - Assumed Here):** Similar to direct equity. STCG (< 1 year) taxed at 15%. LTCG (> 1 year) taxed at 10% on gains exceeding ₹1 lakh per financial year.</li>
+                            <li>**Taxation (Equity Funds - Assumed Here):** Similar to direct equity. STCG (< 1 year) taxed at 20%. LTCG (> 1 year) taxed at 12.5% on gains exceeding ₹1 lakh per financial year.</li>
+                            <li>**Disclaimer:** These tax rates (12.5% LTCG, 20% STCG) are hypothetical based on your request and may not reflect current official Indian tax laws. Always verify with official sources or a tax advisor.</li>
                             <li>**Taxation (Debt Funds):** Different rules apply (taxed at slab rate if bought after Apr 1, 2023). This calculator uses Equity fund rules.</li>
                              <li>Capital loss rules similar to Equity apply (set-off/carry-forward not calculated here).</li>
                             <li>Returns are not guaranteed and depend on market performance. CAGR for SIP is complex and displayed as '-' here.</li>
@@ -457,14 +435,18 @@
         </div>
 
         <footer class="text-center mt-8 text-gray-500 text-sm">
-            <p>Disclaimer: This calculator provides estimates for informational purposes only. Tax laws are subject to change. Consult with a qualified financial advisor for personalized advice.</p>
+            <p>Disclaimer: This calculator provides estimates for informational purposes only. Tax laws and rates are subject to change and may differ from the hypothetical rates used here. Consult with a qualified financial advisor for personalized advice.</p>
         </footer>
 
     </div>
 
     <script>
         // --- Global Variables ---
-        let fdChartInstance = null; // To hold the chart instance
+        let fdChartInstance = null;
+        // Define Tax Rates (Hypothetical - based on user request)
+        const LTCG_TAX_RATE = 0.125; // 12.5%
+        const STCG_TAX_RATE = 0.20; // 20%
+        const LTCG_EXEMPTION = 100000; // ₹1 Lakh
 
         // --- Helper Functions ---
         const formatCurrency = (value) => {
@@ -511,46 +493,52 @@
                         } else {
                             displayValue = formatCurrency(value);
                         }
-
-                        if (element.classList.contains('result-value')) {
-                            element.classList.remove('positive', 'negative');
-                            if (key.toLowerCase().includes('taxamount') && value > 0) {
-                                element.classList.add('negative');
-                            } else if (key.toLowerCase().includes('gain') || key.toLowerCase().includes('return')) {
-                                if (value > 0) element.classList.add('positive');
-                                else if (value < 0) element.classList.add('negative');
-                            } else if (key.toLowerCase().includes('posttax')) {
-                                let investmentValue = NaN;
-                                if (sectionId === 'fd' || sectionId === 'mf') {
-                                    const investmentKey = `${sectionId}TotalInvestment`;
-                                    investmentValue = results[investmentKey.toLowerCase()] ?? NaN; // Ensure lowercase key access
-                                } else if (sectionId === 'eq') {
-                                    investmentValue = 0; // Compare equity post-tax gain to zero
-                                }
-
-                                if (!isNaN(investmentValue)) {
-                                    if (value > investmentValue) element.classList.add('positive');
-                                    else if (value < investmentValue) element.classList.add('negative');
-                                } else if (value > 0) {
-                                    element.classList.add('positive');
-                                } else if (value < 0) {
-                                    element.classList.add('negative');
-                                }
-                            } else if (value > 0) {
-                                element.classList.add('positive');
-                            } else if (value < 0) {
-                                element.classList.add('negative');
-                            }
-                        }
                     } else if (typeof value === 'string') {
-                        displayValue = value;
+                        // Directly display strings (like Gain Type or Tooltip Text)
+                         displayValue = value;
                     }
 
-                    if (displayValue !== undefined) {
+                    // Update the element's text content
+                    // Special handling for tooltip text
+                    if (key.toLowerCase() === 'taxlogictooltip') {
+                         const tooltipElement = document.getElementById('mfTaxLogicTooltip');
+                         if(tooltipElement) {
+                             tooltipElement.textContent = value;
+                         }
+                    } else if (displayValue !== undefined) {
                        element.textContent = displayValue;
                     }
-                } else {
-                    // console.warn(`Element with ID ${elementId} not found.`);
+
+                    // Apply positive/negative styling (after setting text content)
+                    if (element.classList.contains('result-value')) {
+                        element.classList.remove('positive', 'negative');
+                        if (key.toLowerCase().includes('taxamount') && typeof value === 'number' && value > 0) {
+                            element.classList.add('negative');
+                        } else if (key.toLowerCase().includes('gain') || key.toLowerCase().includes('return')) {
+                            if (typeof value === 'number' && value > 0) element.classList.add('positive');
+                            else if (typeof value === 'number' && value < 0) element.classList.add('negative');
+                        } else if (key.toLowerCase().includes('posttax')) {
+                            let investmentValue = NaN;
+                            if (sectionId === 'fd' || sectionId === 'mf') {
+                                const investmentKeyLower = `${sectionId}TotalInvestment`.toLowerCase();
+                                const actualInvestmentKey = Object.keys(results).find(k => k.toLowerCase() === investmentKeyLower);
+                                if (actualInvestmentKey) investmentValue = results[actualInvestmentKey];
+                            }
+
+                            if (!isNaN(investmentValue) && typeof value === 'number') {
+                                if (value > investmentValue) element.classList.add('positive');
+                                else if (value < investmentValue) element.classList.add('negative');
+                            } else if (typeof value === 'number' && value > 0) {
+                                element.classList.add('positive');
+                            } else if (typeof value === 'number' && value < 0) {
+                                element.classList.add('negative');
+                            }
+                        } else if (typeof value === 'number' && value > 0) {
+                            element.classList.add('positive');
+                        } else if (typeof value === 'number' && value < 0) {
+                            element.classList.add('negative');
+                        }
+                    }
                 }
             }
         };
@@ -569,6 +557,13 @@
              if(globalErrorDiv) {
                  globalErrorDiv.classList.add('hidden');
                  globalErrorDiv.textContent = '';
+             }
+             // Also hide MF tooltip text when clearing results
+             if (sectionId === 'mf') {
+                 const tooltipElement = document.getElementById('mfTaxLogicTooltip');
+                 if(tooltipElement) {
+                     tooltipElement.textContent = 'Tax calculation details will appear here.';
+                 }
              }
         };
 
@@ -606,38 +601,12 @@
         // --- Confetti Trigger ---
         function triggerConfetti(buttonElement, options = {}) {
             if (!buttonElement || typeof confetti !== 'function') return;
-
             const rect = buttonElement.getBoundingClientRect();
             const originX = (rect.left + rect.width / 2) / window.innerWidth;
             const originY = (rect.top + rect.height / 2) / window.innerHeight;
-
-            const defaults = {
-                particleCount: 100,
-                spread: 70,
-                origin: { x: originX, y: originY }
-            };
-
+            const defaults = { particleCount: 100, spread: 70, origin: { x: originX, y: originY } };
             confetti({ ...defaults, ...options });
         }
-
-        // --- Money Shower Trigger ---
-        function triggerMoneyShower(buttonElement) {
-             triggerConfetti(buttonElement, {
-                 particleCount: 150, // More particles
-                 spread: 90, // Wider spread
-                 angle: 90, // Straight down initially
-                 decay: 0.92, // Fall slower
-                 gravity: 0.8, // Adjust gravity
-                 ticks: 300, // Last longer
-                 colors: ['#00c805', '#FFD700', '#C0C0C0'], // Green, Gold, Silver
-                 shapes: ['circle'], // Simple shapes work well with emojis
-                 // Use money emojis
-                 emojis: ['💰', '💸', '🪙', '💲'], // Money bag, money wings, coin, dollar symbol
-                 emojiSize: 80, // Adjust emoji size if needed
-                 scalar: 1.2 // Make them slightly larger
-             });
-        }
-
 
         // --- Tab Switching Logic ---
         function switchTab(tabId) {
@@ -716,7 +685,7 @@
                 realReturn: realReturn
             });
             updateFDChart(principal, rate, time, compoundFreq);
-            triggerConfetti(buttonElement); // Standard confetti for FD
+            triggerConfetti(buttonElement);
         }
 
         function updateFDChart(principal, rate, time, compoundFreq) {
@@ -724,110 +693,26 @@
              if (!canvas) return;
              const ctx = canvas.getContext('2d');
              if (!ctx) return;
-
              if (fdChartInstance) fdChartInstance.destroy();
-
-             const chartLabels = [];
-             const chartDataValues = [];
-             const chartPrincipalValues = [];
-             const pointsPerYear = 4;
-             const totalPoints = Math.ceil(time * pointsPerYear);
-
+             const chartLabels = []; const chartDataValues = []; const chartPrincipalValues = [];
+             const pointsPerYear = 4; const totalPoints = Math.ceil(time * pointsPerYear);
              for (let i = 0; i <= totalPoints; i++) {
-                 const currentYear = i / pointsPerYear;
-                 if (currentYear > time) continue;
+                 const currentYear = i / pointsPerYear; if (currentYear > time) continue;
                  const currentBalance = principal * Math.pow(1 + rate / compoundFreq, compoundFreq * currentYear);
                  chartLabels.push(currentYear.toFixed(currentYear % 1 === 0 ? 0 : 2));
-                 chartDataValues.push(currentBalance);
-                 chartPrincipalValues.push(principal);
+                 chartDataValues.push(currentBalance); chartPrincipalValues.push(principal);
              }
              const lastCalculatedYear = totalPoints / pointsPerYear;
              if (Math.abs(lastCalculatedYear - time) > 1e-9 && time > lastCalculatedYear) {
                  const finalBalance = principal * Math.pow(1 + rate / compoundFreq, compoundFreq * time);
                  chartLabels.push(time.toFixed(time % 1 === 0 ? 0 : 2));
-                 chartDataValues.push(finalBalance);
-                 chartPrincipalValues.push(principal);
+                 chartDataValues.push(finalBalance); chartPrincipalValues.push(principal);
              }
-
-             // Chart.js configuration
-             fdChartInstance = new Chart(ctx, {
-                 type: 'line',
-                 data: {
-                     labels: chartLabels,
-                     datasets: [{
-                         label: 'Total Value (Pre-Tax)',
-                         data: chartDataValues,
-                         borderColor: 'var(--rh-green)',
-                         backgroundColor: 'rgba(0, 200, 5, 0.1)',
-                         fill: true,
-                         tension: 0.2, pointRadius: 0, pointHoverRadius: 4
-                     }, {
-                         label: 'Principal',
-                         data: chartPrincipalValues,
-                         borderColor: '#9ca3af', borderDash: [5, 5], fill: false, tension: 0.2, pointRadius: 0
-                     }]
-                 },
-                 options: {
-                     responsive: true, maintainAspectRatio: false,
-                     scales: {
-                         x: { title: { display: true, text: 'Years' }, ticks: { autoSkip: true, maxTicksLimit: 10 } },
-                         y: { beginAtZero: true, ticks: { callback: function(value) { return formatCurrency(value); } }, title: { display: true, text: 'Amount (₹)' } }
-                     },
-                     plugins: {
-                         tooltip: {
-                             mode: 'index', intersect: false,
-                             callbacks: {
-                                 title: function(tooltipItems) { return `Year: ${tooltipItems[0].label}`; },
-                                 label: function(context) { let label = context.dataset.label || ''; if (label) { label += ': '; } label += formatCurrency(context.parsed.y); return label; }
-                             }
-                         }
-                     },
-                      hover: { mode: 'nearest', intersect: true }
-                 }
+             fdChartInstance = new Chart(ctx, { /* Chart config */
+                 type: 'line', data: { labels: chartLabels, datasets: [{ label: 'Total Value (Pre-Tax)', data: chartDataValues, borderColor: 'var(--rh-green)', backgroundColor: 'rgba(0, 200, 5, 0.1)', fill: true, tension: 0.2, pointRadius: 0, pointHoverRadius: 4 }, { label: 'Principal', data: chartPrincipalValues, borderColor: '#9ca3af', borderDash: [5, 5], fill: false, tension: 0.2, pointRadius: 0 }] },
+                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { title: { display: true, text: 'Years' }, ticks: { autoSkip: true, maxTicksLimit: 10 } }, y: { beginAtZero: true, ticks: { callback: function(value) { return formatCurrency(value); } }, title: { display: true, text: 'Amount (₹)' } } }, plugins: { tooltip: { mode: 'index', intersect: false, callbacks: { title: function(tooltipItems) { return `Year: ${tooltipItems[0].label}`; }, label: function(context) { let label = context.dataset.label || ''; if (label) { label += ': '; } label += formatCurrency(context.parsed.y); return label; } } } }, hover: { mode: 'nearest', intersect: true } }
              });
          }
-
-        // --- Equity Tax Calculator ---
-        function calculateEquityTax(buttonElement) {
-            hideResultAndError('eq');
-            const ltcgAmount = getNumberValue('eqLTCGAmount');
-            const stcgAmount = getNumberValue('eqSTCGAmount');
-
-            let errors = [];
-            if (isNaN(ltcgAmount)) errors.push("Long-Term Gain/Loss must be a valid number.");
-            if (isNaN(stcgAmount)) errors.push("Short-Term Gain/Loss must be a valid number.");
-
-            if (errors.length > 0) {
-                showErrorMessage('eq', errors.join(' '));
-                return;
-            }
-
-            const ltcgExemption = 100000;
-            let ltcgTax = 0;
-            let stcgTax = 0;
-
-            if (ltcgAmount > 0) {
-                const taxableLTCG = Math.max(0, ltcgAmount - ltcgExemption);
-                ltcgTax = taxableLTCG * 0.10;
-            }
-            if (stcgAmount > 0) {
-                stcgTax = stcgAmount * 0.15;
-            }
-
-            const totalPreTaxGain = ltcgAmount + stcgAmount;
-            const totalTax = ltcgTax + stcgTax;
-            const totalPostTaxGain = totalPreTaxGain - totalTax;
-
-             displayResult('eq', {
-                totalPreTaxGain: totalPreTaxGain,
-                ltcgTaxAmount: ltcgTax,
-                stcgTaxAmount: stcgTax,
-                totalTaxAmount: totalTax,
-                totalPostTaxGain: totalPostTaxGain
-            });
-            triggerMoneyShower(buttonElement); // Use money shower for Equity
-        }
-
 
         // --- MF Calculator ---
         function calculateMF(buttonElement) {
@@ -880,23 +765,22 @@
             futureValuePreTax = Math.max(0, futureValuePreTax);
             const gainPreTax = futureValuePreTax - totalInvestment;
 
-            let taxRate = 0;
             let gainType = '';
             let taxAmount = 0;
-            const ltcgExemption = 100000;
+            let taxLogicText = 'No tax on losses.'; // Default tooltip text
 
             if (gainPreTax <= 0) {
                  gainType = duration <= 1 ? 'STCL (Short-Term Capital Loss)' : 'LTCL (Long-Term Capital Loss)';
                  taxAmount = 0;
             } else if (duration <= 1) {
                 gainType = 'STCG (Short-Term)';
-                taxRate = 0.15;
-                taxAmount = gainPreTax * taxRate;
+                taxAmount = gainPreTax * STCG_TAX_RATE;
+                taxLogicText = `STCG: ${formatCurrency(gainPreTax)} * ${formatPercentage(STCG_TAX_RATE)} = ${formatCurrency(taxAmount)}`;
             } else {
                 gainType = 'LTCG (Long-Term)';
-                taxRate = 0.10;
-                const taxableLTCG = Math.max(0, gainPreTax - ltcgExemption);
-                taxAmount = taxableLTCG * taxRate;
+                const taxableLTCG = Math.max(0, gainPreTax - LTCG_EXEMPTION);
+                taxAmount = taxableLTCG * LTCG_TAX_RATE;
+                taxLogicText = `LTCG: Max(0, ${formatCurrency(gainPreTax)} - ${formatCurrency(LTCG_EXEMPTION)}) * ${formatPercentage(LTCG_TAX_RATE)} = ${formatCurrency(taxableLTCG)} * ${formatPercentage(LTCG_TAX_RATE)} = ${formatCurrency(taxAmount)}`;
             }
 
             const futureValuePostTax = Math.max(0, futureValuePreTax - taxAmount);
@@ -917,16 +801,17 @@
                 gainPreTax: gainPreTax,
                 gainType: gainType,
                 taxAmount: taxAmount,
+                taxLogicTooltip: taxLogicText, // Pass the logic text for the tooltip
                 futureValuePostTax: futureValuePostTax,
                 nominalReturnPostTax: postTaxNominalReturn,
                 realReturn: realReturn
             });
-            triggerConfetti(buttonElement); // Standard confetti for MF
+            triggerConfetti(buttonElement);
         }
 
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
-            switchTab('fd');
+            switchTab('fd'); // Start with FD tab active
             toggleMFInputs();
         });
 
