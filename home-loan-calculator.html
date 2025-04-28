@@ -496,6 +496,7 @@
                                 <select id="prepayment-frequency">
                                     <option value="one-time">One-time</option>
                                     <option value="yearly">Yearly</option>
+                                    <option value="quarterly">Quarterly</option>
                                 </select>
                             </div>
 
@@ -721,9 +722,11 @@
             let savedInterest = 0;
             let originalTenure = tenureInMonths;
             let newTenure = 0;
+            let prepaymentMade = 0;
 
              if (prepaymentFrequency === 'one-time') {
                 remainingPrincipal -= prepaymentAmount;
+                prepaymentMade = prepaymentAmount;
                 while (remainingPrincipal > 0) {
                     let interest = remainingPrincipal * monthlyInterestRate;
                     let principal = emi - interest;
@@ -751,7 +754,28 @@
                     monthsPaid++;
                     if (monthsPaid === 12 * yearCount) {
                         remainingPrincipal -= prepaymentAmount;
+                        prepaymentMade += prepaymentAmount;
                         yearCount++;
+                    }
+                }
+                newTenure = monthsPaid;
+                savedInterest = totalInterest - interestPaid;
+            }
+            else if (prepaymentFrequency === 'quarterly') {
+                let quarterCount = 1;
+                while (remainingPrincipal > 0) {
+                    let interest = remainingPrincipal * monthlyInterestRate;
+                    let principal = emi - interest;
+                     if(principal > remainingPrincipal){
+                        principal = remainingPrincipal;
+                    }
+                    interestPaid += interest;
+                    remainingPrincipal -= principal;
+                    monthsPaid++;
+                    if (monthsPaid === 3 * quarterCount) {
+                        remainingPrincipal -= prepaymentAmount;
+                        prepaymentMade += prepaymentAmount;
+                        quarterCount++;
                     }
                 }
                 newTenure = monthsPaid;
