@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate News Summary</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #newsForm {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        #newsForm div {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="url"],
+        input[type="text"] {
+            width: calc(100% - 12px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #response {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        #response.error {
+            background-color: #ffe0e0;
+            color: #d32f2f;
+        }
+
+        #response p.error-message {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .summary-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .summary-content {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generate News Summary</h1>
+    <form id="newsForm">
+        <div>
+            <label for="newsUrl">Source News URL:</label>
+            <input type="url" id="newsUrl" name="src" size="50" required><br><br>
+        </div>
+        <div>
+            <label for="apiToken">API Token:</label>
+            <input type="text" id="apiToken" name="api_token" size="50" required><br><br>
+        </div>
+        <button type="button" onclick="submitRequest()">Generate Summary</button>
+    </form>
+
+    <div id="response"></div>
+
+    <script>
+        function submitRequest() {
+            const newsUrl = document.getElementById('newsUrl').value;
+            const apiToken = document.getElementById('apiToken').value;
+            const apiUrl = `http://ec2-43-205-92-193.ap-south-1.compute.amazonaws.com:8080/news/summary?news_source=${encodeURIComponent(newsUrl)}`;
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '<p class="loading">Processing your request...</p>';
+            responseDiv.className = ''; // Remove any previous error class
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Authorization': apiToken,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        responseDiv.className = 'error';
+                        throw new Error(`HTTP error! status: ${response.status}, body: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                responseDiv.innerHTML = `
+                    <div class="summary-title">${data.title}</div>
+                    <div class="summary-content">${data.summary}</div>
+                `;
+            })
+            .catch(error => {
+                responseDiv.innerHTML = `<p class="error-message">Error: ${error.message}</p>`;
+                responseDiv.className = 'error';
+            });
+        }
+    </script>
+</body>
+</html>
