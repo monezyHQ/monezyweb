@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monezy - Finance News. No Noise.</title>
+  <style>
+    /* Modern, clean design system */
+    :root {
+      --primary: #00C805;
+      --primary-dark: #00A304;
+      --primary-light: #E6F9E6;
+      --dark: #121212;
+      --gray-900: #292929;
+      --gray-800: #3D3D3D;
+      --gray-700: #525252;
+      --gray-600: #6E6E6E;
+      --gray-500: #919191;
+      --gray-400: #B3B3B3;
+      --gray-300: #D4D4D4;
+      --gray-200: #E8E8E8;
+      --gray-100: #F5F5F5;
+      --white: #FFFFFF;
+      --accent: #FF5C35;
+      --blue: #147AFC;
+      --purple: #7B61FF;
+      --yellow: #FFB100;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    body {
+      color: var(--dark);
+      background-color: var(--white);
+      line-height: 1.5;
+      font-size: 16px;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    
+    /* Typography */
+    h1, h2, h3, h4, h5 {
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    p {
+      margin-bottom: 1rem;
+      color: var(--gray-700);
+    }
+    
+    /* Header section */
+    header {
+      padding: 120px 0 80px;
+      background: linear-gradient(180deg, var(--white) 0%, var(--gray-100) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header-content {
+      max-width: 650px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .logo {
+      display: inline-block;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--dark);
+      background-color: var(--white);
+      padding: 10px 16px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      margin-bottom: 2rem;
+    }
+    
+    .logo span {
+      color: var(--primary);
+    }
+    
+    .tagline {
+      font-size: 1.25rem;
+      color: var(--gray-600);
+      margin-bottom: 2.5rem;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 24px;
+      background-color: var(--primary);
+      color: var(--white);
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 200, 5, 0.2);
+    }
+    
+    .button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 200, 5, 0.3);
+    }
+    
+    .button.secondary {
+      background-color: var(--white);
+      color: var(--dark);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .button.secondary:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+    
+    .button-icon {
+      margin-right: 8px;
+      font-size: 1.25rem;
+    }
+    
+    .header-image {
+      position: absolute;
+      right: -5%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 45%;
+      max-width: 500px;
+      z-index: 1;
+    }
+    
+    /* Section styling */
+    section {
+      padding: 80px 0;
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    
+    .section-title {
+      position: relative;
+      display: inline-block;
+      padding-bottom: 16px;
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background-color: var(--primary);
+      border-radius: 2px;
+    }
+    
+    /* How it works */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+    
+    .step-card {
+      background-color: var(--white);
+      border-radius: 12px;
+      padding: 32px 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .step-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    }
+    
+    .step-number {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--gray-200);
+      line-height: 1;
+    }
+    
+    .step-icon {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+    
+    .step-title {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+    }
+    
+    /* Features section */
+    .features {
+      background-color: var(--gray-100);
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 24px;
+    }
+    
+    .feature-card {
+      background-color: var(--white);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    
+    .feature-icon {
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+    }
+    
+    .feature-title {
+      font-size: 1.125rem;
+      margin-bottom: 8px;
+    }
+    
+    /* Special features */
+    .special-features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 48px;
+    }
+    
+    .special-feature-card {
+      background-color: var(--white);
+      border-radius: 12px;
+      padding: 32px 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border-top: 4px solid var(--primary);
+    }
+    
+    .special-feature-card:nth-child(2) {
+      border-top-color: var(--accent);
+    }
+    
+    .special-feature-card:nth-child(3) {
+      border-top-color: var(--blue);
+    }
+    
+    .special-feature-card:nth-child(4) {
+      border-top-color: var(--purple);
+    }
+    
+    .special-feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    }
+    
+    .special-feature-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: var(--primary-light);
+      color: var(--primary);
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    
+    .special-feature-card:nth-child(2) .special-feature-icon {
+      background-color: rgba(255, 92, 53, 0.1);
+      color: var(--accent);
+    }
+    
+    .special-feature-card:nth-child(3) .special-feature-icon {
+      background-color: rgba(20, 122, 252, 0.1);
+      color: var(--blue);
+    }
+    
+    .special-feature-card:nth-child(4) .special-feature-icon {
+      background-color: rgba(123, 97, 255, 0.1);
+      color: var(--purple);
+    }
+    
+    .special-feature-title {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+    }
+    
+    /* Calculator section */
+    .calculators {
+      background: linear-gradient(180deg, var(--gray-100) 0%, var(--white) 100%);
+      text-align: center;
+    }
+    
+    .calculators-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin: 0 auto;
+      max-width: 1100px;
+    }
+    
+    .calculator-card {
+      background-color: var(--white);
+      border-radius: 12px;
+      padding: 32px 24px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .calculator-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background-color: var(--primary);
+    }
+    
+    .calculator-card:nth-child(2)::before {
+      background-color: var(--blue);
+    }
+    
+    .calculator-card:nth-child(3)::before {
+      background-color: var(--accent);
+    }
+    
+    .calculator-card:nth-child(4)::before {
+      background-color: var(--purple);
+    }
+    
+    .calculator-card:nth-child(5)::before {
+      background-color: var(--yellow);
+    }
+    
+    .calculator-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .calculator-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background-color: var(--primary-light);
+      color: var(--primary);
+      font-size: 2rem;
+      margin-bottom: 24px;
+    }
+    
+    .calculator-card:nth-child(2) .calculator-icon {
+      background-color: rgba(20, 122, 252, 0.1);
+      color: var(--blue);
+    }
+    
+    .calculator-card:nth-child(3) .calculator-icon {
+      background-color: rgba(255, 92, 53, 0.1);
+      color: var(--accent);
+    }
+    
+    .calculator-card:nth-child(4) .calculator-icon {
+      background-color: rgba(123, 97, 255, 0.1);
+      color: var(--purple);
+    }
+    
+    .calculator-card:nth-child(5) .calculator-icon {
+      background-color: rgba(255, 177, 0, 0.1);
+      color: var(--yellow);
+    }
+    
+    .calculator-title {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+    }
+    
+    .calculator-description {
+      margin-bottom: 20px;
+      color: var(--gray-600);
+    }
+    
+    /* CTA section */
+    .cta {
+      background-color: var(--dark);
+      color: var(--white);
+      text-align: center;
+    }
+    
+    .cta-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .cta h3 {
+      color: var(--white);
+      font-size: 2rem;
+      margin-bottom: 24px;
+    }
+    
+    .cta p {
+      color: var(--gray-300);
+      margin-bottom: 32px;
+    }
+    
+    /* FAQ section */
+    .faq-list {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .faq-item {
+      margin-bottom: 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    .faq-question {
+      background-color: var(--white);
+      padding: 20px 24px;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .faq-question::after {
+      content: '+';
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+    
+    .faq-answer {
+      background-color: var(--gray-100);
+      padding: 0 24px;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .faq-item.active .faq-answer {
+      padding: 20px 24px;
+      max-height: 200px;
+    }
+    
+    .faq-item.active .faq-question::after {
+      content: '−';
+    }
+    
+    /* Footer */
+    footer {
+      background-color: var(--gray-100);
+      padding: 64px 0 32px;
+    }
+    
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+    
+    .footer-logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+    
+    .footer-logo span {
+      color: var(--primary);
+    }
+    
+    .footer-description {
+      color: var(--gray-600);
+      margin-bottom: 24px;
+    }
+    
+    .footer-social {
+      display: flex;
+      gap: 16px;
+    }
+    
+    .social-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: var(--white);
+      color: var(--gray-700);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .social-link:hover {
+      background-color: var(--primary);
+      color: var(--white);
+      transform: translateY(-3px);
+    }
+    
+    .footer-heading {
+      font-size: 1.125rem;
+      margin-bottom: 20px;
+      color: var(--dark);
+    }
+    
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .footer-link {
+      color: var(--gray-600);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    
+    .footer-link:hover {
+      color: var(--primary);
+    }
+    
+    .footer-bottom {
+      padding-top: 32px;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .copyright {
+      color: var(--gray-500);
+      font-size: 0.875rem;
+    }
+    
+    .footer-bottom-links {
+      display: flex;
+      gap: 24px;
+    }
+    
+    .footer-bottom-link {
+      color: var(--gray-500);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+    }
+    
+    .footer-bottom-link:hover {
+      color: var(--primary);
+    }
+    
+    /* Responsive design */
+    @media (max-width: 1024px) {
+      h1 {
+        font-size: 3rem;
+      }
+      
+      .header-image {
+        width: 40%;
+      }
+      
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      header {
+        padding: 80px 0 60px;
+        text-align: center;
+      }
+      
+      .header-content {
+        max-width: 100%;
+      }
+      
+      .header-image {
+        display: none;
+      }
+      
+      .button-group {
+        justify-content: center;
+      }
+      
+      section {
+        padding: 60px 0;
+      }
+      
+      .calculators-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+      }
+      
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      
+      .footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .button-group {
+        flex-direction: column;
+        width: 100%;
+      }
+      
+      .button {
+        width: 100%;
+      }
+      
+      .steps, .features-grid, .special-features-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-bottom-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">MONE<span>ZY</span></div>
+        <h1>Finance News. No Noise.</h1>
+        <p class="tagline">Get the day's top market stories in 60 words. Human-picked. AI-polished. All signal.</p>
+        <div class="button-group">
+          <a href="#" class="button">
+            <span class="button-icon">📱</span>
+            Download on App Store
+          </a>
+          <a href="#" class="button secondary">
+            <span class="button-icon">📲</span>
+            Get it on Google Play
+          </a>
+          <a href="preview.html" class="button secondary">
+            <span class="button-icon">📲</span>
+            App Preview
+          </a> 
+        </div>
+      </div>
+   </div>
+  </header>
+
+  <section id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">How It Works</h2>
+      </div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <div class="step-icon">👨‍💼</div>
+          <h3 class="step-title">Curated by Experts</h3>
+          <p>Our team filters the market noise and picks what matters to your financial well-being.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <div class="step-icon">🤖</div>
+          <h3 class="step-title">Summarized by AI</h3>
+          <p>60-word summaries. Headlines that hit. Visuals that fit. Information density at its finest.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <div class="step-icon">🔗</div>
+          <h3 class="step-title">Linked to Source</h3>
+          <p>Every story ends with full credit and original link. Dive deeper when you want to.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <div class="step-icon">👆</div>
+          <h3 class="step-title">Built for Swiping</h3>
+          <p>Just like stories — but for your money brain. Quick, intuitive, and information-rich.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="features">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Why Monezy</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">💰</div>
+          <h3 class="feature-title">Finance-only</h3>
+          <p>No gossip. No distractions.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3 class="feature-title">Just Facts</h3>
+          <p>No opinions. Pure signal.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⏱️</div>
+          <h3 class="feature-title">60-second</h3>
+          <p>Quick, efficient reads.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎮</div>
+          <h3 class="feature-title">Interactive</h3>
+          <p>Quizzes & polls to engage.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3 class="feature-title">Crystal Clear</h3>
+          <p>Designed for clarity.</p>
+        </div>
+      </div>
+      
+      <div class="special-features-grid">
+        <div class="special-feature-card">
+          <div class="special-feature-icon">📈</div>
+          <h3 class="special-feature-title">Annual Report Cards</h3>
+          <p>Key takeaways from complex financial documents. Zero jargon. Maximum insight.</p>
+        </div>
+        <div class="special-feature-card">
+          <div class="special-feature-icon">📊</div>
+          <h3 class="special-feature-title">Market Movers</h3>
+          <p>What changed and why. Context you need to understand market shifts.</p>
+        </div>
+        <div class="special-feature-card">
+          <div class="special-feature-icon">🔍</div>
+          <h3 class="special-feature-title">New in Finance</h3>
+          <p>Products, tools, and trends reshaping the financial landscape.</p>
+        </div>
+        <div class="special-feature-card">
+          <div class="special-feature-icon">👩‍💼</div>
+          <h3 class="special-feature-title">Expert Curation</h3>
+          <p>Trusted voices. Direct picks. No algorithmic noise.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="calculators" class="calculators">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Financial Calculators</h2>
+        <p>Make smarter financial decisions with our suite of powerful calculators</p>
+      </div>
+      <div class="calculators-grid">
+        <div class="calculator-card">
+          <div class="calculator-icon">💰</div>
+          <h3 class="calculator-title">Tax Calculator</h3>
+          <p class="calculator-description">Estimate your income tax liability and plan your finances accordingly.</p>
+          <a href="taxcalculator.html" class="button">Calculate Now</a>
+        </div>
+        <div class="calculator-card">
+          <div class="calculator-icon">🏠</div>
+          <h3 class="calculator-title">Home Loan Calculator</h3>
+          <p class="calculator-description">Plan your mortgage with our EMI and affordability calculator.</p>
+          <a href="home-loan-calculator.html" class="button">Calculate Now</a>
+        </div>
+        <div class="calculator-card">
+          <div class="calculator-icon">📈</div>
+          <h3 class="calculator-title">Investment Return Calculator</h3>
+          <p class="calculator-description">Calculate your real returns after accounting for inflation and taxes.</p>
+          <a href="real-return-calculator.html" class="button">Calculate Now</a>
+        </div>
+        <div class="calculator-card">
+          <div class="calculator-icon">💼</div>
+          <h3 class="calculator-title">PPF Calculator</h3>
+          <p class="calculator-description">Plan your Public Provident Fund investments and track returns.</p>
+          <a href="ppf-calculator.html" class="button">Calculate Now</a>
+        </div>
+        <div class="calculator-card">
+          <div class="calculator-icon">👨‍💼</div>
+          <h3 class="calculator-title">Gratuity Calculator</h3>
+          <p class="calculator-description">Estimate your gratuity amount based on salary and years of service.</p>
+          <a href="gratuity-calculator.html" class="button">Calculate Now</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container">
+      <div class="cta-content">
+        <h3>Smart finance starts here</h3>
+        <p>No clutter. No fluff. Just clean news you'll actually use. Take control of your financial knowledge today.</p>
+        <a href="#" class="button">Download Monezy</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">FAQ</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-question">Is Monezy free?</div>
+          <div class="faq-answer">
+            <p>Yes. No ads. No paywalls (for now).</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">How is it different?</div>
+          <div class="faq-answer">
+            <p>It's only finance. Curated by people. Summarized by AI. No distractions.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">Available where?</div>
+          <div class="faq-answer">
+            <p>iOS and Android. Desktop version coming soon.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-logo">MONE<span>ZY</span></div>
+          <p class="footer-description">Finance news without the noise. Get the signal that matters to your money.</p>
+          <div class="footer-social">
+            <a href="#" class="social-link">𝕏</a>
+            <a href="#" class="social-link">in</a>
+            <a href="#" class="social-link">f</a>
+            <a href="#" class="social-link">IG</a>
+          </div>
