@@ -119,7 +119,7 @@
         function submitRequest() {
             const newsUrl = document.getElementById('newsUrl').value;
             const apiToken = document.getElementById('apiToken').value;
-            const apiUrl = `http://ec2-43-205-92-193.ap-south-1.compute.amazonaws.com:8080/news/summary?news_source=${encodeURIComponent(newsUrl)}`;
+            const apiUrl = `http://3.6.1.89/news/summary?news_source=${encodeURIComponent(newsUrl)}`;
             const responseDiv = document.getElementById('response');
             responseDiv.innerHTML = '<p class="loading">Processing your request...</p>';
             responseDiv.className = ''; // Remove any previous error class
