@@ -333,103 +333,91 @@
       margin-bottom: 12px;
     }
     
-    /* Calculator section */
-    .calculators {
+    /* Preview section */
+    .preview {
       background: linear-gradient(180deg, var(--gray-100) 0%, var(--white) 100%);
       text-align: center;
     }
     
-    .calculators-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-      margin: 0 auto;
-      max-width: 1100px;
-    }
-    
-    .calculator-card {
-      background-color: var(--white);
-      border-radius: 12px;
-      padding: 32px 24px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-      text-align: center;
+    .preview-container {
       position: relative;
-      overflow: hidden;
+      height: 500px;
+      margin: 0 auto;
+      max-width: 900px;
     }
     
-    .calculator-card::before {
-      content: '';
+    .preview-phone {
+      width: 270px;
+      height: 500px;
+      background-color: var(--white);
+      border-radius: 36px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
       position: absolute;
-      top: 0;
-      left: 0;
+      overflow: hidden;
+      transition: all 0.5s ease;
+    }
+    
+    .phone-1 {
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+    }
+    
+    .phone-2 {
+      left: calc(50% - 140px);
+      transform: translateX(-50%) scale(0.85);
+      filter: brightness(0.7);
+      z-index: 2;
+    }
+    
+    .phone-3 {
+      left: calc(50% + 140px);
+      transform: translateX(-50%) scale(0.85);
+      filter: brightness(0.7);
+      z-index: 2;
+    }
+    
+    .phone-screen {
       width: 100%;
-      height: 5px;
-      background-color: var(--primary);
+      height: 100%;
+      background-color: var(--gray-100);
+      display: flex;
+      flex-direction: column;
     }
     
-    .calculator-card:nth-child(2)::before {
-      background-color: var(--blue);
-    }
-    
-    .calculator-card:nth-child(3)::before {
-      background-color: var(--accent);
-    }
-    
-    .calculator-card:nth-child(4)::before {
-      background-color: var(--purple);
-    }
-    
-    .calculator-card:nth-child(5)::before {
-      background-color: var(--yellow);
-    }
-    
-    .calculator-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
-    }
-    
-    .calculator-icon {
-      display: inline-flex;
+    .phone-header {
+      height: 60px;
+      background-color: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
       align-items: center;
+      padding: 0 16px;
+    }
+    
+    .phone-content {
+      flex: 1;
+      padding: 16px;
+      text-align: left;
+    }
+    
+    .preview-dots {
+      display: flex;
       justify-content: center;
-      width: 70px;
-      height: 70px;
+      gap: 8px;
+      margin-top: 32px;
+    }
+    
+    .preview-dot {
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      background-color: var(--primary-light);
-      color: var(--primary);
-      font-size: 2rem;
-      margin-bottom: 24px;
+      background-color: var(--gray-300);
+      transition: all 0.3s ease;
     }
     
-    .calculator-card:nth-child(2) .calculator-icon {
-      background-color: rgba(20, 122, 252, 0.1);
-      color: var(--blue);
-    }
-    
-    .calculator-card:nth-child(3) .calculator-icon {
-      background-color: rgba(255, 92, 53, 0.1);
-      color: var(--accent);
-    }
-    
-    .calculator-card:nth-child(4) .calculator-icon {
-      background-color: rgba(123, 97, 255, 0.1);
-      color: var(--purple);
-    }
-    
-    .calculator-card:nth-child(5) .calculator-icon {
-      background-color: rgba(255, 177, 0, 0.1);
-      color: var(--yellow);
-    }
-    
-    .calculator-title {
-      font-size: 1.25rem;
-      margin-bottom: 12px;
-    }
-    
-    .calculator-description {
-      margin-bottom: 20px;
-      color: var(--gray-600);
+    .preview-dot.active {
+      background-color: var(--primary);
+      transform: scale(1.2);
     }
     
     /* CTA section */
@@ -648,9 +636,17 @@
         padding: 60px 0;
       }
       
-      .calculators-grid {
-        grid-template-columns: 1fr;
-        max-width: 400px;
+      .preview-container {
+        height: 400px;
+      }
+      
+      .preview-phone {
+        width: 220px;
+        height: 400px;
+      }
+      
+      .phone-2, .phone-3 {
+        display: none;
       }
       
       .footer-grid {
@@ -807,43 +803,50 @@
     </div>
   </section>
 
-  <section id="calculators" class="calculators">
+  <section id="preview" class="preview">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title">Financial Calculators</h2>
-        <p>Make smarter financial decisions with our suite of powerful calculators</p>
+        <h2 class="section-title">Preview</h2>
       </div>
-      <div class="calculators-grid">
-        <div class="calculator-card">
-          <div class="calculator-icon">💰</div>
-          <h3 class="calculator-title">Tax Calculator</h3>
-          <p class="calculator-description">Estimate your income tax liability and plan your finances accordingly.</p>
-          <a href="taxcalculator.html" class="button">Calculate Now</a>
+      <div class="preview-container">
+        <div class="preview-phone phone-1">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <strong>Market Update</strong>
+            </div>
+            <div class="phone-content">
+              <h3>S&P 500 Reaches New High</h3>
+              <p>Tech stocks lead the rally as investor confidence grows despite inflation concerns.</p>
+            </div>
+          </div>
         </div>
-        <div class="calculator-card">
-          <div class="calculator-icon">🏠</div>
-          <h3 class="calculator-title">Home Loan Calculator</h3>
-          <p class="calculator-description">Plan your mortgage with our EMI and affordability calculator.</p>
-          <a href="home-loan-calculator.html" class="button">Calculate Now</a>
+        <div class="preview-phone phone-2">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <strong>Quick Poll</strong>
+            </div>
+            <div class="phone-content">
+              <h3>Rate Hike Impact</h3>
+              <p>How will the Fed's decision affect your investment strategy?</p>
+            </div>
+          </div>
         </div>
-        <div class="calculator-card">
-          <div class="calculator-icon">📈</div>
-          <h3 class="calculator-title">Investment Return Calculator</h3>
-          <p class="calculator-description">Calculate your real returns after accounting for inflation and taxes.</p>
-          <a href="real-return-calculator.html" class="button">Calculate Now</a>
+        <div class="preview-phone phone-3">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <strong>Report Summary</strong>
+            </div>
+            <div class="phone-content">
+              <h3>Tesla Q1 Earnings</h3>
+              <p>Revenue up 24%, EPS beats estimates by $0.12, production targets maintained.</p>
+            </div>
+          </div>
         </div>
-        <div class="calculator-card">
-          <div class="calculator-icon">💼</div>
-          <h3 class="calculator-title">PPF Calculator</h3>
-          <p class="calculator-description">Plan your Public Provident Fund investments and track returns.</p>
-          <a href="ppf-calculator.html" class="button">Calculate Now</a>
-        </div>
-        <div class="calculator-card">
-          <div class="calculator-icon">👨‍💼</div>
-          <h3 class="calculator-title">Gratuity Calculator</h3>
-          <p class="calculator-description">Estimate your gratuity amount based on salary and years of service.</p>
-          <a href="gratuity-calculator.html" class="button">Calculate Now</a>
-        </div>
+      </div>
+      <div class="preview-dots">
+        <div class="preview-dot active"></div>
+        <div class="preview-dot"></div>
+        <div class="preview-dot"></div>
       </div>
     </div>
   </section>
@@ -898,3 +901,38 @@
             <a href="#" class="social-link">f</a>
             <a href="#" class="social-link">IG</a>
           </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Product</h4>
+          <div class="footer-links">
+            <a href="#" class="footer-link">Features</a>
+            <a href="#" class="footer-link">Pricing</a>
+            <a href="#" class="footer-link">FAQ</a>
+            <a href="#" class="footer-link">Download</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Company</h4>
+          <div class="footer-links">
+            <a href="#" class="footer-link">About</a>
+            <a href="#" class="footer-link">Blog</a>
+            <a href="#" class="footer-link">Terms</a>
+            <a href="#" class="footer-link">Contact</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Calculator</h4>
+          <div class="footer-links">
+            <a href="taxcalculator.html" class="footer-link">Tax Calculator</a>
+            <a href="home-loan-calculator.html" class="footer-link">Home Loan Calculator</a>
+            <a href="real-return-calculator.html" class="footer-link">Investment Return Calculator</a>
+            <a href="ppf-calculator.html" class="footer-link">PPF Calculator</a>
+            <a href="gratuity-calculator.html" class="footer-link">Gratuity Calculator</a>
+            
+           
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="copyright">© 2025 Monezy. All rights reserved.</div>
+        <div class="
