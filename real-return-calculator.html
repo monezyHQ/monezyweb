@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Return Calculator (India) - FD & MF</title>
+    <title>Real Return Calculator (India) - FD, MF SIP, MF Lumpsum</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,7 +81,7 @@
             border-bottom: 1px solid var(--rh-border-light);
         }
         .tab-button {
-            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            padding: 0.75rem 1rem; /* Adjusted padding for more tabs */
             cursor: pointer;
             border: none;
             background: none;
@@ -91,6 +91,7 @@
             transition: color 0.2s ease, border-color 0.2s ease;
             flex-grow: 1; /* Make tabs fill width */
             text-align: center; /* Center text */
+            font-size: 0.875rem; /* Slightly smaller font */
         }
         .tab-button:hover {
             color: var(--rh-text-dark);
@@ -133,95 +134,54 @@
 
         /* Info icon and Tooltip */
         .info-icon-container {
-            position: relative; /* Needed for absolute positioning of tooltip */
-            display: inline-block; /* Keep it inline */
-            margin-left: 0.3rem; /* Space between label and icon */
+            position: relative;
+            display: inline-block;
+            margin-left: 0.3rem;
         }
         .info-icon {
             display: inline-block;
-            width: 1rem; /* w-4 */
-            height: 1rem; /* h-4 */
-            line-height: 1rem; /* Center text vertically */
-            text-align: center;
-            border-radius: 9999px; /* rounded-full */
-            background-color: #d1d5db; /* gray-300 */
-            color: white;
-            font-size: 0.7rem; /* Smaller font */
-            font-style: normal; /* Remove italics */
-            font-weight: bold;
+            width: 1rem; height: 1rem; line-height: 1rem;
+            text-align: center; border-radius: 9999px;
+            background-color: #d1d5db; color: white;
+            font-size: 0.7rem; font-style: normal; font-weight: bold;
             cursor: help;
         }
         .tooltip-text {
-            visibility: hidden;
-            width: max-content; /* Adjust width based on content */
-            max-width: 250px; /* Prevent excessively wide tooltips */
-            background-color: #374151; /* gray-700 */
-            color: #fff;
-            text-align: left;
-            border-radius: 0.375rem; /* rounded-md */
-            padding: 0.5rem 0.75rem; /* p-2 px-3 */
-            position: absolute;
-            z-index: 10;
-            bottom: 125%; /* Position above the icon */
-            left: 50%;
-            transform: translateX(-50%); /* Center the tooltip */
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.75rem; /* text-xs */
-            font-weight: normal; /* Normal weight for tooltip */
-            white-space: normal; /* Allow text wrapping */
+            visibility: hidden; width: max-content; max-width: 250px;
+            background-color: #374151; color: #fff; text-align: left;
+            border-radius: 0.375rem; padding: 0.5rem 0.75rem;
+            position: absolute; z-index: 10; bottom: 125%; left: 50%;
+            transform: translateX(-50%); opacity: 0; transition: opacity 0.3s;
+            font-size: 0.75rem; font-weight: normal; white-space: normal;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        /* Tooltip arrow */
         .tooltip-text::after {
-            content: "";
-            position: absolute;
-            top: 100%; /* At the bottom of the tooltip */
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
+            content: ""; position: absolute; top: 100%; left: 50%;
+            margin-left: -5px; border-width: 5px; border-style: solid;
             border-color: #374151 transparent transparent transparent;
         }
-        /* Show tooltip on hover */
         .info-icon-container:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
+            visibility: visible; opacity: 1;
         }
 
         /* Insights styling */
         .insights {
             background-color: var(--rh-bg-light-green);
             border-left: 4px solid var(--rh-green);
-            padding: 1rem;
-            margin-top: 1.5rem;
-            border-radius: 0.375rem;
-            font-size: 0.875rem; /* text-sm */
-            color: #374151; /* gray-700 */
+            padding: 1rem; margin-top: 1.5rem; border-radius: 0.375rem;
+            font-size: 0.875rem; color: #374151;
         }
         .insights h4 {
-            font-weight: 600;
-            color: var(--rh-dark-green);
-            margin-bottom: 0.5rem;
+            font-weight: 600; color: var(--rh-dark-green); margin-bottom: 0.5rem;
         }
-        .insights ul {
-            list-style-type: disc;
-            padding-left: 1.5rem;
-        }
-        .insights li {
-            margin-bottom: 0.25rem;
-        }
+        .insights ul { list-style-type: disc; padding-left: 1.5rem; }
+        .insights li { margin-bottom: 0.25rem; }
 
         /* Error message styling */
         .error-message {
-            color: #dc2626; /* red-600 */
-            background-color: #fee2e2; /* red-100 */
-            border: 1px solid #fca5a5; /* red-300 */
-            border-radius: 0.375rem; /* rounded-md */
-            padding: 0.75rem; /* p-3 */
-            margin-top: 1rem; /* mt-4 */
-            font-size: 0.875rem; /* text-sm */
-            display: none; /* Hidden by default */
+            color: #dc2626; background-color: #fee2e2; border: 1px solid #fca5a5;
+            border-radius: 0.375rem; padding: 0.75rem; margin-top: 1rem;
+            font-size: 0.875rem; display: none;
         }
     </style>
 </head>
@@ -243,8 +203,7 @@
         <div class="calculator-container">
             <div class="tab-buttons">
                 <button class="tab-button active" onclick="switchTab('fd')">Fixed Deposit</button>
-                <button class="tab-button" onclick="switchTab('mf')">Mutual Fund</button>
-            </div>
+                <button class="tab-button" onclick="switchTab('mfSip')">MF (SIP)</button> <button class="tab-button" onclick="switchTab('mfLumpsum')">MF (Lumpsum)</button> </div>
 
             <div>
                 <div id="fd-tab-content" class="tab-content">
@@ -332,102 +291,161 @@
                     </div>
                 </div>
 
-                <div id="mf-tab-content" class="tab-content hidden">
-                    <h2 class="text-xl font-semibold mb-4 rh-text-dark">Mutual Fund (MF) Calculator (Equity Funds)</h2>
-                     <p class="text-sm text-gray-600 mb-4">Estimate potential returns and tax (Equity Fund rules with hypothetical rates) for SIP or Lumpsum investments.</p>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Investment Type</label>
-                        <div class="flex gap-6">
-                            <label class="inline-flex items-center cursor-pointer">
-                                <input type="radio" name="mfInvestmentType" value="sip" class="form-radio h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500" checked onchange="toggleMFInputs()">
-                                <span class="ml-2 text-sm text-gray-700">SIP</span>
-                            </label>
-                            <label class="inline-flex items-center cursor-pointer">
-                                <input type="radio" name="mfInvestmentType" value="lumpsum" class="form-radio h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500" onchange="toggleMFInputs()">
-                                <span class="ml-2 text-sm text-gray-700">Lumpsum</span>
-                            </label>
-                        </div>
-                    </div>
-
+                <div id="mfSip-tab-content" class="tab-content hidden">
+                    <h2 class="text-xl font-semibold mb-4 rh-text-dark">Mutual Fund (SIP) Calculator (Equity Funds)</h2>
+                     <p class="text-sm text-gray-600 mb-4">Estimate potential returns and tax (Equity Fund rules with hypothetical rates) for SIP investments.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div id="sipInputs">
+                        <div>
                             <label for="mfSipAmount" class="block text-sm font-medium text-gray-700 mb-1">Monthly SIP Amount (₹)</label>
                             <input type="number" id="mfSipAmount" class="input-field" placeholder="e.g., 10000">
                         </div>
-                        <div id="lumpsumInputs" class="hidden">
-                            <label for="mfLumpsumAmount" class="block text-sm font-medium text-gray-700 mb-1">Lumpsum Investment Amount (₹)</label>
-                            <input type="number" id="mfLumpsumAmount" class="input-field" placeholder="e.g., 120000">
+                        <div>
+                            <label for="mfSipDuration" class="block text-sm font-medium text-gray-700 mb-1">Investment Duration (Years)</label>
+                            <input type="number" id="mfSipDuration" class="input-field" placeholder="e.g., 10">
                         </div>
                         <div>
-                            <label for="mfDuration" class="block text-sm font-medium text-gray-700 mb-1">Investment Duration (Years)</label>
-                            <input type="number" id="mfDuration" class="input-field" placeholder="e.g., 10">
+                            <label for="mfSipExpectedReturn" class="block text-sm font-medium text-gray-700 mb-1">Expected Annual Return (%)</label>
+                            <input type="number" id="mfSipExpectedReturn" class="input-field" placeholder="e.g., 12">
                         </div>
                         <div>
-                            <label for="mfExpectedReturn" class="block text-sm font-medium text-gray-700 mb-1">Expected Annual Return (%)</label>
-                            <input type="number" id="mfExpectedReturn" class="input-field" placeholder="e.g., 12">
-                        </div>
-                        <div>
-                            <label for="mfExpenseRatio" class="block text-sm font-medium text-gray-700 mb-1">Expense Ratio (%)</label>
-                            <input type="number" id="mfExpenseRatio" class="input-field" placeholder="e.g., 1.5">
+                            <label for="mfSipExpenseRatio" class="block text-sm font-medium text-gray-700 mb-1">Expense Ratio (%)</label>
+                            <input type="number" id="mfSipExpenseRatio" class="input-field" placeholder="e.g., 1.5">
                             <p class="text-xs text-gray-500 mt-1">Annual fee charged by the fund house.</p>
                         </div>
                     </div>
-                    <button id="mfCalculateBtn" onclick="calculateMF(this)" class="btn-calculate mb-4">Calculate MF Return</button>
-                     <div id="mfErrorMessage" class="error-message"></div>
-                     <div id="mfResult" class="mb-4 hidden">
+                    <button id="mfSipCalculateBtn" onclick="calculateMFSIP(this)" class="btn-calculate mb-4">Calculate MF SIP Return</button>
+                     <div id="mfSipErrorMessage" class="error-message"></div>
+                     <div id="mfSipResult" class="mb-4 hidden">
                         <h3 class="text-lg font-semibold mb-2 mt-4">Calculation Results:</h3>
                         <div class="result-item">
                             <span class="result-label">Total Investment:</span>
-                            <span class="result-value" id="mfTotalInvestment"></span>
+                            <span class="result-value" id="mfSipTotalInvestment"></span>
                         </div>
                         <div class="result-item">
                             <span class="result-label">Expected Future Value (Pre-Tax):</span>
-                            <span class="result-value" id="mfFutureValuePreTax"></span>
+                            <span class="result-value" id="mfSipFutureValuePreTax"></span>
                         </div>
                         <div class="result-item">
                             <span class="result-label">Estimated Gain/Loss (Pre-Tax):</span>
-                            <span class="result-value" id="mfGainPreTax"></span>
+                            <span class="result-value" id="mfSipGainPreTax"></span>
                         </div>
                         <div class="result-item">
                             <span class="result-label">Gain/Loss Type (on Redemption):</span>
-                            <span class="result-value" id="mfGainType"></span>
+                            <span class="result-value" id="mfSipGainType"></span>
                         </div>
                         <div class="result-item">
                             <span class="result-label">
                                 Estimated Tax Liability (Hypothetical Equity Rules)
                                 <span class="info-icon-container">
                                     <i class="info-icon">i</i>
-                                    <span class="tooltip-text" id="mfTaxLogicTooltip">Tax calculation details will appear here.</span>
+                                    <span class="tooltip-text" id="mfSipTaxLogicTooltip">Tax calculation details will appear here.</span>
                                 </span>
                             </span>
-                            <span class="result-value negative" id="mfTaxAmount"></span>
+                            <span class="result-value negative" id="mfSipTaxAmount"></span>
                         </div>
                         <div class="result-item">
                             <span class="result-label">Future Value (Post-Tax):</span>
-                            <span class="result-value" id="mfFutureValuePostTax"></span>
+                            <span class="result-value" id="mfSipFutureValuePostTax"></span>
                         </div>
                         <div class="result-item">
                             <span class="result-label">Post-Tax Nominal Return (CAGR):</span>
-                            <span class="result-value" id="mfNominalReturnPostTax"></span>
+                            <span class="result-value" id="mfSipNominalReturnPostTax">-</span>
                         </div>
                         <div class="result-item">
                             <span class="result-label">Real Return Rate (Post-Tax, Post-Inflation):</span>
-                            <span class="result-value" id="mfRealReturn"></span>
-                        </div>
+                             <span class="result-value" id="mfSipRealReturn">-</span> </div>
                     </div>
 
                     <div class="insights">
-                        <h4>💡 Mutual Fund Insights (India - Assuming Equity Funds & Hypothetical Rates)</h4>
+                        <h4>💡 Mutual Fund (SIP) Insights (India - Assuming Equity Funds & Hypothetical Rates)</h4>
                         <ul>
-                            <li>Mutual Funds pool money from investors to invest in stocks, bonds, etc., offering diversification.</li>
-                            <li>**SIP (Systematic Investment Plan):** Invest a fixed amount regularly, benefiting from rupee cost averaging.</li>
-                            <li>**Lumpsum:** Invest a large amount at once.</li>
+                            <li>**SIP (Systematic Investment Plan):** Invest a fixed amount regularly, benefiting from rupee cost averaging (buying more units when prices are low, fewer when high).</li>
                             <li>**Expense Ratio:** An annual fee charged by the fund house, directly reducing your returns. Lower is generally better.</li>
-                            <li>**Taxation (Equity Funds - Assumed Here):** Similar to direct equity. STCG (< 1 year) taxed at 20%. LTCG (> 1 year) taxed at 12.5% on gains exceeding ₹1 lakh per financial year.</li>
+                            <li>**Taxation (Equity Funds - Assumed Here):** Similar to direct equity. STCG (< 1 year holding period for each SIP installment) taxed at 20%. LTCG (> 1 year holding period for each SIP installment) taxed at 12.5% on gains exceeding ₹1 lakh per financial year. This calculator applies tax based on the *total* duration for simplicity.</li>
                             <li>**Disclaimer:** These tax rates (12.5% LTCG, 20% STCG) are hypothetical based on your request and may not reflect current official Indian tax laws. Always verify with official sources or a tax advisor.</li>
-                            <li>**Taxation (Debt Funds):** Different rules apply (taxed at slab rate if bought after Apr 1, 2023). This calculator uses Equity fund rules.</li>
+                            <li>**Taxation (Debt Funds):** Different rules apply. This calculator uses Equity fund rules.</li>
                              <li>Capital loss rules similar to Equity apply (set-off/carry-forward not calculated here).</li>
-                            <li>Returns are not guaranteed and depend on market performance. CAGR for SIP is complex and displayed as '-' here.</li>
+                            <li>Returns are not guaranteed and depend on market performance. CAGR calculation for SIP is complex and not shown here.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                 <div id="mfLumpsum-tab-content" class="tab-content hidden">
+                    <h2 class="text-xl font-semibold mb-4 rh-text-dark">Mutual Fund (Lumpsum) Calculator (Equity Funds)</h2>
+                     <p class="text-sm text-gray-600 mb-4">Estimate potential returns and tax (Equity Fund rules with hypothetical rates) for Lumpsum investments.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                         <div>
+                            <label for="mfLumpsumAmount" class="block text-sm font-medium text-gray-700 mb-1">Lumpsum Investment Amount (₹)</label>
+                            <input type="number" id="mfLumpsumAmount" class="input-field" placeholder="e.g., 120000">
+                        </div>
+                        <div>
+                            <label for="mfLumpsumDuration" class="block text-sm font-medium text-gray-700 mb-1">Investment Duration (Years)</label>
+                            <input type="number" id="mfLumpsumDuration" class="input-field" placeholder="e.g., 10">
+                        </div>
+                        <div>
+                            <label for="mfLumpsumExpectedReturn" class="block text-sm font-medium text-gray-700 mb-1">Expected Annual Return (%)</label>
+                            <input type="number" id="mfLumpsumExpectedReturn" class="input-field" placeholder="e.g., 12">
+                        </div>
+                        <div>
+                            <label for="mfLumpsumExpenseRatio" class="block text-sm font-medium text-gray-700 mb-1">Expense Ratio (%)</label>
+                            <input type="number" id="mfLumpsumExpenseRatio" class="input-field" placeholder="e.g., 1.5">
+                            <p class="text-xs text-gray-500 mt-1">Annual fee charged by the fund house.</p>
+                        </div>
+                    </div>
+                    <button id="mfLumpsumCalculateBtn" onclick="calculateMFLumpsum(this)" class="btn-calculate mb-4">Calculate MF Lumpsum Return</button>
+                     <div id="mfLumpsumErrorMessage" class="error-message"></div>
+                     <div id="mfLumpsumResult" class="mb-4 hidden">
+                        <h3 class="text-lg font-semibold mb-2 mt-4">Calculation Results:</h3>
+                        <div class="result-item">
+                            <span class="result-label">Total Investment:</span>
+                            <span class="result-value" id="mfLumpsumTotalInvestment"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Expected Future Value (Pre-Tax):</span>
+                            <span class="result-value" id="mfLumpsumFutureValuePreTax"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Estimated Gain/Loss (Pre-Tax):</span>
+                            <span class="result-value" id="mfLumpsumGainPreTax"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Gain/Loss Type (on Redemption):</span>
+                            <span class="result-value" id="mfLumpsumGainType"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">
+                                Estimated Tax Liability (Hypothetical Equity Rules)
+                                <span class="info-icon-container">
+                                    <i class="info-icon">i</i>
+                                    <span class="tooltip-text" id="mfLumpsumTaxLogicTooltip">Tax calculation details will appear here.</span>
+                                </span>
+                            </span>
+                            <span class="result-value negative" id="mfLumpsumTaxAmount"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Future Value (Post-Tax):</span>
+                            <span class="result-value" id="mfLumpsumFutureValuePostTax"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Post-Tax Nominal Return (CAGR):</span>
+                            <span class="result-value" id="mfLumpsumNominalReturnPostTax"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Real Return Rate (Post-Tax, Post-Inflation):</span>
+                            <span class="result-value" id="mfLumpsumRealReturn"></span>
+                        </div>
+                    </div>
+
+                     <div class="insights">
+                        <h4>💡 Mutual Fund (Lumpsum) Insights (India - Assuming Equity Funds & Hypothetical Rates)</h4>
+                        <ul>
+                            <li>**Lumpsum:** Invest a large amount at once. Market timing can impact returns significantly compared to SIP.</li>
+                            <li>**Expense Ratio:** An annual fee charged by the fund house, directly reducing your returns. Lower is generally better.</li>
+                            <li>**Taxation (Equity Funds - Assumed Here):** Similar to direct equity. STCG (< 1 year holding period) taxed at 20%. LTCG (> 1 year holding period) taxed at 12.5% on gains exceeding ₹1 lakh per financial year.</li>
+                            <li>**Disclaimer:** These tax rates (12.5% LTCG, 20% STCG) are hypothetical based on your request and may not reflect current official Indian tax laws. Always verify with official sources or a tax advisor.</li>
+                            <li>**Taxation (Debt Funds):** Different rules apply. This calculator uses Equity fund rules.</li>
+                             <li>Capital loss rules similar to Equity apply (set-off/carry-forward not calculated here).</li>
+                            <li>Returns are not guaranteed and depend on market performance.</li>
                         </ul>
                     </div>
                 </div>
@@ -494,19 +512,20 @@
                             displayValue = formatCurrency(value);
                         }
                     } else if (typeof value === 'string') {
-                        // Directly display strings (like Gain Type or Tooltip Text)
                          displayValue = value;
                     }
 
                     // Update the element's text content
-                    // Special handling for tooltip text
+                    // Special handling for tooltip text (check lowercase key)
                     if (key.toLowerCase() === 'taxlogictooltip') {
-                         const tooltipElement = document.getElementById('mfTaxLogicTooltip');
+                         // Construct the correct tooltip ID based on sectionId
+                         const tooltipElementId = `${sectionId}TaxLogicTooltip`;
+                         const tooltipElement = document.getElementById(tooltipElementId);
                          if(tooltipElement) {
-                             tooltipElement.textContent = value;
+                             tooltipElement.textContent = value; // Update tooltip text
                          }
                     } else if (displayValue !== undefined) {
-                       element.textContent = displayValue;
+                       element.textContent = displayValue; // Update regular result elements
                     }
 
                     // Apply positive/negative styling (after setting text content)
@@ -519,11 +538,11 @@
                             else if (typeof value === 'number' && value < 0) element.classList.add('negative');
                         } else if (key.toLowerCase().includes('posttax')) {
                             let investmentValue = NaN;
-                            if (sectionId === 'fd' || sectionId === 'mf') {
-                                const investmentKeyLower = `${sectionId}TotalInvestment`.toLowerCase();
-                                const actualInvestmentKey = Object.keys(results).find(k => k.toLowerCase() === investmentKeyLower);
-                                if (actualInvestmentKey) investmentValue = results[actualInvestmentKey];
-                            }
+                             // Find investment value using lowercase key comparison
+                            const investmentKeyLower = `${sectionId}TotalInvestment`.toLowerCase();
+                            const actualInvestmentKey = Object.keys(results).find(k => k.toLowerCase() === investmentKeyLower);
+                            if (actualInvestmentKey) investmentValue = results[actualInvestmentKey];
+
 
                             if (!isNaN(investmentValue) && typeof value === 'number') {
                                 if (value > investmentValue) element.classList.add('positive');
@@ -558,13 +577,12 @@
                  globalErrorDiv.classList.add('hidden');
                  globalErrorDiv.textContent = '';
              }
-             // Also hide MF tooltip text when clearing results
-             if (sectionId === 'mf') {
-                 const tooltipElement = document.getElementById('mfTaxLogicTooltip');
-                 if(tooltipElement) {
-                     tooltipElement.textContent = 'Tax calculation details will appear here.';
-                 }
-             }
+             // Also hide MF tooltips text when clearing results
+             const sipTooltipElement = document.getElementById('mfSipTaxLogicTooltip');
+             if(sipTooltipElement) sipTooltipElement.textContent = 'Tax calculation details will appear here.';
+             const lumpsumTooltipElement = document.getElementById('mfLumpsumTaxLogicTooltip');
+             if(lumpsumTooltipElement) lumpsumTooltipElement.textContent = 'Tax calculation details will appear here.';
+
         };
 
         // Displays an error message in the specified section's error div
@@ -714,60 +732,109 @@
              });
          }
 
-        // --- MF Calculator ---
-        function calculateMF(buttonElement) {
-            hideResultAndError('mf');
-            const type = document.querySelector('input[name="mfInvestmentType"]:checked').value;
-            const duration = getNumberValue('mfDuration');
-            const expectedReturn = getNumberValue('mfExpectedReturn') / 100;
-            const expenseRatio = getNumberValue('mfExpenseRatio') / 100;
+        // --- MF SIP Calculator ---
+        function calculateMFSIP(buttonElement) {
+            hideResultAndError('mfSip'); // Use specific ID
+            const sipAmount = getNumberValue('mfSipAmount');
+            const duration = getNumberValue('mfSipDuration'); // Use specific ID
+            const expectedReturn = getNumberValue('mfSipExpectedReturn') / 100; // Use specific ID
+            const expenseRatio = getNumberValue('mfSipExpenseRatio') / 100; // Use specific ID
             const inflationRate = getInflationRate();
 
             let errors = [];
-            let sipAmount = NaN;
-            let lumpsumAmount = NaN;
-
-            if (type === 'sip') {
-                 sipAmount = getNumberValue('mfSipAmount');
-                 if (isNaN(sipAmount) || sipAmount <= 0) errors.push("Monthly SIP Amount must be positive.");
-            } else {
-                 lumpsumAmount = getNumberValue('mfLumpsumAmount');
-                 if (isNaN(lumpsumAmount) || lumpsumAmount <= 0) errors.push("Lumpsum Investment Amount must be positive.");
-            }
-
+            if (isNaN(sipAmount) || sipAmount <= 0) errors.push("Monthly SIP Amount must be positive.");
             if (isNaN(duration) || duration <= 0) errors.push("Investment Duration must be positive.");
             if (isNaN(expectedReturn) || expectedReturn < 0) errors.push("Expected Annual Return cannot be negative.");
             if (isNaN(expenseRatio) || expenseRatio < 0) errors.push("Expense Ratio cannot be negative.");
             if (isNaN(inflationRate)) errors.push("Valid Inflation Rate is required.");
 
              if (errors.length > 0) {
-                showErrorMessage('mf', errors.join(' '));
+                showErrorMessage('mfSip', errors.join(' ')); // Use specific ID
                 return;
             }
 
             const adjustedReturn = Math.max(-1, expectedReturn - expenseRatio);
-            let totalInvestment = 0;
+            const totalInvestment = sipAmount * 12 * duration;
+            const monthlyRate = adjustedReturn / 12;
+            const numMonths = duration * 12;
             let futureValuePreTax = 0;
 
-            if (type === 'sip') {
-                totalInvestment = sipAmount * 12 * duration;
-                const monthlyRate = adjustedReturn / 12;
-                const numMonths = duration * 12;
-                 if (Math.abs(monthlyRate) < 1e-9) {
-                    futureValuePreTax = sipAmount * numMonths;
-                } else {
-                    futureValuePreTax = sipAmount * (Math.pow(1 + monthlyRate, numMonths) - 1) / monthlyRate * (1 + monthlyRate);
-                }
+             if (Math.abs(monthlyRate) < 1e-9) {
+                futureValuePreTax = sipAmount * numMonths;
             } else {
-                totalInvestment = lumpsumAmount;
-                futureValuePreTax = lumpsumAmount * Math.pow(1 + adjustedReturn, duration);
+                futureValuePreTax = sipAmount * (Math.pow(1 + monthlyRate, numMonths) - 1) / monthlyRate * (1 + monthlyRate);
             }
             futureValuePreTax = Math.max(0, futureValuePreTax);
             const gainPreTax = futureValuePreTax - totalInvestment;
 
             let gainType = '';
             let taxAmount = 0;
-            let taxLogicText = 'No tax on losses.'; // Default tooltip text
+            let taxLogicText = 'No tax on losses.';
+
+            if (gainPreTax <= 0) {
+                 gainType = duration <= 1 ? 'STCL (Short-Term Capital Loss)' : 'LTCL (Long-Term Capital Loss)';
+                 taxAmount = 0;
+            } else if (duration <= 1) {
+                gainType = 'STCG (Short-Term)';
+                taxAmount = gainPreTax * STCG_TAX_RATE;
+                taxLogicText = `STCG: ${formatCurrency(gainPreTax)} * ${formatPercentage(STCG_TAX_RATE)} = ${formatCurrency(taxAmount)}`;
+            } else {
+                gainType = 'LTCG (Long-Term)';
+                const taxableLTCG = Math.max(0, gainPreTax - LTCG_EXEMPTION);
+                taxAmount = taxableLTCG * LTCG_TAX_RATE;
+                taxLogicText = `LTCG: Max(0, ${formatCurrency(gainPreTax)} - ${formatCurrency(LTCG_EXEMPTION)}) * ${formatPercentage(LTCG_TAX_RATE)} = ${formatCurrency(taxableLTCG)} * ${formatPercentage(LTCG_TAX_RATE)} = ${formatCurrency(taxAmount)}`;
+            }
+
+            const futureValuePostTax = Math.max(0, futureValuePreTax - taxAmount);
+            const postTaxNominalReturn = NaN; // CAGR not calculated for SIP
+            const realReturn = NaN; // Real return depends on CAGR
+
+            // Use specific section ID 'mfSip'
+            displayResult('mfSip', {
+                totalInvestment: totalInvestment,
+                futureValuePreTax: futureValuePreTax,
+                gainPreTax: gainPreTax,
+                gainType: gainType,
+                taxAmount: taxAmount,
+                taxLogicTooltip: taxLogicText,
+                futureValuePostTax: futureValuePostTax,
+                nominalReturnPostTax: postTaxNominalReturn,
+                realReturn: realReturn
+            });
+            triggerConfetti(buttonElement);
+        }
+
+         // --- MF Lumpsum Calculator ---
+        function calculateMFLumpsum(buttonElement) {
+            hideResultAndError('mfLumpsum'); // Use specific ID
+            const lumpsumAmount = getNumberValue('mfLumpsumAmount'); // Use specific ID
+            const duration = getNumberValue('mfLumpsumDuration'); // Use specific ID
+            const expectedReturn = getNumberValue('mfLumpsumExpectedReturn') / 100; // Use specific ID
+            const expenseRatio = getNumberValue('mfLumpsumExpenseRatio') / 100; // Use specific ID
+            const inflationRate = getInflationRate();
+
+            let errors = [];
+            if (isNaN(lumpsumAmount) || lumpsumAmount <= 0) errors.push("Lumpsum Investment Amount must be positive.");
+            if (isNaN(duration) || duration <= 0) errors.push("Investment Duration must be positive.");
+            if (isNaN(expectedReturn) || expectedReturn < 0) errors.push("Expected Annual Return cannot be negative.");
+            if (isNaN(expenseRatio) || expenseRatio < 0) errors.push("Expense Ratio cannot be negative.");
+            if (isNaN(inflationRate)) errors.push("Valid Inflation Rate is required.");
+
+             if (errors.length > 0) {
+                showErrorMessage('mfLumpsum', errors.join(' ')); // Use specific ID
+                return;
+            }
+
+            const adjustedReturn = Math.max(-1, expectedReturn - expenseRatio);
+            const totalInvestment = lumpsumAmount;
+            let futureValuePreTax = lumpsumAmount * Math.pow(1 + adjustedReturn, duration);
+
+            futureValuePreTax = Math.max(0, futureValuePreTax);
+            const gainPreTax = futureValuePreTax - totalInvestment;
+
+            let gainType = '';
+            let taxAmount = 0;
+            let taxLogicText = 'No tax on losses.';
 
             if (gainPreTax <= 0) {
                  gainType = duration <= 1 ? 'STCL (Short-Term Capital Loss)' : 'LTCL (Long-Term Capital Loss)';
@@ -785,23 +852,25 @@
 
             const futureValuePostTax = Math.max(0, futureValuePreTax - taxAmount);
             let postTaxNominalReturn = NaN;
-            if (type === 'lumpsum') {
-                 if (totalInvestment > 0 && futureValuePostTax > 0 && duration > 0) {
+
+            if (totalInvestment > 0) { // Check if totalInvestment is positive
+                 if (futureValuePostTax > 0 && duration > 0) {
                      postTaxNominalReturn = Math.pow(futureValuePostTax / totalInvestment, 1 / duration) - 1;
-                 } else if (totalInvestment > 0 && futureValuePostTax <= 0) {
+                 } else if (futureValuePostTax <= 0) {
                      postTaxNominalReturn = -1;
                  }
-            }
+            } // Keep NaN if totalInvestment is 0 or less
 
             const realReturn = isNaN(postTaxNominalReturn) ? NaN : (1 + postTaxNominalReturn) / (1 + inflationRate) - 1;
 
-            displayResult('mf', {
+             // Use specific section ID 'mfLumpsum'
+            displayResult('mfLumpsum', {
                 totalInvestment: totalInvestment,
                 futureValuePreTax: futureValuePreTax,
                 gainPreTax: gainPreTax,
                 gainType: gainType,
                 taxAmount: taxAmount,
-                taxLogicTooltip: taxLogicText, // Pass the logic text for the tooltip
+                taxLogicTooltip: taxLogicText,
                 futureValuePostTax: futureValuePostTax,
                 nominalReturnPostTax: postTaxNominalReturn,
                 realReturn: realReturn
@@ -812,7 +881,7 @@
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
             switchTab('fd'); // Start with FD tab active
-            toggleMFInputs();
+            // No need to call toggleMFInputs anymore
         });
 
     </script>
