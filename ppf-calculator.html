@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPF Calculator - India</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            /* Light Theme Colors */
+            --primary-green: #00C805; /* Keep highlight green */
+            --dark-bg: #F8F9FA;      /* Light background */
+            --card-bg: #FFFFFF;      /* White cards */
+            --text-color: #212529;    /* Dark text */
+            --muted-text: #6C757D;    /* Medium grey muted text */
+            --border-color: #DEE2E6;  /* Light grey border */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg); /* Light background */
+            color: var(--text-color);         /* Dark text */
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--primary-green);
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 28px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg); /* White card background */
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Lighter shadow for light theme */
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color); /* Subtle border for cards */
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--muted-text); /* Muted text color */
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background-color: #FFFFFF; /* White input background */
+            border: 1px solid var(--border-color); /* Light border */
+            border-radius: 8px;
+            color: var(--text-color); /* Dark text */
+            font-size: 16px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 2px rgba(0, 200, 5, 0.2); /* Focus ring */
+        }
+
+        .btn {
+            background-color: var(--primary-green);
+            color: #FFFFFF; /* White text on green button for better contrast */
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.85; /* Slightly stronger hover effect */
+        }
+
+        .results {
+            margin-top: 20px; /* Increased top margin */
+            padding-top: 20px; /* Added padding top */
+            border-top: 1px solid var(--border-color); /* Separator line */
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+         .summary-item span:first-child {
+             color: var(--muted-text); /* Muted color for labels */
+         }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            font-size: 18px;
+             color: var(--text-color); /* Ensure summary value uses main text color */
+        }
+
+        .summary-value.highlight {
+            color: var(--primary-green);
+            font-size: 22px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            color: var(--muted-text);
+            font-weight: 500;
+            border-bottom: 2px solid transparent; /* Add transparent border for spacing */
+             margin-bottom: -1px; /* Align with bottom border */
+        }
+         .tab:hover {
+             color: var(--text-color); /* Darker text on hover */
+         }
+
+        .tab.active {
+            color: var(--primary-green);
+            border-bottom: 2px solid var(--primary-green);
+            font-weight: 600; /* Make active tab bolder */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th, td {
+            padding: 12px 15px; /* Adjusted padding */
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+         td {
+             color: var(--text-color);
+         }
+
+        th {
+            color: var(--muted-text);
+            font-weight: 600; /* Bolder headers */
+             background-color: #F8F9FA; /* Slight background for headers */
+        }
+         tbody tr:last-child td {
+            border-bottom: none; /* Remove border from last table row */
+         }
+         tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.02); /* Subtle hover for table rows */
+         }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .tax-benefit-note { /* Renamed for clarity, now holds more content */
+            margin-top: 20px;
+            color: var(--text-color); /* Use main text color */
+            font-size: 15px; /* Slightly larger font */
+             line-height: 1.7;
+        }
+         .tax-benefit-note h3 {
+             color: var(--primary-green);
+             margin-top: 20px;
+             margin-bottom: 10px;
+             font-size: 18px;
+             border-bottom: 1px solid var(--border-color);
+             padding-bottom: 5px;
+         }
+         .tax-benefit-note p {
+            margin-bottom: 10px;
+         }
+         .tax-benefit-note ul {
+            margin-left: 25px;
+            margin-bottom: 15px;
+            list-style: disc; /* Standard disc bullets */
+         }
+         .tax-benefit-note li {
+             margin-bottom: 8px;
+         }
+
+        .highlight-text {
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+         .tax-calculation-note {
+             font-size: 13px;
+             color: var(--muted-text);
+             margin-top: 15px;
+             padding-top: 15px;
+             border-top: 1px dashed var(--border-color);
+         }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .disclaimer {
+            font-size: 12px;
+            color: var(--muted-text);
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+            }
+             .chart-container {
+                 height: 300px !important; /* Adjust chart height for mobile */
+             }
+             h1 {
+                 font-size: 24px;
+             }
+             .summary-value {
+                 font-size: 16px;
+             }
+             .summary-value.highlight {
+                 font-size: 18px;
+             }
+             th, td {
+                 padding: 8px 10px;
+             }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PPF Calculator (India)</h1>
+
+        <div class="card">
+            <div class="row">
+                <div class="input-group">
+                    <label for="yearly-investment">Yearly Investment (₹)</label>
+                    <input type="number" id="yearly-investment" min="500" max="150000" value="150000" step="500">
+                </div>
+                <div class="input-group">
+                    <label for="interest-rate">Interest Rate (%)</label>
+                    <input type="number" id="interest-rate" min="1" max="12" value="7.1" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label for="period">Investment Period (Years)</label>
+                    <input type="number" id="period" min="15" max="50" value="15" readonly> </div>
+            </div>
+
+            <button class="btn" id="calculate-btn">Calculate</button>
+
+            <div class="results">
+                <div class="summary-item">
+                    <span>Total Investment</span>
+                    <span class="summary-value" id="total-investment">₹0</span>
+                </div>
+                <div class="summary-item">
+                    <span>Total Interest Earned</span>
+                    <span class="summary-value" id="total-interest">₹0</span>
+                </div>
+                <div class="summary-item">
+                    <span>Maturity Value (After 15 Years)</span>
+                    <span class="summary-value highlight" id="maturity-value">₹0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="tabs">
+                <div class="tab active" data-tab="yearly-breakdown">Yearly Breakdown</div>
+                <div class="tab" data-tab="graphical-view">Graphical View</div>
+                <div class="tab" data-tab="tax-benefits">Features & Tax Benefits</div> </div>
+
+            <div class="tab-content active" id="yearly-breakdown">
+                <table id="breakdown-table">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Opening Balance (₹)</th>
+                            <th>Investment (₹)</th>
+                            <th>Interest Earned (₹)</th>
+                            <th>Closing Balance (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="tab-content" id="graphical-view">
+                <div class="chart-container" style="position: relative; height:400px; width:100%">
+                    <canvas id="growth-chart"></canvas>
+                </div>
+                 <div style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 16px; height: 16px; background-color: rgba(0, 200, 5, 0.7); border-radius: 4px;"></div> <span>Total Balance</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                         <div style="width: 16px; height: 16px; background-color: rgba(108, 117, 125, 0.7); border-radius: 4px;"></div>
+                        <span>Principal Amount</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                         <div style="width: 16px; height: 16px; background-color: rgba(40, 167, 69, 0.7); border-radius: 4px;"></div>
+                        <span>Interest Earned</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tax-benefits">
+                <h3>Tax Savings</h3>
+                 <div class="summary-item">
+                    <span>Max. Annual Deduction (Sec 80C)</span>
+                    <span class="summary-value" id="tax-deduction">₹0</span>
+                </div>
+                <div class="summary-item">
+                    <span>Estimated Tax Saving @ 30% Slab (p.a.)</span>
+                    <span class="summary-value highlight" id="tax-saving">₹0</span>
+                </div>
+                 <p class="tax-calculation-note">
+                     *Tax saving calculation assumes the investor falls in the 30% tax slab (plus applicable cess). Actual savings depend on your individual income tax slab. The maximum investment eligible for deduction under Sec 80C is ₹1,50,000 per financial year across all eligible instruments (including PPF, EPF, ELSS, etc.).
+                 </p>
+
+                 <div class="tax-benefit-note">
+                    <h3>Key PPF Features & Benefits</h3>
+
+                    <p>The Public Provident Fund (PPF) is a popular long-term investment scheme backed by the Government of India, offering safety with attractive tax benefits.</p>
+
+                    <ul>
+                        <li><strong>EEE Tax Status:</strong> PPF enjoys the Exempt-Exempt-Exempt status.
+                            <ul>
+                                <li><strong>Exempt (Contribution):</strong> Investments up to ₹1,50,000 per financial year are eligible for deduction under <span class="highlight-text">Section 80C</span> of the Income Tax Act.</li>
+                                <li><strong>Exempt (Interest):</strong> The interest earned annually is completely <span class="highlight-text">tax-free</span>.</li>
+                                <li><strong>Exempt (Maturity):</strong> The maturity amount (principal + accumulated interest) is <span class="highlight-text">fully tax-exempt</span>.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Investment Limits:</strong> Minimum annual investment is ₹500, and the maximum is ₹1,50,000 in a financial year. Investments can be made in lump sum or up to 12 installments.</li>
+                        <li><strong>Interest Rate:</strong> Interest is compounded annually and paid on March 31st. The rate is set by the government quarterly (currently shown as the input value, but subject to change).</li>
+                        <li><strong>Tenure & Extension:</strong> The initial lock-in period is <span class="highlight-text">15 years</span>. After maturity, the account can be extended indefinitely in blocks of 5 years, with or without further contributions. Tax benefits continue during the extension period.</li>
+                         <li><strong>Loan Facility:</strong> A loan can be availed against the PPF balance from the 3rd to the 6th financial year of opening the account.</li>
+                        <li><strong>Partial Withdrawal:</strong> Partial withdrawals are permissible from the 7th financial year onwards, subject to certain limits and conditions.</li>
+                         <li><strong>Account Holding:</strong> PPF accounts can be opened at designated Post Offices and bank branches (Public Sector and major Private Banks).</li>
+                        <li><strong>Protection from Attachment:</strong> The balance in a PPF account cannot be attached by any court order or decree for debt or liability recovery (except by the Income Tax department for tax dues).</li>
+                    </ul>
+                 </div>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            This calculator provides estimates based on the inputs and current PPF rules. The actual returns may vary based on changes in interest rates announced quarterly by the Government of India. Consult a financial advisor for personalized advice. Current time: <span id="current-time"></span>.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Display current time in disclaimer
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                timeElement.textContent = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+            }
+
+            // Chart.js configuration
+            let growthChart;
+
+            // Tab switching
+            const tabs = document.querySelectorAll('.tab');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+
+                    // Remove active class from all tabs and content
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                    // Add active class to current tab and content
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // Calculate button
+            const calculateBtn = document.getElementById('calculate-btn');
+            calculateBtn.addEventListener('click', function() {
+                // Run the calculation logic
+                const calculationSuccess = calculatePPF();
+
+                // --- CONFEITI ---
+                // Only run confetti if calculation was successful (no alerts shown)
+                if (calculationSuccess) {
+                    // Get button position for confetti origin
+                    const rect = calculateBtn.getBoundingClientRect();
+                    const origin = {
+                         x: (rect.left + rect.width / 2) / window.innerWidth,
+                         y: (rect.top + rect.height / 2) / window.innerHeight
+                    };
+
+                    // Trigger confetti effect
+                    confetti({
+                        particleCount: 150,
+                        spread: 90,
+                        origin: origin,
+                        // Updated confetti colors for light theme (can adjust)
+                        colors: ['#00C805', '#20c997', '#6f42c1', '#fd7e14']
+                    });
+                }
+                // --- END CONFEITI ---
+            });
+
+            // Initial calculation on page load
+            calculatePPF();
+
+            function calculatePPF() {
+                const yearlyInvestment = parseFloat(document.getElementById('yearly-investment').value);
+                const interestRate = parseFloat(document.getElementById('interest-rate').value);
+                // PPF initial period is always 15 years for calculation, though extendable.
+                const period = 15; // Fixed to 15 for standard PPF calculation
+                document.getElementById('period').value = 15; // Ensure input field shows 15
+
+
+                // Validate inputs
+                if (isNaN(yearlyInvestment) || isNaN(interestRate) || isNaN(period)) {
+                    alert('Please enter valid numbers for Yearly Investment and Interest Rate.');
+                    return false; // Indicate failure
+                }
+
+                if (yearlyInvestment < 500) {
+                    alert('Minimum yearly investment is ₹500');
+                    document.getElementById('yearly-investment').value = 500;
+                    return false; // Indicate failure
+                }
+
+                if (yearlyInvestment > 150000) {
+                    alert('Maximum yearly investment is ₹1,50,000');
+                    document.getElementById('yearly-investment').value = 150000;
+                    return false; // Indicate failure
+                }
+
+                // Calculate PPF maturity
+                let openingBalance = 0;
+                let totalInvestment = 0;
+                let totalInterest = 0;
+                const breakdownData = [];
+
+                for (let year = 1; year <= period; year++) {
+                    const investment = yearlyInvestment;
+                     // Interest is calculated on the minimum balance between the 5th day and the end of the month.
+                     // For simplicity in yearly calculation, we assume investment happens at the start of the year.
+                     // A more precise monthly calculation would be needed for exact interest as per PPF rules.
+                     // This yearly model calculates interest on (Opening Balance + Full Year's Investment).
+                    const interestEarned = ((openingBalance + investment) * interestRate) / 100;
+                    const closingBalance = openingBalance + investment + interestEarned;
+
+                    breakdownData.push({
+                        year: year,
+                        openingBalance: openingBalance,
+                        investment: investment,
+                        interestEarned: interestEarned,
+                        closingBalance: closingBalance
+                    });
+
+                    openingBalance = closingBalance;
+                    totalInvestment += investment;
+                    totalInterest += interestEarned;
+                }
+
+                const maturityValue = totalInvestment + totalInterest;
+
+                // Update summary
+                document.getElementById('total-investment').textContent = '₹' + formatNumber(totalInvestment);
+                document.getElementById('total-interest').textContent = '₹' + formatNumber(totalInterest);
+                document.getElementById('maturity-value').textContent = '₹' + formatNumber(maturityValue);
+
+                // Update tax benefits section
+                const taxDeduction = Math.min(yearlyInvestment, 150000);
+                // Assuming highest slab (30%) + 4% cess = ~31.2% for estimation. More accurate based on user slab.
+                // Sticking to 30% as per previous version for consistency unless specified otherwise.
+                const taxSaving = taxDeduction * 0.30;
+
+                document.getElementById('tax-deduction').textContent = '₹' + formatNumber(taxDeduction);
+                document.getElementById('tax-saving').textContent = '₹' + formatNumber(taxSaving);
+
+                // Update breakdown table
+                const tableBody = document.querySelector('#breakdown-table tbody');
+                tableBody.innerHTML = '';
+
+                // Prepare data for chart
+                const years = [];
+                const principalData = [];
+                const interestData = [];
+                const totalData = [];
+                let cumulativePrincipal = 0;
+                let cumulativeInterest = 0;
+
+                breakdownData.forEach(data => {
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                        <td>${data.year}</td>
+                        <td class="text-right">₹${formatNumber(data.openingBalance)}</td>
+                        <td class="text-right">₹${formatNumber(data.investment)}</td>
+                        <td class="text-right">₹${formatNumber(data.interestEarned)}</td>
+                        <td class="text-right">₹${formatNumber(data.closingBalance)}</td>
+                    `;
+
+                    tableBody.appendChild(row);
+
+                    // Collect data for chart
+                    years.push("Year " + data.year);
+                    cumulativePrincipal += data.investment;
+                    cumulativeInterest += data.interestEarned;
+                    principalData.push(cumulativePrincipal);
+                    interestData.push(cumulativeInterest);
+                    totalData.push(data.closingBalance);
+                });
+
+                // Update chart
+                updateChart(years, principalData, interestData, totalData);
+
+                return true; // Indicate success
+            }
+
+            function updateChart(years, principalData, interestData, totalData) {
+                const ctx = document.getElementById('growth-chart').getContext('2d');
+                const mutedTextColor = getComputedStyle(document.documentElement).getPropertyValue('--muted-text').trim();
+                const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
+
+
+                // Destroy previous chart if it exists
+                if (growthChart) {
+                    growthChart.destroy();
+                }
+
+                growthChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: years,
+                        datasets: [
+                            {
+                                label: 'Total Balance',
+                                data: totalData,
+                                // Updated colors for light theme
+                                backgroundColor: 'rgba(0, 200, 5, 0.1)', // Lighter fill
+                                borderColor: 'rgba(0, 200, 5, 1)',     // Solid green line
+                                borderWidth: 2.5, // Slightly thicker line
+                                pointRadius: 4,
+                                pointBackgroundColor: 'rgba(0, 200, 5, 1)',
+                                tension: 0.4
+                            },
+                            {
+                                label: 'Principal Amount',
+                                data: principalData,
+                                // Updated colors for light theme (using grey)
+                                backgroundColor: 'rgba(108, 117, 125, 0.1)', // Lighter grey fill
+                                borderColor: 'rgba(108, 117, 125, 0.8)',    // Solid grey line
+                                borderWidth: 2,
+                                pointRadius: 3,
+                                pointBackgroundColor: 'rgba(108, 117, 125, 0.8)',
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Interest Earned',
+                                data: interestData,
+                                // Updated colors for light theme (darker green shade)
+                                backgroundColor: 'rgba(40, 167, 69, 0.1)', // Lighter fill for alternate green
+                                borderColor: 'rgba(40, 167, 69, 0.8)',    // Solid darker green line
+                                borderWidth: 2,
+                                pointRadius: 3,
+                                pointBackgroundColor: 'rgba(40, 167, 69, 0.8)',
+                                tension: 0.1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false // Hide default legend, using custom one below chart
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark tooltip background
+                                titleColor: '#FFFFFF', // White title color
+                                bodyColor: '#FFFFFF', // White body color
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += '₹' + formatNumber(context.raw);
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                grid: {
+                                    // Light grey grid lines
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        if (value >= 100000) { // Lakhs
+                                            return '₹' + (value / 100000).toFixed(1).replace('.0','') + 'L';
+                                        }
+                                         if (value >= 1000) { // Thousands (optional)
+                                             return '₹' + (value / 1000).toFixed(1).replace('.0','') + 'K';
+                                         }
+                                        return '₹' + value;
+                                    },
+                                    // Muted text color for ticks
+                                    color: mutedTextColor
+                                }
+                            },
+                            x: {
+                                grid: {
+                                     // Light grey grid lines
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    // Muted text color for ticks
+                                    color: mutedTextColor
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function formatNumber(num) {
+                // Format number with Indian comma style (handles decimals)
+                let x = parseFloat(num).toFixed(2);
+                x=x.toString();
+                let afterPoint = '';
+                if(x.indexOf('.') > 0)
+                   afterPoint = x.substring(x.indexOf('.'),x.length); // Get decimal part
+                x = Math.floor(x); // Get integer part
+                x=x.toString();
+                let lastThree = x.substring(x.length-3);
+                let otherNumbers = x.substring(0,x.length-3);
+                if(otherNumbers != '')
+                    lastThree = ',' + lastThree;
+                // Apply comma separation for remaining digits (in pairs)
+                let res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree + afterPoint;
+                return res;
+            }
+        });
+    </script>
+</body>
+</html>
