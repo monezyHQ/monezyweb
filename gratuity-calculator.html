@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Gratuity Calculator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --robinhood-green: #00C805;
+            --robinhood-dark: #1E2124;
+            --robinhood-light: #F5F8FA;
+            --robinhood-gray: #B5B5B5;
+            --robinhood-red: #FF5B5B; /* Red for errors/tax */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--robinhood-light);
+            color: var(--robinhood-dark);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            /* Updated heading color */
+            color: var(--robinhood-green);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 28px;
+        }
+
+        .form-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .results-section {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--robinhood-dark);
+            font-size: 15px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--robinhood-gray);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        /* Style for invalid input */
+        input:invalid {
+             border-color: var(--robinhood-red);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--robinhood-green);
+            box-shadow: 0 0 0 3px rgba(0, 200, 5, 0.1);
+        }
+
+        button {
+            background-color: var(--robinhood-green);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            width: 100%;
+            margin-top: 10px;
+            display: block;
+        }
+
+        button:hover {
+            background-color: #00A303;
+        }
+        button:active {
+             transform: scale(0.98);
+        }
+
+        .advanced-toggle {
+            margin: 25px 0;
+            color: var(--robinhood-green);
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .advanced-toggle:hover {
+            text-decoration: none;
+            background-color: rgba(0, 200, 5, 0.05);
+        }
+         .advanced-toggle span:last-child {
+             font-weight: bold;
+             font-size: 18px;
+         }
+
+        .advanced-options {
+            display: none;
+            background-color: #f7f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e8eaed;
+        }
+
+        .result-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e8eaed;
+            min-height: 100px; /* Ensure cards have some height */
+        }
+
+        .result-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--robinhood-dark);
+            opacity: 0.8;
+        }
+
+        .result-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--robinhood-green);
+            margin-bottom: 10px;
+            word-wrap: break-word; /* Prevent long numbers overflowing */
+        }
+        #tax-result {
+             color: var(--robinhood-red);
+        }
+
+        .calculations {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--robinhood-gray);
+            font-size: 13px;
+            color: #555;
+            line-height: 1.7;
+        }
+         .calculations p {
+             margin-bottom: 5px;
+             word-wrap: break-word; /* Prevent long numbers overflowing */
+         }
+         .calculations strong {
+             color: var(--robinhood-dark);
+         }
+         .feedback-message { /* Combined class for error/info */
+            color: var(--robinhood-dark);
+            font-weight: 500;
+            font-size: 14px;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            min-height: 20px;
+         }
+        .feedback-message.error {
+             color: var(--robinhood-red);
+             background-color: rgba(255, 91, 91, 0.1);
+        }
+        .feedback-message.info {
+             color: #00529B; /* Info blue */
+             background-color: #BDE5F8;
+        }
+
+
+        .chart-section {
+             margin-top: 40px;
+             display: flex;
+             flex-wrap: wrap;
+             gap: 30px;
+         }
+
+        .chart-box {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            padding: 25px;
+            border: 1px solid #e8eaed;
+        }
+         .chart-box .result-title {
+             opacity: 1;
+             font-size: 18px;
+             margin-bottom: 15px;
+             text-align: center; /* Center chart titles */
+         }
+         /* Ensure canvas container takes space */
+        .canvas-container {
+            position: relative;
+            height: 250px; /* Default height */
+            width: 100%;
+        }
+
+
+        .info-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-color: var(--robinhood-gray);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 5px;
+            cursor: help;
+            vertical-align: middle;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 220px;
+            background-color: var(--robinhood-dark);
+            color: white;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 10;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            line-height: 1.5;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+         .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--robinhood-dark) transparent transparent transparent;
+         }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .chart-section {
+                flex-direction: column;
+            }
+            .chart-box {
+                min-width: 100%;
+            }
+        }
+        @media (max-width: 768px) {
+            .form-container {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .input-section, .results-section {
+                min-width: 100%;
+            }
+            h1 {
+                 font-size: 24px;
+            }
+            .container {
+                 padding: 20px;
+            }
+             .canvas-container {
+                 height: 200px; /* Adjust chart height for smaller screens */
+             }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Indian Gratuity Calculator</h1>
+
+        <div class="form-container">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="salary">
+                        Last Drawn Salary (Basic + DA) (₹)
+                        <span class="tooltip">
+                            <span class="info-icon">i</span>
+                            <span class="tooltip-text">Enter your last drawn monthly salary, including Basic pay and Dearness Allowance (DA). Do not include HRA, bonuses, or other allowances.</span>
+                        </span>
+                    </label>
+                    <input type="number" id="salary" placeholder="Enter monthly Basic + DA" required min="1"> </div>
+
+                <div class="form-group">
+                    <label for="years">Years of Service (Completed)</label>
+                    <input type="number" id="years" placeholder="Enter completed years" required min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="months">Months of Service (Remaining in last year)</label>
+                    <input type="number" id="months" placeholder="Enter 0-11 months" min="0" max="11" value="0">
+                </div>
+
+                 <div id="feedback-area" class="feedback-message" style="min-height: 20px; display: none;"></div>
+
+                <div class="advanced-toggle" onclick="toggleAdvanced()">
+                    <span id="toggle-text">Show Advanced Options</span>
+                    <span id="toggle-icon">+</span>
+                </div>
+
+                <div class="advanced-options" id="advanced-options">
+                    <div class="form-group">
+                        <label for="employment-type">
+                             Is your employer covered by the Payment of Gratuity Act, 1972?
+                             <span class="tooltip">
+                                <span class="info-icon">i</span>
+                                <span class="tooltip-text">The Act applies to establishments with 10+ employees. If unsure, select 'Yes' or check with HR. This affects the calculation formula (15/26 vs 15/30) and rounding.</span>
+                            </span>
+                        </label>
+                        <select id="employment-type">
+                            <option value="covered" selected>Yes (Covered by Act)</option>
+                            <option value="not-covered">No (Not Covered by Act)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tax-slab">
+                            Income Tax Slab for Taxable Portion
+                            <span class="tooltip">
+                                <span class="info-icon">i</span>
+                                <span class="tooltip-text">Select your applicable income tax slab rate. Tax is only calculated on the gratuity amount exceeding the ₹20 Lakh tax-free limit (Sec 10(10)). Government employees are often fully exempt.</span>
+                            </span>
+                         </label>
+                        <select id="tax-slab">
+                            <option value="0.05">5%</option>
+                            <option value="0.1">10%</option>
+                            <option value="0.15">15%</option>
+                            <option value="0.2">20%</option>
+                            <option value="0.25">25%</option>
+                            <option value="0.3" selected>30%</option>
+                            </select>
+                    </div>
+                </div>
+
+                <button id="calculate-btn" onclick="calculateGratuity()">Calculate Gratuity</button>
+            </div>
+
+            <div class="results-section">
+                <div class="result-card">
+                    <div class="result-title">Estimated Gratuity Amount</div>
+                    <div class="result-value" id="gratuity-result">₹0</div>
+                    <div class="calculations" id="calculation-steps">Enter details and click Calculate.</div>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-title">Estimated Tax on Gratuity</div>
+                    <div class="result-value" id="tax-result">₹0</div>
+                    <div class="calculations" id="tax-calculation">Tax calculated on amount exceeding ₹20 Lakhs.</div>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-title">Estimated Net Gratuity (After Tax)</div>
+                    <div class="result-value" id="net-result">₹0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-box">
+                <div class="result-title">Gratuity Breakdown (Net vs Tax)</div>
+                <div class="canvas-container">
+                     <canvas id="gratuityPieChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-box">
+                <div class="result-title">Gratuity vs Tax-Free Limit</div>
+                 <div class="canvas-container">
+                    <canvas id="comparisonBarChart"></canvas>
+                 </div>
+            </div>
+        </div>
+
+         <div class="disclaimer" style="text-align: center; margin-top: 30px; font-size: 12px; color: #777;">
+             Disclaimer: This calculator provides an estimate based on the Payment of Gratuity Act, 1972 and standard practices. The actual amount may vary based on company policy and final settlement. Tax rules are subject to change. Consult with HR or a financial advisor for precise figures. Current Date: <span id="current-date"></span>.
+         </div>
+
+    </div>
+
+    <script>
+        // Global variables for charts
+        let pieChart = null;
+        let barChart = null;
+        const TAX_FREE_LIMIT = 2000000; // Statutory tax-free limit
+
+        // Function to safely destroy a chart instance
+        function destroyChart(chartInstance) {
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+            return null; // Return null to reset the variable
+        }
+
+        // Toggle advanced options visibility
+        function toggleAdvanced() {
+            const advancedOptions = document.getElementById('advanced-options');
+            const toggleText = document.getElementById('toggle-text');
+            const toggleIcon = document.getElementById('toggle-icon');
+
+            if (advancedOptions.style.display === 'block') {
+                advancedOptions.style.display = 'none';
+                toggleText.textContent = 'Show Advanced Options';
+                toggleIcon.textContent = '+';
+            } else {
+                advancedOptions.style.display = 'block';
+                toggleText.textContent = 'Hide Advanced Options';
+                toggleIcon.textContent = '-';
+            }
+        }
+
+        // Format number as Indian Rupees currency
+        function formatCurrency(amount) {
+             if (isNaN(amount) || typeof amount !== 'number') {
+                 amount = 0;
+             }
+             return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                maximumFractionDigits: 0 // Show whole rupees
+            }).format(amount);
+        }
+
+        // Display feedback messages (errors or info)
+        function displayFeedback(message, type = 'error') {
+             const feedbackArea = document.getElementById('feedback-area');
+             feedbackArea.textContent = message;
+             feedbackArea.className = `feedback-message ${type}`; // Apply class for styling
+             feedbackArea.style.display = 'block'; // Make it visible
+
+             // Clear calculation results when there's feedback
+             document.getElementById('gratuity-result').textContent = '₹0';
+             document.getElementById('tax-result').textContent = '₹0';
+             document.getElementById('net-result').textContent = '₹0';
+             document.getElementById('calculation-steps').innerHTML = 'Calculation details will appear here.';
+             document.getElementById('tax-calculation').innerHTML = '';
+
+             // Reset charts
+             initializeCharts(); // Re-initialize charts with default state
+        }
+
+         // Clear feedback messages
+         function clearFeedback() {
+             const feedbackArea = document.getElementById('feedback-area');
+             feedbackArea.textContent = '';
+             feedbackArea.style.display = 'none'; // Hide the area
+         }
+
+
+        // Initialize or update charts with data
+        function updateCharts(gratuityAmount = 0, taxAmount = 0, netGratuity = 0) {
+            // --- Pie Chart (Net vs Tax) ---
+            const pieCtx = document.getElementById('gratuityPieChart')?.getContext('2d');
+            pieChart = destroyChart(pieChart); // Destroy existing chart first
+
+            if (pieCtx) {
+                // Ensure data array has values > 0 for chart rendering, even if actual is 0
+                const pieData = [netGratuity > 0 ? netGratuity : 0, taxAmount > 0 ? taxAmount : 0];
+                const pieLabels = ['Net Gratuity', 'Tax'];
+                const pieColors = [
+                    'rgba(0, 200, 5, 0.8)', // Green for Net
+                    'rgba(255, 91, 91, 0.8)' // Red for Tax
+                ];
+
+                // If tax is zero, only show net gratuity slice
+                if (taxAmount <= 0) {
+                    pieData.pop(); // Remove tax data
+                    pieLabels.pop(); // Remove tax label
+                    pieColors.pop(); // Remove tax color
+                }
+                // If net gratuity is also zero (e.g., ineligible), show a placeholder
+                 if (netGratuity <= 0 && taxAmount <= 0) {
+                     pieData[0] = 1; // Placeholder value
+                     pieLabels[0] = 'No Gratuity Calculated';
+                     pieColors[0] = 'rgba(180, 180, 180, 0.7)'; // Grey placeholder
+                 }
+
+
+                pieChart = new Chart(pieCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: pieLabels,
+                        datasets: [{
+                            data: pieData,
+                            backgroundColor: pieColors,
+                            borderColor: 'white',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { padding: 15 } },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) { label += ': '; }
+                                        // Show actual 0 if placeholder was used
+                                        const value = (label === 'No Gratuity Calculated') ? 0 : context.raw;
+                                        label += formatCurrency(value);
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                console.error("Pie chart canvas not found.");
+            }
+
+            // --- Bar Chart (Gratuity vs Tax-Free Limit) ---
+            const barCtx = document.getElementById('comparisonBarChart')?.getContext('2d');
+            barChart = destroyChart(barChart); // Destroy existing chart first
+
+            if (barCtx) {
+                barChart = new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Gratuity', 'Tax-Free Limit'],
+                        datasets: [{
+                            label: 'Amount (₹)',
+                            data: [gratuityAmount, TAX_FREE_LIMIT],
+                            backgroundColor: [
+                                'rgba(0, 200, 5, 0.7)', // Green for Gratuity
+                                'rgba(100, 100, 100, 0.7)' // Grey for Limit
+                            ],
+                            borderColor: [
+                                'rgba(0, 163, 3, 1)',
+                                'rgba(60, 60, 60, 1)'
+                            ],
+                            borderWidth: 1,
+                            barPercentage: 0.6, // Adjust bar width
+                            categoryPercentage: 0.7 // Adjust space between bars
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', // Horizontal bars
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return ` ${formatCurrency(context.raw)}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { // Now the value axis
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        if (value >= 100000) return '₹' + (value / 100000).toFixed(1).replace('.0', '') + 'L';
+                                        if (value >= 1000) return '₹' + (value / 1000).toFixed(1).replace('.0', '') + 'K';
+                                        return formatCurrency(value);
+                                    }
+                                },
+                                title: { display: true, text: 'Amount (₹)' }
+                            },
+                            y: { // Now the category axis
+                                title: { display: false }
+                            }
+                        }
+                    }
+                });
+            } else {
+                 console.error("Bar chart canvas not found.");
+            }
+        }
+
+         // Function to initialize charts with a default/empty state
+         function initializeCharts() {
+             updateCharts(0, 0, 0);
+         }
+
+        // Main calculation function triggered by button click
+        function calculateGratuity() {
+            clearFeedback(); // Clear previous messages
+
+            // Get input elements
+            const salaryInput = document.getElementById('salary');
+            const yearsInput = document.getElementById('years');
+            const monthsInput = document.getElementById('months');
+
+            // Get and validate input values
+            const salary = parseFloat(salaryInput.value);
+            const years = parseInt(yearsInput.value);
+            const months = parseInt(monthsInput.value);
+
+            if (isNaN(salary) || salary <= 0) {
+                displayFeedback("Please enter a valid positive salary (Basic + DA).");
+                salaryInput.focus();
+                return;
+            }
+            if (isNaN(years) || years < 0) {
+                displayFeedback("Please enter valid completed service years (0 or more).");
+                yearsInput.focus();
+                return;
+            }
+            if (isNaN(months) || months < 0 || months > 11) {
+                displayFeedback("Please enter valid remaining months (0-11).");
+                monthsInput.focus();
+                return;
+            }
+
+            // Get Advanced options
+            const employmentType = document.getElementById('employment-type').value;
+            const taxSlab = parseFloat(document.getElementById('tax-slab').value);
+
+            // --- Service Period Calculation & Rounding (as per Act for 'covered') ---
+            let roundedServicePeriodForCalc = years;
+            if (employmentType === 'covered' && months >= 6) {
+                roundedServicePeriodForCalc += 1;
+            }
+            const exactServicePeriod = years + (months / 12); // Used for 'not-covered'
+
+            // --- Eligibility Check ---
+            // Using rounded period for eligibility check as commonly interpreted for 'covered'
+            const eligibilityCheckPeriod = (employmentType === 'covered') ? roundedServicePeriodForCalc : Math.floor(exactServicePeriod);
+            if (eligibilityCheckPeriod < 5) {
+                displayFeedback(`Minimum 5 years of continuous service is generally required for gratuity eligibility. Calculated service for eligibility: ${eligibilityCheckPeriod} years.`, 'info');
+                return;
+            }
+
+            // Initialize calculation variables
+            let gratuityAmount = 0;
+            let taxAmount = 0;
+            let taxableAmount = 0;
+            let calculationSteps = "";
+            let taxCalculation = "";
+
+            // --- Gratuity Calculation ---
+            if (employmentType === 'covered') {
+                 // Formula: Salary * (15/26) * Rounded Years
+                 gratuityAmount = (salary * 15 / 26) * roundedServicePeriodForCalc;
+                 calculationSteps = `
+                    <p><strong>Calculation (Covered by Act):</strong></p>
+                    <p>Formula: Last Salary × (15/26) × Rounded Years</p>
+                    <p>= ${formatCurrency(salary)} × (15/26) × ${roundedServicePeriodForCalc} years</p>
+                    <p><strong>= ${formatCurrency(gratuityAmount)}</strong></p>
+                 `;
+            } else { // 'not-covered'
+                 // Formula: Salary * (15/30) * Exact Years
+                 gratuityAmount = (salary * 15 / 30) * exactServicePeriod;
+                 calculationSteps = `
+                     <p><strong>Calculation (Not Covered by Act):</strong></p>
+                     <p>Formula: Last Salary × (15/30) × Exact Years</p>
+                     <p>= ${formatCurrency(salary)} × (15/30) × ${exactServicePeriod.toFixed(2)} years</p>
+                     <p><strong>= ${formatCurrency(gratuityAmount)}</strong></p>
+                `;
+            }
+
+            // --- Tax Calculation ---
+            if (gratuityAmount > TAX_FREE_LIMIT) {
+                taxableAmount = gratuityAmount - TAX_FREE_LIMIT;
+                taxAmount = taxableAmount * taxSlab;
+                taxCalculation = `
+                    <p><strong>Tax Calculation:</strong></p>
+                    <p>Total Gratuity: ${formatCurrency(gratuityAmount)}</p>
+                    <p>Tax-Free Limit (Sec 10(10)): ${formatCurrency(TAX_FREE_LIMIT)}</p>
+                    <p>Taxable Amount: ${formatCurrency(taxableAmount)}</p>
+                    <p>Tax @ ${taxSlab * 100}%: <strong>${formatCurrency(taxAmount)}</strong></p>
+                    <p><small>Note: Govt. employees often exempt. Rules subject to change.</small></p>
+                `;
+            } else {
+                taxAmount = 0;
+                taxCalculation = `
+                    <p><strong>Tax Calculation:</strong></p>
+                    <p>Gratuity (${formatCurrency(gratuityAmount)}) is within the tax-free limit of ${formatCurrency(TAX_FREE_LIMIT)}.</p>
+                    <p><strong>Tax Amount: ${formatCurrency(0)}</strong></p>
+                `;
+            }
+
+            // Calculate net gratuity
+            const netGratuity = gratuityAmount - taxAmount;
+
+            // --- Update Results Display ---
+            document.getElementById('gratuity-result').textContent = formatCurrency(gratuityAmount);
+            document.getElementById('tax-result').textContent = formatCurrency(taxAmount);
+            document.getElementById('net-result').textContent = formatCurrency(netGratuity);
+            document.getElementById('calculation-steps').innerHTML = calculationSteps;
+            document.getElementById('tax-calculation').innerHTML = taxCalculation;
+
+            // --- Update Charts ---
+            updateCharts(gratuityAmount, taxAmount, netGratuity);
+        }
+
+        // Set current date in disclaimer and initialize charts on page load
+        document.addEventListener('DOMContentLoaded', function() {
+             const dateElement = document.getElementById('current-date');
+             if(dateElement) {
+                 dateElement.textContent = new Date().toLocaleDateString('en-IN', {
+                     year: 'numeric', month: 'long', day: 'numeric'
+                 });
+             }
+            initializeCharts(); // Initialize empty charts on load
+        });
+    </script>
+</body>
+</html>
