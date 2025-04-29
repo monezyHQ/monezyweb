@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -21,7 +22,8 @@
             --rh-dark-green: #00a300;
             --rh-text: #1b1b1d; /* Dark text */
             --rh-border: #e3e3e3; /* Light border */
-            --rh-bg-light-green: #eefdf3; /* Light green background for insights */
+            --rh-bg-light-green: #f0fdf4; /* Lighter green background for insights */
+            --rh-insight-border: #bbf7d0; /* Green border for insights */
         }
         .rh-bg-green { background-color: var(--rh-green); }
         .rh-text-green { color: var(--rh-green); }
@@ -164,18 +166,57 @@
             visibility: visible; opacity: 1;
         }
 
-        /* Insights styling */
-        .insights {
+        /* News-like Insights Styling */
+        .insights-container {
+            margin-top: 1.5rem;
+            border-top: 1px solid var(--rh-border-light);
+            padding-top: 1.5rem;
+        }
+        .insights-container h4 {
+             font-weight: 600;
+             color: var(--rh-dark-green);
+             margin-bottom: 1rem; /* Increased margin */
+             font-size: 1.125rem; /* text-lg */
+        }
+        .insight-item {
+            display: flex;
+            align-items: flex-start; /* Align icon to top */
             background-color: var(--rh-bg-light-green);
-            border-left: 4px solid var(--rh-green);
-            padding: 1rem; margin-top: 1.5rem; border-radius: 0.375rem;
-            font-size: 0.875rem; color: #374151;
+            border: 1px solid var(--rh-insight-border);
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 1rem; /* p-4 */
+            margin-bottom: 0.75rem; /* mb-3 */
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            transition: box-shadow 0.2s ease;
         }
-        .insights h4 {
-            font-weight: 600; color: var(--rh-dark-green); margin-bottom: 0.5rem;
+         .insight-item:hover {
+             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+         }
+        .insight-icon {
+            flex-shrink: 0; /* Prevent icon from shrinking */
+            width: 1.75rem; /* w-7 */
+            height: 1.75rem; /* h-7 */
+            margin-right: 0.75rem; /* mr-3 */
+            color: var(--rh-dark-green);
+            background-color: #dcfce7; /* Lighter green for icon bg */
+            border-radius: 9999px; /* rounded-full */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .insights ul { list-style-type: disc; padding-left: 1.5rem; }
-        .insights li { margin-bottom: 0.25rem; }
+         .insight-icon i { /* Style Font Awesome icon */
+             font-size: 0.875rem; /* text-sm */
+         }
+        .insight-text {
+            font-size: 0.875rem; /* text-sm */
+            color: #374151; /* gray-700 */
+            line-height: 1.4; /* Slightly increased line height */
+        }
+         .insight-text strong { /* Make bold parts stand out */
+            color: #1f2937; /* gray-800 */
+            font-weight: 600;
+         }
+
 
         /* Error message styling */
         .error-message {
@@ -203,13 +244,15 @@
         <div class="calculator-container">
             <div class="tab-buttons">
                 <button class="tab-button active" onclick="switchTab('fd')">Fixed Deposit</button>
-                <button class="tab-button" onclick="switchTab('mfSip')">MF (SIP)</button> <button class="tab-button" onclick="switchTab('mfLumpsum')">MF (Lumpsum)</button> </div>
+                <button class="tab-button" onclick="switchTab('mfSip')">MF (SIP)</button>
+                <button class="tab-button" onclick="switchTab('mfLumpsum')">MF (Lumpsum)</button>
+            </div>
 
             <div>
                 <div id="fd-tab-content" class="tab-content">
                     <h2 class="text-xl font-semibold mb-4 rh-text-dark">Fixed Deposit (FD) Calculator</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                         <div>
+                        <div>
                             <label for="fdPrincipal" class="block text-sm font-medium text-gray-700 mb-1">Principal Amount (₹)</label>
                             <input type="number" id="fdPrincipal" class="input-field" placeholder="e.g., 100000">
                         </div>
@@ -271,30 +314,41 @@
                             <span class="result-value" id="fdRealReturn"></span>
                         </div>
                     </div>
-
                     <div class="mt-6">
                         <h3 class="text-lg font-semibold mb-2">Investment Growth (Pre-Tax)</h3>
                         <div class="relative h-64 md:h-80">
                              <canvas id="fdChart"></canvas>
                         </div>
                     </div>
-
-                    <div class="insights">
-                        <h4>💡 FD Insights (India)</h4>
-                        <ul>
-                             <li>FDs offer fixed, predictable returns, making them relatively safe.</li>
-                             <li>Interest earned is added to your 'Income from Other Sources' and taxed annually at your applicable income tax slab rate.</li>
-                             <li>Banks deduct TDS (Tax Deducted at Source) at 10% if interest exceeds ₹40,000 (₹50,000 for senior citizens) in a financial year, but your final liability depends on your slab. This calculator estimates tax based on total interest and your slab.</li>
-                             <li>Compounding frequency matters: More frequent compounding (e.g., quarterly) leads to slightly higher returns than yearly compounding.</li>
-                             <li>Inflation significantly erodes the purchasing power of fixed returns. Always consider the real return.</li>
-                        </ul>
+                    <div class="insights-container">
+                        <h4><i class="fa-solid fa-newspaper mr-2"></i>FD Insights (India)</h4>
+                         <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                             <span class="insight-text">FDs offer <strong>fixed, predictable returns</strong>, making them relatively safe compared to market-linked investments.</span>
+                         </div>
+                         <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-file-invoice-dollar"></i></span>
+                             <span class="insight-text">Interest earned is added to your 'Income from Other Sources' and taxed annually at your applicable <strong>income tax slab rate</strong>.</span>
+                         </div>
+                         <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-percent"></i></span>
+                             <span class="insight-text">Banks deduct <strong>TDS (Tax Deducted at Source)</strong> at 10% if interest exceeds ₹40,000 (₹50,000 for senior citizens) in a financial year. Your final liability depends on your slab.</span>
+                         </div>
+                         <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-repeat"></i></span>
+                             <span class="insight-text"><strong>Compounding frequency</strong> matters: More frequent compounding (e.g., quarterly) leads to slightly higher returns than yearly compounding.</span>
+                         </div>
+                          <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-arrow-trend-down"></i></span>
+                             <span class="insight-text"><strong>Inflation</strong> significantly erodes the purchasing power of fixed returns. Always consider the real return after inflation.</span>
+                         </div>
                     </div>
                 </div>
 
                 <div id="mfSip-tab-content" class="tab-content hidden">
                     <h2 class="text-xl font-semibold mb-4 rh-text-dark">Mutual Fund (SIP) Calculator (Equity Funds)</h2>
                      <p class="text-sm text-gray-600 mb-4">Estimate potential returns and tax (Equity Fund rules with hypothetical rates) for SIP investments.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label for="mfSipAmount" class="block text-sm font-medium text-gray-700 mb-1">Monthly SIP Amount (₹)</label>
                             <input type="number" id="mfSipAmount" class="input-field" placeholder="e.g., 10000">
@@ -353,27 +407,42 @@
                         </div>
                         <div class="result-item">
                             <span class="result-label">Real Return Rate (Post-Tax, Post-Inflation):</span>
-                             <span class="result-value" id="mfSipRealReturn">-</span> </div>
+                             <span class="result-value" id="mfSipRealReturn">-</span>
+                        </div>
                     </div>
-
-                    <div class="insights">
-                        <h4>💡 Mutual Fund (SIP) Insights (India - Assuming Equity Funds & Hypothetical Rates)</h4>
-                        <ul>
-                            <li>**SIP (Systematic Investment Plan):** Invest a fixed amount regularly, benefiting from rupee cost averaging (buying more units when prices are low, fewer when high).</li>
-                            <li>**Expense Ratio:** An annual fee charged by the fund house, directly reducing your returns. Lower is generally better.</li>
-                            <li>**Taxation (Equity Funds - Assumed Here):** Similar to direct equity. STCG (< 1 year holding period for each SIP installment) taxed at 20%. LTCG (> 1 year holding period for each SIP installment) taxed at 12.5% on gains exceeding ₹1 lakh per financial year. This calculator applies tax based on the *total* duration for simplicity.</li>
-                            <li>**Disclaimer:** These tax rates (12.5% LTCG, 20% STCG) are hypothetical based on your request and may not reflect current official Indian tax laws. Always verify with official sources or a tax advisor.</li>
-                            <li>**Taxation (Debt Funds):** Different rules apply. This calculator uses Equity fund rules.</li>
-                             <li>Capital loss rules similar to Equity apply (set-off/carry-forward not calculated here).</li>
-                            <li>Returns are not guaranteed and depend on market performance. CAGR calculation for SIP is complex and not shown here.</li>
-                        </ul>
+                    <div class="insights-container">
+                        <h4><i class="fa-solid fa-newspaper mr-2"></i>Mutual Fund (SIP) Insights (Hypothetical Rates)</h4>
+                         <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                             <span class="insight-text"><strong>SIP (Systematic Investment Plan):</strong> Invest a fixed amount regularly, benefiting from <strong>rupee cost averaging</strong> (buying more units when prices are low, fewer when high). Ideal for disciplined long-term investing.</span>
+                         </div>
+                         <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-sliders"></i></span>
+                             <span class="insight-text"><strong>Expense Ratio:</strong> An annual fee charged by the fund house, directly reducing your returns. Lower is generally better for long-term growth.</span>
+                         </div>
+                         <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-landmark"></i></span>
+                             <span class="insight-text"><strong>Taxation (Equity Funds - Assumed Here):</strong> STCG (< 1 yr holding) taxed at <strong>20%</strong>. LTCG (> 1 yr holding) taxed at <strong>12.5%</strong> on gains exceeding ₹1 lakh per financial year. (Note: Tax applies per SIP installment's holding period, simplified here based on total duration).</span>
+                         </div>
+                          <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                             <span class="insight-text"><strong>Disclaimer:</strong> These tax rates (12.5% LTCG, 20% STCG) are hypothetical based on user request and may not reflect current official Indian tax laws.</span>
+                         </div>
+                          <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-circle-question"></i></span>
+                             <span class="insight-text"><strong>Debt Funds</strong> have different tax rules (often taxed at slab rate). This calculator assumes Equity fund rules.</span>
+                         </div>
+                          <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-chart-line"></i></span>
+                             <span class="insight-text">Returns are not guaranteed and depend on market performance. CAGR for SIP is complex and not calculated here.</span>
+                         </div>
                     </div>
                 </div>
 
                  <div id="mfLumpsum-tab-content" class="tab-content hidden">
                     <h2 class="text-xl font-semibold mb-4 rh-text-dark">Mutual Fund (Lumpsum) Calculator (Equity Funds)</h2>
                      <p class="text-sm text-gray-600 mb-4">Estimate potential returns and tax (Equity Fund rules with hypothetical rates) for Lumpsum investments.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                          <div>
                             <label for="mfLumpsumAmount" class="block text-sm font-medium text-gray-700 mb-1">Lumpsum Investment Amount (₹)</label>
                             <input type="number" id="mfLumpsumAmount" class="input-field" placeholder="e.g., 120000">
@@ -435,18 +504,32 @@
                             <span class="result-value" id="mfLumpsumRealReturn"></span>
                         </div>
                     </div>
-
-                     <div class="insights">
-                        <h4>💡 Mutual Fund (Lumpsum) Insights (India - Assuming Equity Funds & Hypothetical Rates)</h4>
-                        <ul>
-                            <li>**Lumpsum:** Invest a large amount at once. Market timing can impact returns significantly compared to SIP.</li>
-                            <li>**Expense Ratio:** An annual fee charged by the fund house, directly reducing your returns. Lower is generally better.</li>
-                            <li>**Taxation (Equity Funds - Assumed Here):** Similar to direct equity. STCG (< 1 year holding period) taxed at 20%. LTCG (> 1 year holding period) taxed at 12.5% on gains exceeding ₹1 lakh per financial year.</li>
-                            <li>**Disclaimer:** These tax rates (12.5% LTCG, 20% STCG) are hypothetical based on your request and may not reflect current official Indian tax laws. Always verify with official sources or a tax advisor.</li>
-                            <li>**Taxation (Debt Funds):** Different rules apply. This calculator uses Equity fund rules.</li>
-                             <li>Capital loss rules similar to Equity apply (set-off/carry-forward not calculated here).</li>
-                            <li>Returns are not guaranteed and depend on market performance.</li>
-                        </ul>
+                     <div class="insights-container">
+                        <h4><i class="fa-solid fa-newspaper mr-2"></i>Mutual Fund (Lumpsum) Insights (Hypothetical Rates)</h4>
+                         <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-sack-dollar"></i></span>
+                             <span class="insight-text"><strong>Lumpsum:</strong> Invest a large amount at once. Market timing can impact returns significantly compared to SIP.</span>
+                         </div>
+                         <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-sliders"></i></span>
+                             <span class="insight-text"><strong>Expense Ratio:</strong> An annual fee charged by the fund house, directly reducing your returns. Lower is generally better for long-term growth.</span>
+                         </div>
+                         <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-landmark"></i></span>
+                             <span class="insight-text"><strong>Taxation (Equity Funds - Assumed Here):</strong> STCG (< 1 yr holding) taxed at <strong>20%</strong>. LTCG (> 1 yr holding) taxed at <strong>12.5%</strong> on gains exceeding ₹1 lakh per financial year.</span>
+                         </div>
+                          <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                             <span class="insight-text"><strong>Disclaimer:</strong> These tax rates (12.5% LTCG, 20% STCG) are hypothetical based on user request and may not reflect current official Indian tax laws.</span>
+                         </div>
+                          <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-circle-question"></i></span>
+                             <span class="insight-text"><strong>Debt Funds</strong> have different tax rules (often taxed at slab rate). This calculator assumes Equity fund rules.</span>
+                         </div>
+                          <div class="insight-item">
+                             <span class="insight-icon"><i class="fa-solid fa-chart-line"></i></span>
+                             <span class="insight-text">Returns are not guaranteed and depend on market performance. CAGR is calculated for Lumpsum.</span>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -516,19 +599,17 @@
                     }
 
                     // Update the element's text content
-                    // Special handling for tooltip text (check lowercase key)
                     if (key.toLowerCase() === 'taxlogictooltip') {
-                         // Construct the correct tooltip ID based on sectionId
                          const tooltipElementId = `${sectionId}TaxLogicTooltip`;
                          const tooltipElement = document.getElementById(tooltipElementId);
                          if(tooltipElement) {
-                             tooltipElement.textContent = value; // Update tooltip text
+                             tooltipElement.textContent = value;
                          }
                     } else if (displayValue !== undefined) {
-                       element.textContent = displayValue; // Update regular result elements
+                       element.textContent = displayValue;
                     }
 
-                    // Apply positive/negative styling (after setting text content)
+                    // Apply positive/negative styling
                     if (element.classList.contains('result-value')) {
                         element.classList.remove('positive', 'negative');
                         if (key.toLowerCase().includes('taxamount') && typeof value === 'number' && value > 0) {
@@ -538,11 +619,9 @@
                             else if (typeof value === 'number' && value < 0) element.classList.add('negative');
                         } else if (key.toLowerCase().includes('posttax')) {
                             let investmentValue = NaN;
-                             // Find investment value using lowercase key comparison
                             const investmentKeyLower = `${sectionId}TotalInvestment`.toLowerCase();
                             const actualInvestmentKey = Object.keys(results).find(k => k.toLowerCase() === investmentKeyLower);
                             if (actualInvestmentKey) investmentValue = results[actualInvestmentKey];
-
 
                             if (!isNaN(investmentValue) && typeof value === 'number') {
                                 if (value > investmentValue) element.classList.add('positive');
@@ -734,11 +813,11 @@
 
         // --- MF SIP Calculator ---
         function calculateMFSIP(buttonElement) {
-            hideResultAndError('mfSip'); // Use specific ID
+            hideResultAndError('mfSip');
             const sipAmount = getNumberValue('mfSipAmount');
-            const duration = getNumberValue('mfSipDuration'); // Use specific ID
-            const expectedReturn = getNumberValue('mfSipExpectedReturn') / 100; // Use specific ID
-            const expenseRatio = getNumberValue('mfSipExpenseRatio') / 100; // Use specific ID
+            const duration = getNumberValue('mfSipDuration');
+            const expectedReturn = getNumberValue('mfSipExpectedReturn') / 100;
+            const expenseRatio = getNumberValue('mfSipExpenseRatio') / 100;
             const inflationRate = getInflationRate();
 
             let errors = [];
@@ -749,7 +828,7 @@
             if (isNaN(inflationRate)) errors.push("Valid Inflation Rate is required.");
 
              if (errors.length > 0) {
-                showErrorMessage('mfSip', errors.join(' ')); // Use specific ID
+                showErrorMessage('mfSip', errors.join(' '));
                 return;
             }
 
@@ -789,7 +868,6 @@
             const postTaxNominalReturn = NaN; // CAGR not calculated for SIP
             const realReturn = NaN; // Real return depends on CAGR
 
-            // Use specific section ID 'mfSip'
             displayResult('mfSip', {
                 totalInvestment: totalInvestment,
                 futureValuePreTax: futureValuePreTax,
@@ -806,11 +884,11 @@
 
          // --- MF Lumpsum Calculator ---
         function calculateMFLumpsum(buttonElement) {
-            hideResultAndError('mfLumpsum'); // Use specific ID
-            const lumpsumAmount = getNumberValue('mfLumpsumAmount'); // Use specific ID
-            const duration = getNumberValue('mfLumpsumDuration'); // Use specific ID
-            const expectedReturn = getNumberValue('mfLumpsumExpectedReturn') / 100; // Use specific ID
-            const expenseRatio = getNumberValue('mfLumpsumExpenseRatio') / 100; // Use specific ID
+            hideResultAndError('mfLumpsum');
+            const lumpsumAmount = getNumberValue('mfLumpsumAmount');
+            const duration = getNumberValue('mfLumpsumDuration');
+            const expectedReturn = getNumberValue('mfLumpsumExpectedReturn') / 100;
+            const expenseRatio = getNumberValue('mfLumpsumExpenseRatio') / 100;
             const inflationRate = getInflationRate();
 
             let errors = [];
@@ -821,7 +899,7 @@
             if (isNaN(inflationRate)) errors.push("Valid Inflation Rate is required.");
 
              if (errors.length > 0) {
-                showErrorMessage('mfLumpsum', errors.join(' ')); // Use specific ID
+                showErrorMessage('mfLumpsum', errors.join(' '));
                 return;
             }
 
@@ -853,17 +931,16 @@
             const futureValuePostTax = Math.max(0, futureValuePreTax - taxAmount);
             let postTaxNominalReturn = NaN;
 
-            if (totalInvestment > 0) { // Check if totalInvestment is positive
+            if (totalInvestment > 0) {
                  if (futureValuePostTax > 0 && duration > 0) {
                      postTaxNominalReturn = Math.pow(futureValuePostTax / totalInvestment, 1 / duration) - 1;
                  } else if (futureValuePostTax <= 0) {
                      postTaxNominalReturn = -1;
                  }
-            } // Keep NaN if totalInvestment is 0 or less
+            }
 
             const realReturn = isNaN(postTaxNominalReturn) ? NaN : (1 + postTaxNominalReturn) / (1 + inflationRate) - 1;
 
-             // Use specific section ID 'mfLumpsum'
             displayResult('mfLumpsum', {
                 totalInvestment: totalInvestment,
                 futureValuePreTax: futureValuePreTax,
@@ -881,7 +958,6 @@
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
             switchTab('fd'); // Start with FD tab active
-            // No need to call toggleMFInputs anymore
         });
 
     </script>
