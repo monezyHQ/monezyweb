@@ -35,7 +35,8 @@
         }
 
         input[type="url"],
-        input[type="text"] {
+        input[type="text"],
+        select {
             width: calc(100% - 12px);
             padding: 8px;
             border: 1px solid #ccc;
@@ -131,7 +132,7 @@
             const responseDiv = document.getElementById('response');
             responseDiv.innerHTML = '<p class="loading">Processing your request...</p>';
             responseDiv.className = ''; // Remove any previous error class
-
+    
             fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -153,15 +154,101 @@
             .then(data => {
                 responseDiv.innerHTML = `
                     <div style="border: 1px solid #ccc; border-radius: 8px; padding: 20px; background-color: #f9f9f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-                        <div class="summary-title" style="color: #007bff;"><i><b>Article Title:</b></i>   ${data.title}</div>
-                        <div class="summary-title" style="color: #28a745;"><i><b>Generated Title:</b></i>   ${data.gen_title}</div>
-                        <div class="summary-content"><i><b>Summary</b></i>:  ${data.summary}</div>
+                        <div class="summary-title" style="color: #007bff;"><i><b>Article Title:</b></i> ${data.title}</div>
+                        <div>
+                            <label for="genTitle" style="font-weight: bold; color: #28a745;">Generated Title:</label>
+                            <textarea id="genTitle" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" oninput="validateGenTitle()">${data.gen_title}</textarea>
+                            <p id="genTitleError" style="color: red; font-size: 0.9em; display: none;">Generated Title cannot exceed 10 words.</p>
+                        </div>
+                        <div>
+                            <label for="summary" style="font-weight: bold; color: #555;">Summary:</label>
+                            <textarea id="summary" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" oninput="validateSummary()">${data.summary}</textarea>
+                            <p id="summaryError" style="color: red; font-size: 0.9em; display: none;">Summary cannot exceed 60 words.</p>
+                        </div>
+                        <button type="button" onclick="approveContent('${data.id}')" style="margin-top: 10px; background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">Approve</button>
+                        <div id="approvalResponse" style="margin-top: 10px;"></div>
                     </div>
                 `;
             })
             .catch(error => {
                 responseDiv.innerHTML = `<p class="error-message">Error: ${error.message}</p>`;
                 responseDiv.className = 'error';
+            });
+        }
+    
+        function validateGenTitle() {
+            const genTitle = document.getElementById('genTitle').value;
+            const genTitleError = document.getElementById('genTitleError');
+            const wordCount = genTitle.trim().split(/\s+/).length;
+    
+            if (wordCount > 10) {
+                genTitleError.style.display = 'block';
+            } else {
+                genTitleError.style.display = 'none';
+            }
+        }
+    
+        function validateSummary() {
+            const summary = document.getElementById('summary').value;
+            const summaryError = document.getElementById('summaryError');
+            const wordCount = summary.trim().split(/\s+/).length;
+    
+            if (wordCount > 60) {
+                summaryError.style.display = 'block';
+            } else {
+                summaryError.style.display = 'none';
+            }
+        }
+    
+        function approveContent(id) {
+            const apiToken = document.getElementById('apiToken').value;
+            const genTitle = document.getElementById('genTitle').value;
+            const summary = document.getElementById('summary').value;
+            const genTitleError = document.getElementById('genTitleError');
+            const summaryError = document.getElementById('summaryError');
+            const approvalResponseDiv = document.getElementById('approvalResponse');
+    
+            // Clear previous messages
+            approvalResponseDiv.innerHTML = '';
+            approvalResponseDiv.style.color = '';
+    
+            // Validate before approving
+            if (genTitle.trim().split(/\s+/).length > 10) {
+                genTitleError.style.display = 'block';
+                return;
+            }
+    
+            if (summary.trim().split(/\s+/).length > 60) {
+                summaryError.style.display = 'block';
+                return;
+            }
+    
+            const apiUrl = `https://3.6.1.89/api/v1/approve`;
+    
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Authorization': apiToken,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: id, gen_title: genTitle, summary: summary })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`HTTP error! status: ${response.status}, body: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                approvalResponseDiv.innerHTML = 'Content approved successfully!';
+                approvalResponseDiv.style.color = 'green'; // Success message in green
+            })
+            .catch(error => {
+                approvalResponseDiv.innerHTML = `Error approving content: ${error.message}`;
+                approvalResponseDiv.style.color = 'red'; // Error message in red
             });
         }
     </script>
