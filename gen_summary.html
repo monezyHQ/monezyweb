@@ -110,6 +110,13 @@
             <label for="apiToken">API Token:</label>
             <input type="text" id="apiToken" name="api_token" size="50" required><br><br>
         </div>
+        <div>
+            <label for="language">Select Language:</label>
+            <select id="language" name="language">
+                <option value="EN" selected>English</option>
+                <option value="HI">Hindi</option>
+            </select><br><br>
+        </div>
         <button type="button" onclick="submitRequest()">Generate Summary</button>
     </form>
 
@@ -119,6 +126,7 @@
         function submitRequest() {
             const newsUrl = document.getElementById('newsUrl').value;
             const apiToken = document.getElementById('apiToken').value;
+            const language = document.getElementById('language').value;
             const apiUrl = `https://3.6.1.89/api/v1/summarize`;
             const responseDiv = document.getElementById('response');
             responseDiv.innerHTML = '<p class="loading">Processing your request...</p>';
@@ -131,7 +139,7 @@
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ url: newsUrl })
+                body: JSON.stringify({ url: newsUrl, language: language })
             })
             .then(response => {
                 if (!response.ok) {
