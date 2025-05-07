@@ -3,964 +3,934 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monezy - Quick Financial News</title>
+    <title>Monezy - Finance News</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        /* Basic CSS Reset and Variables */
+        /* CSS Variables for theming and consistency */
         :root {
-            --primary: #00C805; /* Vibrant Green */
-            --primary-dark: #00A504; /* Darker Green */
-            --secondary: #1E2124; /* Dark Gray */
-            --light: #F8F9FA; /* Off-White */
-            --gray: #E9ECEF; /* Light Gray */
-            --dark: #121212; /* Very Dark Gray / Near Black */
-            --phone-width: 375px;
-            --phone-height: 750px;
-            --card-radius: 16px;
+            --primary-color: #00C805;
+            --text-dark: #000000;
+            --text-medium: #444444;
+            --text-light: #888888;
+            --background-light: #ffffff;
+            --background-grey: #f0f0f0;
+            --border-color: #e0e0e0;
+            --font-family-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+            font-family: var(--font-family-main);
+            /* Removed global user-select: none; Apply selectively if needed */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on touch devices */
         }
-        
-        /* Body and Centering */
+
+        html, body {
+            height: 100%;
+            overflow: hidden; /* To contain the iPhone frame demo */
+        }
+
         body {
-            background-color: #f0f0f0;
-            background-image: linear-gradient(to bottom right, #f5f5f5, #e0e0e0);
+            background-color: var(--background-grey);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
         }
-        
-        /* Phone Mockup Styles */
-        .phone-container {
-            width: var(--phone-width);
-            height: var(--phone-height);
-            background-color: var(--dark);
-            border-radius: 40px;
+
+        /* iPhone Frame Styling */
+        .iphone-frame {
+            width: 375px; /* Typical iPhone width */
+            height: 812px; /* Typical iPhone X/XS/11 Pro height */
+            background-color: #111; /* Frame color */
+            border-radius: 40px; /* Rounded corners for the frame */
+            padding: 12px; /* Padding around the screen */
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3); /* Shadow for depth */
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35), 
-                        0 0 0 10px #000,
-                        0 0 0 11px #333; /* Realistic phone shadow */
+            overflow: hidden; /* Clip content outside the frame */
         }
-        
-        .phone-notch {
+
+        .notch {
             position: absolute;
-            top: 0;
+            top: 12px; /* Position at the top of the frame */
             left: 50%;
             transform: translateX(-50%);
-            width: 160px;
-            height: 30px;
-            background-color: #000;
+            width: 200px; /* Width of the notch */
+            height: 30px; /* Height of the notch */
+            background-color: #111; /* Match frame color */
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
-            z-index: 10;
+            z-index: 10; /* Above the screen content */
         }
-        
+
+        .iphone-screen {
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-light);
+            border-radius: 30px; /* Rounded corners for the screen */
+            overflow: hidden; /* Clip content outside the screen */
+            position: relative;
+            display: flex;
+            flex-direction: column; /* Stack header, content, footer */
+        }
+
+        /* Header Area */
+        .header-content {
+            flex-shrink: 0; /* Prevent header from shrinking */
+            background-color: var(--background-light);
+            position: relative;
+            z-index: 5; /* Above news swiper */
+            padding-top: 30px; /* Space for notch */
+            border-bottom: 1px solid var(--border-color);
+        }
+
         .status-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 40px;
-            padding: 0 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 9;
+            padding: 5px 15px;
+        }
+
+        .time { font-weight: bold; color: var(--text-dark); font-size: 14px; }
+        
+        .status-bar-left-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #language-toggle {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 4px 8px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            position: relative; /* For menu positioning */
+            user-select: none; /* Prevent text selection on toggle */
+        }
+
+        #language-toggle:hover, #language-toggle:active {
+            background-color: #eaeaea;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.12);
+        }
+
+        #language-toggle i.fa-globe {
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+
+        #language-toggle #lang-text {
+            font-weight: 600;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease-in-out;
         }
         
-        .phone-time {
-            color: white;
+        #language-toggle:before { /* Ripple effect */
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 16px;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            opacity: 0;
+            background: radial-gradient(circle at center, rgba(0,200,5,0.1) 0%, rgba(0,200,5,0) 70%);
+        }
+
+        #language-toggle:active:before {
+            opacity: 1;
+        }
+
+        .language-menu {
+            position: absolute;
+            top: calc(100% + 5px); /* Position below the toggle */
+            left: 0; /* Align with the toggle */
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+            width: 160px; /* Slightly wider for better text fit */
+            max-height: 0;
+            transition: max-height 0.3s ease, opacity 0.2s ease, transform 0.3s ease;
+            opacity: 0;
+            z-index: 100;
+            pointer-events: none;
+            transform: translateY(-10px); /* Start slightly up */
+        }
+
+        .language-menu.show {
+            max-height: 300px;
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
             font-size: 14px;
+        }
+
+        .language-option:hover {
+            background-color: #f5f5f5;
+        }
+
+        .language-option.selected {
+            background-color: #f0f9f0; /* Light green for selected */
             font-weight: 600;
         }
+
+        .language-option .check-icon {
+            margin-left: auto;
+            color: var(--primary-color);
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .language-option.selected .check-icon {
+            opacity: 1;
+        }
+
+        .language-option .lang-code {
+            font-weight: 600;
+            margin-right: 8px;
+            min-width: 30px; /* Ensure alignment */
+            color: #333;
+        }
+
+        .language-option .lang-name {
+            color: var(--text-medium);
+        }
         
-        .status-icons {
+        .menu-overlay {
+            position: fixed; /* Cover the entire iphone-screen */
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.1); /* Softer overlay */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 99; /* Below menu, above other content */
+            border-radius: 30px; /* Match screen radius */
+        }
+
+        .menu-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .language-notification {
+            position: absolute; /* Position within iphone-screen */
+            bottom: -70px; /* Start off-screen */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 20px; /* Pill shape */
+            font-size: 13px;
+            font-weight: 500;
+            transition: bottom 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.4s ease;
+            z-index: 200;
             display: flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            opacity: 0;
+            pointer-events: none;
         }
-        
-        .phone-battery {
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+
+        .language-notification.show {
+            bottom: 80px; /* Position above footer */
+            opacity: 1;
         }
-        
-        .battery-icon {
-            position: relative;
-            width: 22px;
-            height: 12px;
-            border: 1px solid #fff;
-            border-radius: 2px;
+
+        .language-notification i {
+            color: var(--primary-color);
         }
-        
-        .battery-icon::after { /* Battery terminal */
-            content: "";
-            position: absolute;
-            right: -4px;
-            top: 3px;
-            width: 2px;
-            height: 4px;
-            background-color: #fff;
-            border-radius: 0 2px 2px 0;
-        }
-        
-        .battery-level {
-            position: absolute;
-            left: 1px;
-            top: 1px;
-            bottom: 1px;
-            width: calc(85% - 2px); /* Represents 85% charge */
-            background-color: var(--primary);
-            border-radius: 1px;
-        }
-        
-        .phone-home-indicator {
-            position: absolute;
-            bottom: 8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 140px;
-            height: 5px;
-            background-color: white;
-            border-radius: 3px;
-            z-index: 10;
-        }
-        
-        /* App Layout */
-        .app-container {
-            width: 100%;
-            height: calc(100% - 40px); /* Account for status bar */
-            margin-top: 40px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        header {
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--dark);
-            position: sticky;
-            top: 0; /* Stick header */
-            z-index: 9;
-        }
-        
+
+
+        .icons { display: flex; gap: 10px; color: var(--text-dark); font-size: 14px; }
+
         .logo {
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-        
-        .logo-icon {
-            width: 28px;
-            height: 28px;
-            background-color: var(--primary);
-            border-radius: 8px;
-            display: flex;
             justify-content: center;
-            align-items: center;
-            color: var(--dark);
+            font-size: 24px;
             font-weight: bold;
-            font-size: 14px;
+            padding: 10px 0;
         }
-        
-        .logo-text {
-            color: var(--light);
-            font-size: 22px;
-            font-weight: bold;
-            letter-spacing: -0.5px;
-        }
-        
-        .logo-text span {
-            color: var(--primary);
-        }
-        
-        .profile-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: #444; /* Placeholder avatar color */
+        .logo-black { color: var(--text-dark); }
+        .logo-green { color: var(--primary-color); }
+
+        .tab-bar {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--light);
-            font-weight: 500;
-            font-size: 16px;
+            overflow-x: auto; /* Allow horizontal scrolling for tabs */
+            gap: 20px;
+            padding: 10px 15px;
+            scrollbar-width: none; /* Firefox */
+            flex-shrink: 0;
+            -ms-overflow-style: none;  /* IE and Edge */
         }
+        .tab-bar::-webkit-scrollbar { display: none; } /* Chrome/Safari */
         
-        /* Tabs */
-        .tab-container {
-            display: flex;
-            background-color: var(--dark);
-            padding: 0 20px;
-            margin-bottom: 15px;
-            position: relative; /* For indicator positioning */
+        .tab { 
+            white-space: nowrap; 
+            color: var(--text-light); 
+            font-size: 16px; 
+            cursor: pointer; 
+            padding-bottom: 5px; /* Space for border */
+            border-bottom: 2px solid transparent; /* Placeholder for active border */
+            transition: color 0.2s ease, border-color 0.2s ease;
+            user-select: none;
         }
-        
-        .tab {
-            padding: 12px 15px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--gray);
-            transition: all 0.3s ease;
+        .tab:hover {
+            color: var(--text-medium);
+        }
+        .tab.active { 
+            color: var(--primary-color); 
+            font-weight: bold; 
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* News Swiper Area */
+        .news-swiper-container {
+            flex-grow: 1; /* Take remaining vertical space */
+            overflow: hidden; /* Crucial for card positioning */
             position: relative;
+            background-color: var(--background-grey);
         }
-        
-        .tab.active {
-            color: var(--light);
-            font-weight: 600;
-        }
-        
-        .tab-indicator {
-            position: absolute;
-            bottom: 0;
-            height: 3px;
-            width: 70px; /* Initial width, will be adjusted by JS */
-            background-color: var(--primary);
-            border-radius: 3px 3px 0 0;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); /* Smooth transition */
-            left: 20px; /* Initial position, adjusted by JS */
-        }
-        
-        /* Main Content Area */
-        main {
-            flex: 1; /* Take remaining space */
-            padding: 0;
-            overflow-y: auto; /* Allow scrolling if content exceeds height */
-            position: relative; /* Needed for news card absolute positioning */
-        }
-        
-        .news-container {
+
+        .news-swiper {
+            height: 100%;
             position: relative;
-            height: calc(100vh - 130px); /* Adjust based on header/tabs/nav height */
-            max-height: 600px; /* Max height for news area */
-            overflow: hidden; /* Clip overflowing cards */
-            display: block; /* Default view */
+            /* Transform will be handled by JS for card transitions */
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother easing */
         }
-        
+
         .news-card {
-            background-color: var(--dark);
-            overflow: hidden;
+            background-color: var(--background-light);
+            overflow: hidden; /* Content within card */
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); /* Slide animation */
-            /* Initial state for all but the first card */
-            transform: translateY(100%);
+            display: flex;
+            flex-direction: column;
+            opacity: 0; /* Hidden by default, shown by JS */
+            transform: translateY(100%); /* Start off-screen */
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            visibility: hidden;
         }
-        
         .news-card.active {
-             transform: translateY(0); /* Active card is visible */
-             z-index: 2; /* Bring active card to front */
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+            z-index: 2; /* Active card on top */
         }
-        
-        .news-card.previous {
-            transform: translateY(-100%); /* Animate previous card upwards */
+        .news-card.prev { /* For smoother transitions if needed */
+            transform: translateY(-100%);
+            opacity: 0;
+            visibility: hidden;
             z-index: 1;
         }
 
-        .news-image-container {
-            position: relative;
-            width: 100%;
-            height: 220px;
-            overflow: hidden;
-        }
-        
+
         .news-image {
             width: 100%;
-            height: 100%;
-            object-fit: cover; /* Cover the container */
-            transition: transform 0.5s ease;
+            height: 250px; /* Fixed height for image */
+            object-fit: cover; /* Cover the area, might crop */
+            flex-shrink: 0;
+            background-color: #eaeaea; /* Placeholder background */
         }
-        
-        .news-card:hover .news-image {
-            transform: scale(1.05); /* Slight zoom on hover */
-        }
-        
-        .news-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5)); /* Subtle gradient */
-        }
-        
+
         .news-content {
-            padding: 24px;
-            position: relative;
-            border-radius: var(--card-radius) var(--card-radius) 0 0;
-            margin-top: -20px; /* Overlap the image slightly */
-            background-color: var(--dark);
-            z-index: 2;
+            padding: 15px;
+            flex-grow: 1;
+            overflow-y: auto; /* Allow scrolling for long content */
+            display: flex;
+            flex-direction: column;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) #f0f0f0;
         }
-        
-        .news-category {
-            display: inline-block;
-            background-color: rgba(0, 200, 5, 0.15); /* Semi-transparent primary color */
-            color: var(--primary);
-            font-size: 12px;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 100px; /* Pill shape */
-            margin-bottom: 12px;
+        .news-content::-webkit-scrollbar { width: 5px; }
+        .news-content::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 10px; }
+        .news-content::-webkit-scrollbar-track { background-color: #f0f0f0; }
+
+
+        .news-details {
+            margin-bottom: 15px;
+            flex-shrink: 0;
         }
-        
-        .news-heading {
+
+        .news-title {
             font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 14px;
-            color: var(--light);
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--text-dark);
             line-height: 1.3;
         }
-        
-        .news-summary {
+
+        .news-body {
             font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            color: #cccccc; /* Lighter gray for readability */
-            font-weight: 400;
+            line-height: 1.5;
+            color: var(--text-medium);
+            /* Allow text selection in news body */
+            user-select: text; 
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
         }
-        
+
+        .ad-placeholder {
+            height: 60px;
+            background-color: #f7f7f7; /* Lighter background */
+            border: 1px dashed #d0d0d0; /* Softer border */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #999999; /* Lighter text */
+            font-size: 12px;
+            margin: 15px 0;
+            flex-shrink: 0;
+            text-align: center;
+            padding: 5px;
+            border-radius: 8px; /* Rounded corners */
+        }
+
         .news-meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13px;
-            color: #9e9e9e; /* Muted gray */
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08); /* Subtle separator */
+            color: var(--text-light);
+            font-size: 12px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            margin-top: auto; /* Push to bottom */
+            flex-shrink: 0;
         }
-        
-        .news-source {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+
+        .source-time { display: flex; gap: 5px; align-items: center; }
+        /* .source-time .time-ago {} */ /* For translation */
+        /* .source-time .source-name {} */ /* For translation, if needed */
+
+        .bookmark-share { display: flex; gap: 20px; align-items: center; }
+        .bookmark-share i { 
+            font-size: 20px; 
+            color: #555; 
+            cursor: pointer; 
+            transition: color 0.2s ease, transform 0.2s ease; 
         }
-        
-        .news-source::after { /* Arrow indicator */
-            content: "→";
-            font-size: 16px;
-            transition: transform 0.2s ease;
+        .bookmark-share i:hover { color: var(--primary-color); transform: scale(1.1); }
+        .bookmark-share i.saved { color: var(--primary-color); font-weight: bold; }
+
+        .tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: var(--primary-color);
+            color: var(--background-light);
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 3; /* Above image */
         }
-        
-        .news-source:hover::after {
-            transform: translateX(2px);
-        }
-        
-        .news-date {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .news-date svg { /* Calendar icon */
-            width: 14px;
-            height: 14px;
-            opacity: 0.7;
-        }
-        
-        /* News Card Navigation */
-        .navigation {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            padding: 15px;
-            position: fixed; /* Stick to bottom */
-            bottom: 25px; /* Above home indicator */
+
+        /* Navigation Buttons for News Swiper */
+        .nav-button {
+            position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 5;
-            background-color: rgba(18, 18, 18, 0.7); /* Semi-transparent background */
-            backdrop-filter: blur(10px); /* Frosted glass effect */
-            border-radius: 100px; /* Pill shape */
-            padding: 8px 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-        }
-        
-        .nav-button {
-            width: 44px;
-            height: 44px;
+            z-index: 4; /* Above cards but below header/footer potentially */
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
             border-radius: 50%;
-            background-color: var(--primary);
-            color: var(--dark);
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 20px;
             cursor: pointer;
-            border: none;
-            box-shadow: 0 4px 12px rgba(0, 200, 5, 0.3);
-            transition: all 0.2s ease;
+            transition: opacity 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        
         .nav-button:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px); /* Slight lift on hover */
+            background-color: rgba(0, 0, 0, 0.8);
+            transform: translateX(-50%) scale(1.05);
         }
-        
-        .nav-button:active {
-            transform: translateY(0); /* Press effect */
-        }
-        
-        .nav-button svg { /* Arrow icons */
-            width: 20px;
-            height: 20px;
-        }
-
-        .nav-button:disabled { /* Style for disabled state */
-            background-color: #555;
+        .nav-button.disabled {
+            opacity: 0.3;
             cursor: not-allowed;
-            opacity: 0.6;
-            box-shadow: none;
-            transform: none;
+            background-color: rgba(0, 0, 0, 0.3);
         }
-        
-        .news-card-indicator {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            font-size: 12px;
-            padding: 6px 10px;
-            border-radius: 12px;
-            font-weight: 500;
-            z-index: 2;
-            backdrop-filter: blur(5px);
-        }
-        
-        /* Add News Form Styles */
-        .feed-form {
-            background-color: var(--dark);
-            padding: 20px;
-            display: none; /* Initially hidden */
-            height: 100%;
-            overflow-y: auto; /* Scrollable if form is long */
-        }
-        
-        .form-header {
-            font-size: 20px;
-            color: var(--light);
-            font-weight: 700;
-            margin-bottom: 24px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 10px;
-            color: var(--light);
-            font-weight: 500;
-            font-size: 14px;
-        }
-        
-        .form-input, .form-textarea {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: 1px solid #333;
-            background-color: #1e1e1e; /* Slightly lighter than background */
-            color: var(--light);
-            font-size: 15px;
-            transition: all 0.2s ease;
-        }
-        
-        .form-input:focus, .form-textarea:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(0, 200, 5, 0.2); /* Focus ring */
-        }
-        
-        .form-textarea {
-            height: 120px;
-            resize: vertical; /* Allow vertical resize */
-        }
-        
-        .form-button {
-            background-color: var(--primary);
-            color: var(--dark);
-            border: none;
-            padding: 16px 0;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-        }
-        
-        .form-button:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 200, 5, 0.3);
-        }
-        
-        .form-button:active {
-            transform: translateY(0);
-        }
-        
-        .form-note {
-            font-size: 12px;
-            color: #888;
-            margin-top: 10px;
-            text-align: center;
-        }
-        
-        /* Toast Success Message */
-        .toast {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 200, 5, 0.9); /* Primary color with transparency */
-            color: white;
-            padding: 16px 24px;
-            border-radius: 12px;
-            font-weight: 500;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-            opacity: 0; /* Start hidden */
-            pointer-events: none; /* Prevent interaction */
-            transition: opacity 0.3s ease, transform 0.3s ease;
+        .nav-button:active {
+             transform: translateX(-50%) scale(0.95);
         }
 
-        .toast.show {
-            opacity: 1;
-            transform: translate(-50%, -50%);
-            animation: fadeInOut 2.5s ease forwards; /* Use keyframes for fade out */
-        }
-        
-        .toast svg { /* Checkmark icon */
-            width: 20px;
-            height: 20px;
-        }
-        
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translate(-50%, -40%); }
-            15% { opacity: 1; transform: translate(-50%, -50%); }
-            85% { opacity: 1; transform: translate(-50%, -50%); }
-            100% { opacity: 0; transform: translate(-50%, -60%); }
-        }
-        
-        /* Categories Styling */
-        .categories {
+        #prev-story-btn { top: 15px; } /* Positioned within news-swiper-container */
+        #next-story-btn { bottom: 15px; }
+
+        /* Footer Area */
+        .footer {
+            height: 65px;
+            background-color: var(--background-light);
             display: flex;
-            padding: 0 20px 15px;
-            overflow-x: auto; /* Allow horizontal scrolling */
-            scrollbar-width: none; /* Hide scrollbar (Firefox) */
-            -ms-overflow-style: none; /* Hide scrollbar (IE/Edge) */
-            background-color: var(--dark);
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 5; /* Above news swiper */
         }
-        
-        .categories::-webkit-scrollbar {
-            display: none; /* Hide scrollbar (Chrome/Safari/Opera) */
+
+        .footer-icon { 
+            font-size: 24px; 
+            color: #AAAAAA; 
+            cursor: pointer; 
+            transition: color 0.2s ease, transform 0.2s ease; 
+            padding: 10px; 
+            user-select: none;
         }
-        
-        .category {
-            padding: 8px 16px;
-            background-color: #1e1e1e;
-            border-radius: 100px; /* Pill shape */
-            margin-right: 10px;
-            color: #ccc;
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap; /* Prevent wrapping */
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .category.active {
-            background-color: var(--primary);
-            color: var(--dark);
-            font-weight: 600;
-        }
-        
-        .category:hover:not(.active) {
-            background-color: #333; /* Darken on hover */
-        }
+        .footer-icon:hover { color: #555555; transform: translateY(-2px); }
+        .footer-icon.active { color: var(--primary-color); }
+
     </style>
 </head>
 <body>
-    <div class="phone-container">
-        <div class="phone-notch"></div>
-        <div class="status-bar">
-            <div class="phone-time">9:41</div>
-            <div class="status-icons">
-                <div class="phone-battery">
-                    <div class="battery-icon">
-                        <div class="battery-level"></div>
+    <div class="iphone-frame">
+        <div class="notch"></div>
+        <div class="iphone-screen">
+
+            <div class="header-content">
+                <div class="status-bar">
+                    <div class="status-bar-left-section">
+                        <div class="time" id="status-bar-time">9:42</div>
+                        <div id="language-toggle" title="Switch Language" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-globe"></i>&nbsp;
+                            <span id="lang-text">EN</span>
+                        </div>
+                        <div class="language-menu" id="language-menu" role="menu">
+                            <div class="language-option" data-lang="en" role="menuitemradio" aria-checked="true">
+                                <span class="lang-code">EN</span>
+                                <span class="lang-name">English</span>
+                                <i class="fas fa-check check-icon"></i>
+                            </div>
+                            <div class="language-option" data-lang="hi" role="menuitemradio" aria-checked="false">
+                                <span class="lang-code">हिं</span>
+                                <span class="lang-name">हिन्दी</span>
+                                <i class="fas fa-check check-icon"></i>
+                            </div>
+                        </div>
                     </div>
-                    85%
+                    <div class="icons">
+                        <div><i class="fa-solid fa-signal"></i></div>
+                        <div><i class="fa-solid fa-wifi"></i></div> <div><i class="fa-solid fa-battery-full"></i></div>
+                    </div>
                 </div>
+                <div class="logo">
+                    <span class="logo-black">Mone</span><span class="logo-green">zy</span>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab active" data-tab="my_feed" data-en="My Feed" data-hi="मेरी फ़ीड" tabindex="0">My Feed</div>
+                    <div class="tab" data-tab="markets" data-en="Markets" data-hi="बाज़ार" tabindex="0">Markets</div>
+                    <div class="tab" data-tab="crypto" data-en="Crypto" data-hi="क्रिप्टो" tabindex="0">Crypto</div>
+                    <div class="tab" data-tab="stocks" data-en="Stocks" data-hi="स्टॉक्स" tabindex="0">Stocks</div>
+                    <div class="tab" data-tab="ipos" data-en="IPOs" data-hi="आईपीओ" tabindex="0">IPOs</div>
+                    <div class="tab" data-tab="global" data-en="Global" data-hi="वैश्विक" tabindex="0">Global</div>
+                </div>
+            </div>
+
+            <div class="news-swiper-container">
+                <div class="news-swiper" id="news-swiper">
+                    <div class="news-card active" data-index="0">
+                        <div class="tag" data-en="BREAKING" data-hi="ब्रेकिंग">BREAKING</div>
+                        <img src="https://placehold.co/375x250/EAEAEA/BDBDBD?text=Fed+Reserve" alt="Federal Reserve Building" class="news-image" onerror="this.onerror=null;this.src='https://placehold.co/375x250/EAEAEA/BDBDBD?text=Image+Error';">
+                        <div class="news-content">
+                            <div class="news-details">
+                                <div class="news-title" data-en="Fed signals potential rate cut in June amid cooling inflation data" data-hi="फेड ने जून में संभावित दर कटौती का संकेत दिया, मुद्रास्फीति के आंकड़ों में नरमी">Fed signals potential rate cut in June amid cooling inflation data</div>
+                                <div class="news-body" data-en="Federal Reserve officials have hinted at a possible interest rate cut as early as June, following recent data showing inflation trending downward. Chair Jerome Powell mentioned that the central bank needs to be 'confident' that inflation is sustainably moving toward the 2% target." data-hi="फेडरल रिजर्व के अधिकारियों ने हालिया आंकड़ों के बाद जून की शुरुआत में संभावित ब्याज दर में कटौती का संकेत दिया है, जिसमें मुद्रास्फीति नीचे की ओर चल रही है। अध्यक्ष जेरोम पॉवेल ने उल्लेख किया कि केंद्रीय बैंक को 'आश्वस्त' होने की आवश्यकता है कि मुद्रास्फीति स्थायी रूप से 2% लक्ष्य की ओर बढ़ रही है।">Federal Reserve officials have hinted at a possible interest rate cut as early as June, following recent data showing inflation trending downward. Chair Jerome Powell mentioned that the central bank needs to be "confident" that inflation is sustainably moving toward the 2% target.</div>
+                            </div>
+                            <div class="ad-placeholder" data-en="Advertisement Space - Support Us!" data-hi="विज्ञापन स्थान - हमारा समर्थन करें!">Advertisement Space - Support Us!</div>
+                            <div class="news-meta">
+                                <div class="source-time">
+                                    <div class="time-ago" data-en="45 min ago" data-hi="४५ मिनट पहले">45 min ago</div>&nbsp;<div data-en="|" data-hi="|">|</div>&nbsp;<div class="source-name" data-en="Bloomberg" data-hi="ब्लूमबर्ग">Bloomberg</div>
+                                </div>
+                                <div class="bookmark-share">
+                                    <i class="far fa-bookmark" role="button" tabindex="0" aria-label="Bookmark this story" data-aria-en="Bookmark this story" data-aria-hi="इस कहानी को बुकमार्क करें"></i>
+                                    <i class="fas fa-share-nodes" role="button" tabindex="0" aria-label="Share this story" data-aria-en="Share this story" data-aria-hi="इस कहानी को साझा करें"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-card" data-index="1">
+                        <img src="https://placehold.co/375x250/DDEEFF/99AACC?text=Tesla+EV" alt="Tesla Electric Vehicle" class="news-image" onerror="this.onerror=null;this.src='https://placehold.co/375x250/EAEAEA/BDBDBD?text=Image+Error';">
+                        <div class="news-content">
+                            <div class="news-details">
+                                <div class="news-title" data-en="Tesla shares surge 8% after announcing new affordable EV model" data-hi="टेस्ला के शेयरों में 8% की उछाल, नए किफायती ईवी मॉडल की घोषणा के बाद">Tesla shares surge 8% after announcing new affordable EV model</div>
+                                <div class="news-body" data-en="Tesla's stock jumped 8% in after-hours trading following CEO Elon Musk's announcement of a new affordable electric vehicle model set to launch next year. The $25,000 car aims to compete in the mass-market segment." data-hi="टेस्ला के सीईओ एलन मस्क द्वारा अगले साल लॉन्च होने वाले एक नए किफायती इलेक्ट्रिक वाहन मॉडल की घोषणा के बाद कंपनी के स्टॉक में आफ्टर-आवर्स ट्रेडिंग में 8% की उछाल आई। $25,000 की यह कार मास-मार्केट सेगमेंट में प्रतिस्पर्धा करने का लक्ष्य रखती है।">Tesla's stock jumped 8% in after-hours trading following CEO Elon Musk's announcement of a new affordable electric vehicle model set to launch next year. The $25,000 car aims to compete in the mass-market segment.</div>
+                            </div>
+                            <div class="ad-placeholder" data-en="Sponsored Content" data-hi="प्रायोजित सामग्री">Sponsored Content</div>
+                            <div class="news-meta">
+                                <div class="source-time">
+                                    <div class="time-ago" data-en="2 hours ago" data-hi="२ घंटे पहले">2 hours ago</div>&nbsp;<div data-en="|" data-hi="|">|</div>&nbsp;<div class="source-name" data-en="CNBC" data-hi="सीएनबीसी">CNBC</div>
+                                </div>
+                                <div class="bookmark-share">
+                                    <i class="far fa-bookmark" role="button" tabindex="0" aria-label="Bookmark this story" data-aria-en="Bookmark this story" data-aria-hi="इस कहानी को बुकमार्क करें"></i>
+                                    <i class="fas fa-share-nodes" role="button" tabindex="0" aria-label="Share this story" data-aria-en="Share this story" data-aria-hi="इस कहानी को साझा करें"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-card" data-index="2">
+                         <img src="https://placehold.co/375x250/FFDDAA/DDAA77?text=Bitcoin+Chart" alt="Bitcoin Price Chart" class="news-image" onerror="this.onerror=null;this.src='https://placehold.co/375x250/EAEAEA/BDBDBD?text=Image+Error';">
+                        <div class="news-content">
+                            <div class="news-details">
+                                <div class="news-title" data-en="Bitcoin surpasses $80,000 for the first time, setting new all-time high" data-hi="बिटकॉइन पहली बार $80,000 के पार, नया सर्वकालिक उच्च स्तर बनाया">Bitcoin surpasses $80,000 for the first time, setting new all-time high</div>
+                                <div class="news-body" data-en="Bitcoin has broken past the $80,000 mark for the first time in history, continuing its impressive rally. Analysts attribute the surge to increased institutional adoption and the recent halving event." data-hi="बिटकॉइन इतिहास में पहली बार $80,000 का आंकड़ा पार कर गया है, अपनी प्रभावशाली रैली जारी रखते हुए। विश्लेषक इस उछाल का श्रेय संस्थागत अपनाने में वृद्धि और हालिया हॉल्टिंग घटना को देते हैं।">Bitcoin has broken past the $80,000 mark for the first time in history, continuing its impressive rally. Analysts attribute the surge to increased institutional adoption and the recent halving event.</div>
+                            </div>
+                            <div class="ad-placeholder" data-en="Learn About Crypto Trading" data-hi="क्रिप्टो ट्रेडिंग के बारे में जानें">Learn About Crypto Trading</div>
+                            <div class="news-meta">
+                                <div class="source-time">
+                                    <div class="time-ago" data-en="3 hours ago" data-hi="३ घंटे पहले">3 hours ago</div>&nbsp;<div data-en="|" data-hi="|">|</div>&nbsp;<div class="source-name" data-en="CoinDesk" data-hi="कॉइनडेस्क">CoinDesk</div>
+                                </div>
+                                <div class="bookmark-share">
+                                    <i class="fas fa-bookmark saved" role="button" tabindex="0" aria-label="Story bookmarked" data-aria-en="Story bookmarked" data-aria-hi="कहानी बुकमार्क की गई"></i>
+                                    <i class="fas fa-share-nodes" role="button" tabindex="0" aria-label="Share this story" data-aria-en="Share this story" data-aria-hi="इस कहानी को साझा करें"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="news-card" data-index="3">
+                        <div class="tag" data-en="EXCLUSIVE" data-hi="एक्सक्लूसिव">EXCLUSIVE</div>
+                        <img src="https://placehold.co/375x250/AACCDD/7799AA?text=Amazon+Shopify" alt="Amazon and Shopify Logos" class="news-image" onerror="this.onerror=null;this.src='https://placehold.co/375x250/EAEAEA/BDBDBD?text=Image+Error';">
+                        <div class="news-content">
+                                <div class="news-details">
+                                <div class="news-title" data-en="Amazon to acquire Shopify's logistics business for $12 billion" data-hi="अमेज़ॅन $12 बिलियन में शॉपिफाई के लॉजिस्टिक्स कारोबार का अधिग्रहण करेगा">Amazon to acquire Shopify's logistics business for $12 billion</div>
+                                <div class="news-body" data-en="In a major e-commerce shake-up, Amazon has agreed to acquire Shopify's logistics and fulfillment operations for $12 billion. The deal is subject to regulatory approval and is expected to close by Q4." data-hi="एक बड़े ई-कॉमर्स फेरबदल में, अमेज़ॅन ने शॉपिफाई के लॉजिस्टिक्स और फुलफिलमेंट संचालन को $12 बिलियन में अधिग्रहित करने पर सहमति व्यक्त की है। यह सौदा नियामक अनुमोदन के अधीन है और Q4 तक पूरा होने की उम्मीद है।">In a major e-commerce shake-up, Amazon has agreed to acquire Shopify's logistics and fulfillment operations for $12 billion. The deal is subject to regulatory approval and is expected to close by Q4.</div>
+                            </div>
+                            <div class="ad-placeholder" data-en="Invest in E-commerce Stocks" data-hi="ई-कॉमर्स शेयरों में निवेश करें">Invest in E-commerce Stocks</div>
+                            <div class="news-meta">
+                                <div class="source-time">
+                                    <div class="time-ago" data-en="5 hours ago" data-hi="५ घंटे पहले">5 hours ago</div>&nbsp;<div data-en="|" data-hi="|">|</div>&nbsp;<div class="source-name" data-en="Financial Times" data-hi="फाइनेंशियल टाइम्स">Financial Times</div>
+                                </div>
+                                <div class="bookmark-share">
+                                    <i class="far fa-bookmark" role="button" tabindex="0" aria-label="Bookmark this story" data-aria-en="Bookmark this story" data-aria-hi="इस कहानी को बुकमार्क करें"></i>
+                                    <i class="fas fa-share-nodes" role="button" tabindex="0" aria-label="Share this story" data-aria-en="Share this story" data-aria-hi="इस कहानी को साझा करें"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button id="prev-story-btn" class="nav-button" aria-label="Previous Story" data-aria-en="Previous Story" data-aria-hi="पिछली कहानी"><i class="fas fa-chevron-up"></i></button>
+                <button id="next-story-btn" class="nav-button" aria-label="Next Story" data-aria-en="Next Story" data-aria-hi="अगली कहानी"><i class="fas fa-chevron-down"></i></button>
+            </div>
+
+            <div class="footer">
+                <i class="fas fa-home footer-icon active" data-section="home" aria-label="Home" data-aria-en="Home" data-aria-hi="होम" tabindex="0"></i>
+                <i class="fas fa-chart-line footer-icon" data-section="markets" aria-label="Markets" data-aria-en="Markets" data-aria-hi="बाज़ार" tabindex="0"></i>
+                <i class="fas fa-newspaper footer-icon" data-section="news" aria-label="News" data-aria-en="News" data-aria-hi="समाचार" tabindex="0"></i>
+                <i class="fas fa-bookmark footer-icon" data-section="saved" aria-label="Saved" data-aria-en="Saved" data-aria-hi="सहेजा गया" tabindex="0"></i>
+                <i class="fas fa-cog footer-icon" data-section="settings" aria-label="Settings" data-aria-en="Settings" data-aria-hi="सेटिंग्स" tabindex="0"></i>
+            </div>
+            
+            <div class="menu-overlay" id="menu-overlay"></div>
+            <div class="language-notification" id="language-notification">
+                <i class="fas fa-check-circle"></i> <span id="notification-text">Language set to English</span>
             </div>
         </div>
-        <div class="phone-home-indicator"></div>
-        
-        <div class="app-container">
-            <header>
-                <div class="logo">
-                    <div class="logo-icon">M</div>
-                    <div class="logo-text">Mone<span>zy</span></div>
-                </div>
-                <div class="profile-avatar">JD</div> </header>
-            
-            <div class="tab-container">
-                <div class="tab active" id="news-tab" data-target="news-view">News Feed</div>
-                <div class="tab" id="submit-tab" data-target="feed-form">Add News</div>
-                <div class="tab-indicator"></div>
-            </div>
-            
-            <div class="categories">
-                <div class="category active">All</div>
-                <div class="category">Crypto</div>
-                <div class="category">Stocks</div>
-                <div class="category">Interest Rates</div>
-                <div class="category">Tech</div>
-                <div class="category">Energy</div>
-                <div class="category">Markets</div>
-            </div>
-            
-            <main>
-                <div class="news-container" id="news-view">
-                    <div class="news-card active" id="card-1" data-index="0">
-                        <div class="news-card-indicator">1/5</div>
-                        <div class="news-image-container">
-                            <img src="https://placehold.co/375x220/2ecc71/ffffff?text=Bitcoin" alt="Bitcoin reaches new highs" class="news-image" onerror="this.src='https://placehold.co/375x220/cccccc/ffffff?text=Image+Error'">
-                            <div class="news-overlay"></div>
-                        </div>
-                        <div class="news-content">
-                            <div class="news-category">Cryptocurrency</div>
-                            <h2 class="news-heading">Bitcoin Surpasses $90,000 Mark in Historic Rally</h2>
-                            <p class="news-summary">Bitcoin has broken through the $90,000 price barrier for the first time, marking a significant milestone in cryptocurrency history. Analysts attribute the surge to increased institutional adoption.</p>
-                            <div class="news-meta">
-                                <div class="news-date">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect> <line x1="16" y1="2" x2="16" y2="6"></line> <line x1="8" y1="2" x2="8" y2="6"></line> <line x1="3" y1="10" x2="21" y2="10"></line> </svg>
-                                    April 15, 2025
-                                </div>
-                                <a href="#" class="news-source">Bloomberg</a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="news-card" id="card-2" data-index="1">
-                        <div class="news-card-indicator">2/5</div>
-                        <div class="news-image-container">
-                            <img src="https://placehold.co/375x220/3498db/ffffff?text=Fed+Rates" alt="Fed interest rates" class="news-image" onerror="this.src='https://placehold.co/375x220/cccccc/ffffff?text=Image+Error'">
-                            <div class="news-overlay"></div>
-                        </div>
-                        <div class="news-content">
-                            <div class="news-category">Economy</div>
-                            <h2 class="news-heading">Federal Reserve Signals Potential Rate Cut in Upcoming Meeting</h2>
-                            <p class="news-summary">The Federal Reserve has indicated it may consider cutting interest rates at its next policy meeting, citing cooling inflation and concerns about economic growth.</p>
-                            <div class="news-meta">
-                                <div class="news-date">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect> <line x1="16" y1="2" x2="16" y2="6"></line> <line x1="8" y1="2" x2="8" y2="6"></line> <line x1="3" y1="10" x2="21" y2="10"></line> </svg>
-                                    April 14, 2025
-                                </div>
-                                <a href="#" class="news-source">Wall Street Journal</a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="news-card" id="card-3" data-index="2">
-                        <div class="news-card-indicator">3/5</div>
-                        <div class="news-image-container">
-                            <img src="https://placehold.co/375x220/9b59b6/ffffff?text=AI+Investing" alt="AI investing algorithms" class="news-image" onerror="this.src='https://placehold.co/375x220/cccccc/ffffff?text=Image+Error'">
-                            <div class="news-overlay"></div>
-                        </div>
-                        <div class="news-content">
-                            <div class="news-category">AI & Fintech</div>
-                            <h2 class="news-heading">AI-Powered Investment Platforms See 300% Growth in Q1</h2>
-                            <p class="news-summary">Artificial intelligence-driven investment platforms reported unprecedented growth in the first quarter of 2025, with assets under management increasing by 300%.</p>
-                            <div class="news-meta">
-                                <div class="news-date">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect> <line x1="16" y1="2" x2="16" y2="6"></line> <line x1="8" y1="2" x2="8" y2="6"></line> <line x1="3" y1="10" x2="21" y2="10"></line> </svg>
-                                    April 13, 2025
-                                </div>
-                                <a href="#" class="news-source">Financial Times</a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="news-card" id="card-4" data-index="3">
-                        <div class="news-card-indicator">4/5</div>
-                        <div class="news-image-container">
-                            <img src="https://placehold.co/375x220/1abc9c/ffffff?text=Green+Energy" alt="Green energy stocks" class="news-image" onerror="this.src='https://placehold.co/375x220/cccccc/ffffff?text=Image+Error'">
-                            <div class="news-overlay"></div>
-                        </div>
-                        <div class="news-content">
-                            <div class="news-category">Sustainability</div>
-                            <h2 class="news-heading">Green Energy Stocks Soar as Global Climate Agreement Takes Effect</h2>
-                            <p class="news-summary">Renewable energy companies saw their stock prices surge as the Paris Climate Accord's strengthened provisions went into effect yesterday.</p>
-                            <div class="news-meta">
-                                <div class="news-date">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect> <line x1="16" y1="2" x2="16" y2="6"></line> <line x1="8" y1="2" x2="8" y2="6"></line> <line x1="3" y1="10" x2="21" y2="10"></line> </svg>
-                                    April 12, 2025
-                                </div>
-                                <a href="#" class="news-source">Reuters</a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="news-card" id="card-5" data-index="4">
-                        <div class="news-card-indicator">5/5</div>
-                        <div class="news-image-container">
-                            <img src="https://placehold.co/375x220/e74c3c/ffffff?text=Oracle+Acquires" alt="Tech company acquisition" class="news-image" onerror="this.src='https://placehold.co/375x220/cccccc/ffffff?text=Image+Error'">
-                            <div class="news-overlay"></div>
-                        </div>
-                        <div class="news-content">
-                            <div class="news-category">Mergers & Acquisitions</div>
-                            <h2 class="news-heading">Major Tech Acquisition: Oracle Acquires Databricks for $75 Billion</h2>
-                            <p class="news-summary">In one of the largest tech acquisitions of 2025, Oracle has announced plans to acquire data analytics firm Databricks for $75 billion.</p>
-                            <div class="news-meta">
-                                <div class="news-date">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect> <line x1="16" y1="2" x2="16" y2="6"></line> <line x1="8" y1="2" x2="8" y2="6"></line> <line x1="3" y1="10" x2="21" y2="10"></line> </svg>
-                                    April 11, 2025
-                                </div>
-                                <a href="#" class="news-source">CNBC</a>
-                            </div>
-                        </div>
-                    </div>
-                </div> <form class="feed-form" id="feed-form" style="display: none;">
-                    <h3 class="form-header">Add Financial News</h3>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="image-url">Image URL</label>
-                        <input type="text" class="form-input" id="image-url" placeholder="Enter image URL" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="category">Category</label>
-                        <input type="text" class="form-input" id="category" placeholder="E.g., Cryptocurrency, Stocks, Economy" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="heading">Headline</label>
-                        <input type="text" class="form-input" id="heading" placeholder="Enter news headline" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="summary">Summary</label>
-                        <textarea class="form-textarea" id="summary" placeholder="Enter news summary" required></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="source">Source</label>
-                        <input type="text" class="form-input" id="source" placeholder="Enter news source" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="source-link">Source Link</label>
-                        <input type="url" class="form-input" id="source-link" placeholder="Enter full article link" required>
-                    </div>
-                    
-                    <button type="submit" class="form-button">Publish to Feed</button>
-                    <p class="form-note">Your news will be reviewed before appearing in everyone's feed</p>
-                </form> </main>
-            
-            <div class="navigation">
-                <button class="nav-button" id="prev-button" aria-label="Previous News Item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <polyline points="18 15 12 9 6 15"></polyline> </svg>
-                </button>
-                <button class="nav-button" id="next-button" aria-label="Next News Item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <polyline points="6 9 12 15 18 9"></polyline> </svg>
-                </button>
-            </div>
-        </div> </div> <div class="toast" id="toast-message">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-        <span>News submitted successfully!</span>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- DOM Element Selection ---
-            const phoneTime = document.querySelector('.phone-time');
+            // --- DOM Element Selectors ---
+            const statusBarTime = document.getElementById('status-bar-time');
+            const languageToggle = document.getElementById('language-toggle');
+            const languageMenu = document.getElementById('language-menu');
+            const langText = document.getElementById('lang-text');
+            const languageOptions = document.querySelectorAll('.language-option');
+            const menuOverlay = document.getElementById('menu-overlay');
+            const languageNotification = document.getElementById('language-notification');
+            const notificationText = document.getElementById('notification-text');
+
             const tabs = document.querySelectorAll('.tab');
-            const tabIndicator = document.querySelector('.tab-indicator');
-            const views = {
-                newsView: document.getElementById('news-view'),
-                feedForm: document.getElementById('feed-form')
-            };
-            const categories = document.querySelectorAll('.category');
             const newsCards = document.querySelectorAll('.news-card');
-            const prevButton = document.getElementById('prev-button');
-            const nextButton = document.getElementById('next-button');
-            const addNewsForm = document.getElementById('feed-form');
-            const toastMessage = document.getElementById('toast-message');
-            const navigationButtons = document.querySelector('.navigation'); // Navigation container
+            const prevStoryBtn = document.getElementById('prev-story-btn');
+            const nextStoryBtn = document.getElementById('next-story-btn');
+            const footerIcons = document.querySelectorAll('.footer-icon');
+            const allTranslatableElements = document.querySelectorAll('[data-en], [data-hi]');
+            const allAriaElements = document.querySelectorAll('[data-aria-en], [data-aria-hi]');
+
 
             let currentCardIndex = 0;
-            const totalCards = newsCards.length;
+            let currentLanguage = 'en'; // Default language
 
-            // --- Initial Setup ---
-
-            /**
-             * Updates the phone's status bar time.
-             */
+            // --- Time Update ---
             function updateTime() {
                 const now = new Date();
-                // Use Intl.DateTimeFormat for locale-aware time formatting
-                const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-                phoneTime.textContent = timeString;
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                if (statusBarTime) {
+                    statusBarTime.textContent = `${hours}:${minutes}`;
+                }
             }
-            updateTime(); // Initial call
-            setInterval(updateTime, 60000); // Update every minute
+            updateTime();
+            setInterval(updateTime, 1000 * 30); // Update time every 30 seconds
 
-            /**
-             * Updates the position and width of the tab indicator.
-             * @param {HTMLElement} activeTab - The currently active tab element.
-             */
-            function updateTabIndicator(activeTab) {
-                const tabRect = activeTab.getBoundingClientRect();
-                const containerRect = activeTab.parentElement.getBoundingClientRect(); // Get container rect for offset calculation
-                
-                tabIndicator.style.width = `${tabRect.width}px`;
-                tabIndicator.style.left = `${tabRect.left - containerRect.left}px`; // Position relative to container
+            // --- Language Switcher ---
+            function toggleLanguageMenu() {
+                const isExpanded = languageMenu.classList.toggle('show');
+                menuOverlay.classList.toggle('show', isExpanded);
+                languageToggle.setAttribute('aria-expanded', isExpanded.toString());
             }
-            // Set initial indicator position
-            updateTabIndicator(document.querySelector('.tab.active'));
-
-
-            /**
-             * Updates the state of the news cards based on the current index.
-             */
-            function updateCards() {
-                newsCards.forEach((card, index) => {
-                    card.classList.remove('active', 'previous');
-                    const cardDataIndex = parseInt(card.dataset.index, 10);
-
-                    if (cardDataIndex === currentCardIndex) {
-                        card.classList.add('active');
-                    } else if (cardDataIndex < currentCardIndex) {
-                        card.classList.add('previous'); // Cards already viewed
+            
+            if (languageToggle) {
+                languageToggle.addEventListener('click', toggleLanguageMenu);
+                languageToggle.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleLanguageMenu();
                     }
-                    // Cards with index > currentCardIndex keep their default translateY(100%)
+                });
+            }
+
+            if (menuOverlay) {
+                menuOverlay.addEventListener('click', toggleLanguageMenu);
+            }
+
+            languageOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const selectedLang = option.getAttribute('data-lang');
+                    if (selectedLang !== currentLanguage) {
+                        setLanguage(selectedLang);
+                    }
+                    toggleLanguageMenu(); // Close menu after selection
+                });
+                 option.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const selectedLang = option.getAttribute('data-lang');
+                         if (selectedLang !== currentLanguage) {
+                            setLanguage(selectedLang);
+                        }
+                        toggleLanguageMenu();
+                    }
+                });
+            });
+
+            function setLanguage(lang) {
+                currentLanguage = lang;
+                langText.textContent = lang.toUpperCase();
+
+                // Update all elements with data-lang attributes
+                allTranslatableElements.forEach(el => {
+                    const text = el.getAttribute(`data-${lang}`);
+                    if (text) {
+                        // Preserve child elements if only text content needs changing
+                        if (el.childNodes.length > 0 && el.childNodes[0].nodeType === Node.TEXT_NODE) {
+                           // Check if the element is a direct text container or has mixed content
+                            let onlyTextChildren = true;
+                            el.childNodes.forEach(cn => { if(cn.nodeType !== Node.TEXT_NODE && cn.nodeName !== 'BR') onlyTextChildren = false; });
+
+                            if(onlyTextChildren || el.classList.contains('news-title') || el.classList.contains('news-body') || el.classList.contains('tab') || el.classList.contains('tag') || el.classList.contains('time-ago') || el.classList.contains('source-name') || el.classList.contains('ad-placeholder')) {
+                                el.textContent = text;
+                            } else {
+                                // More complex scenario, might need specific handling or accept that innerHTML is simpler
+                                // For now, if it's not simple text, we might be replacing more than intended.
+                                // A robust solution would traverse and replace only text nodes.
+                                // For this example, we assume simple text or full replacement is fine for these elements.
+                                 if (el.firstChild && el.firstChild.nodeType === Node.TEXT_NODE) {
+                                    el.firstChild.nodeValue = text + (el.innerHTML.includes('&nbsp;') ? '&nbsp;' : ''); // Preserve nbsp
+                                } else {
+                                     el.textContent = text; // Fallback
+                                }
+                            }
+                        } else {
+                             el.textContent = text;
+                        }
+                    }
+                });
+                
+                // Update ARIA labels
+                allAriaElements.forEach(el => {
+                    const ariaText = el.getAttribute(`data-aria-${lang}`);
+                    if (ariaText) {
+                        el.setAttribute('aria-label', ariaText);
+                    }
                 });
 
-                // Update navigation button states
-                prevButton.disabled = currentCardIndex === 0;
-                nextButton.disabled = currentCardIndex === totalCards - 1;
+
+                // Update language options visual state
+                languageOptions.forEach(opt => {
+                    const optLang = opt.getAttribute('data-lang');
+                    const isSelected = optLang === lang;
+                    opt.classList.toggle('selected', isSelected);
+                    opt.setAttribute('aria-checked', isSelected.toString());
+                    opt.querySelector('.check-icon').style.opacity = isSelected ? '1' : '0';
+                });
+
+                // Show notification
+                const langName = document.querySelector(`.language-option[data-lang="${lang}"] .lang-name`).textContent;
+                notificationText.textContent = `Language set to ${langName}`; // Simple notification
+                if (lang === 'hi') {
+                     notificationText.textContent = `${langName} भाषा चुनी गई`;
+                }
+                languageNotification.classList.add('show');
+                setTimeout(() => {
+                    languageNotification.classList.remove('show');
+                }, 2500);
             }
-             // Set initial card state
-            updateCards();
+            
+            // Initialize language based on current setting (default 'en')
+            setLanguage(currentLanguage);
 
 
-            // --- Event Listeners ---
-
-            // Tab Switching
+            // --- Tab Bar ---
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
-                    // Remove active class from all tabs
                     tabs.forEach(t => t.classList.remove('active'));
-                    // Add active class to the clicked tab
                     tab.classList.add('active');
-                    
-                    // Update the indicator position
-                    updateTabIndicator(tab);
-
-                    // Show/hide the corresponding view
-                    const targetViewId = tab.dataset.target;
-                    Object.values(views).forEach(view => {
-                        view.style.display = view.id === targetViewId ? 'block' : 'none';
-                    });
-
-                    // Show/hide navigation buttons based on active tab
-                    navigationButtons.style.display = targetViewId === 'news-view' ? 'flex' : 'none';
+                    // Add logic here to filter news or change content based on tab
+                    console.log(`Tab selected: ${tab.dataset.tab}`);
+                });
+                tab.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        tab.click();
+                    }
                 });
             });
 
-            // Category Selection
-            categories.forEach(category => {
-                category.addEventListener('click', () => {
-                    // Remove active class from all categories
-                    categories.forEach(c => c.classList.remove('active'));
-                    // Add active class to the clicked category
-                    category.classList.add('active');
-                    // In a real app, you would filter news items here based on the selected category
-                    console.log(`Category selected: ${category.textContent}`);
+            // --- News Card Navigation ---
+            function showNewsCard(index) {
+                newsCards.forEach((card, i) => {
+                    card.classList.remove('active', 'prev');
+                    if (i === index) {
+                        card.classList.add('active');
+                    } else if (i < index) {
+                        // card.classList.add('prev'); // Optional: for different transition for past cards
+                    }
+                });
+                currentCardIndex = index;
+                updateNavButtons();
+            }
+
+            function updateNavButtons() {
+                if(prevStoryBtn) prevStoryBtn.classList.toggle('disabled', currentCardIndex === 0);
+                if(nextStoryBtn) nextStoryBtn.classList.toggle('disabled', currentCardIndex === newsCards.length - 1);
+            }
+
+            if (prevStoryBtn) {
+                prevStoryBtn.addEventListener('click', () => {
+                    if (currentCardIndex > 0) {
+                        showNewsCard(currentCardIndex - 1);
+                    }
+                });
+            }
+            if (nextStoryBtn) {
+                nextStoryBtn.addEventListener('click', () => {
+                    if (currentCardIndex < newsCards.length - 1) {
+                        showNewsCard(currentCardIndex + 1);
+                    }
+                });
+            }
+            
+            // Initialize first card and nav buttons
+            if (newsCards.length > 0) {
+                showNewsCard(0);
+            } else {
+                if(prevStoryBtn) prevStoryBtn.classList.add('disabled');
+                if(nextStoryBtn) nextStoryBtn.classList.add('disabled');
+            }
+
+
+            // --- Bookmark and Share ---
+            document.querySelectorAll('.bookmark-share .fa-bookmark').forEach(bookmarkIcon => {
+                bookmarkIcon.addEventListener('click', () => {
+                    bookmarkIcon.classList.toggle('far'); // Regular icon
+                    bookmarkIcon.classList.toggle('fas'); // Solid icon
+                    bookmarkIcon.classList.toggle('saved');
+                    const isSaved = bookmarkIcon.classList.contains('saved');
+                    const storyTitle = bookmarkIcon.closest('.news-card').querySelector('.news-title').textContent.substring(0,30) + "...";
+                    if (isSaved) {
+                        console.log(`Bookmarked: ${storyTitle}`);
+                        bookmarkIcon.setAttribute('aria-label', bookmarkIcon.dataset.ariaEn.replace('Bookmark', 'Bookmarked'));
+                        if (currentLanguage === 'hi') {
+                             bookmarkIcon.setAttribute('aria-label', bookmarkIcon.dataset.ariaHi.replace('बुकमार्क करें', 'बुकमार्क किया गया'));
+                        }
+                    } else {
+                        console.log(`Removed bookmark: ${storyTitle}`);
+                        bookmarkIcon.setAttribute('aria-label', bookmarkIcon.dataset.ariaEn);
+                         if (currentLanguage === 'hi') {
+                             bookmarkIcon.setAttribute('aria-label', bookmarkIcon.dataset.ariaHi);
+                        }
+                    }
+                });
+                 bookmarkIcon.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        bookmarkIcon.click();
+                    }
                 });
             });
 
-            // News Card Navigation
-            nextButton.addEventListener('click', () => {
-                if (currentCardIndex < totalCards - 1) {
-                    currentCardIndex++;
-                    updateCards();
-                }
+            document.querySelectorAll('.bookmark-share .fa-share-nodes').forEach(shareIcon => {
+                shareIcon.addEventListener('click', () => {
+                    const storyTitle = shareIcon.closest('.news-card').querySelector('.news-title').textContent.substring(0,30) + "...";
+                    // Replace with actual share functionality (e.g., Web Share API)
+                    if (navigator.share) {
+                        navigator.share({
+                            title: shareIcon.closest('.news-card').querySelector('.news-title').textContent,
+                            text: shareIcon.closest('.news-card').querySelector('.news-body').textContent.substring(0, 100) + "...",
+                            url: window.location.href, // Or actual article URL
+                        })
+                        .then(() => console.log('Successful share'))
+                        .catch((error) => console.log('Error sharing', error));
+                    } else {
+                        console.log(`Share clicked for: ${storyTitle}. Web Share API not supported.`);
+                        alert(`Sharing: ${storyTitle}\n(Implement actual sharing functionality)`);
+                    }
+                });
+                 shareIcon.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        shareIcon.click();
+                    }
+                });
             });
 
-            prevButton.addEventListener('click', () => {
-                if (currentCardIndex > 0) {
-                    currentCardIndex--;
-                    updateCards();
-                }
+            // --- Footer Icons ---
+            footerIcons.forEach(icon => {
+                icon.addEventListener('click', () => {
+                    footerIcons.forEach(i => i.classList.remove('active'));
+                    icon.classList.add('active');
+                    console.log(`Footer section selected: ${icon.dataset.section}`);
+                    // Add logic here to change view or navigate
+                });
+                 icon.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        icon.click();
+                    }
+                });
             });
 
-            // Add News Form Submission
-            addNewsForm.addEventListener('submit', (e) => {
-                e.preventDefault(); // Prevent actual form submission
-
-                // --- Get form data (Example) ---
-                const formData = {
-                    imageUrl: document.getElementById('image-url').value,
-                    category: document.getElementById('category').value,
-                    heading: document.getElementById('heading').value,
-                    summary: document.getElementById('summary').value,
-                    source: document.getElementById('source').value,
-                    sourceLink: document.getElementById('source-link').value,
-                };
-
-                console.log('Form Submitted:', formData); // Log data for debugging
-
-                // --- Show Toast Message ---
-                toastMessage.classList.add('show');
-                // Hide toast after animation finishes (2.5 seconds)
-                setTimeout(() => {
-                    toastMessage.classList.remove('show');
-                }, 2500);
-
-                // --- Clear the form ---
-                addNewsForm.reset();
-
-                // --- Optional: Switch back to News Feed tab ---
-                 // Find the news tab element and trigger a click
-                 const newsTabElement = document.getElementById('news-tab');
-                 if (newsTabElement) {
-                    newsTabElement.click();
-                 }
-            });
-
-        }); // End DOMContentLoaded
+        });
     </script>
 </body>
 </html>
