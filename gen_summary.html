@@ -128,6 +128,7 @@
             const newsUrl = document.getElementById('newsUrl').value;
             const apiToken = document.getElementById('apiToken').value;
             const language = document.getElementById('language').value;
+            //http://localhost:8000/api/v1/summarize
             const apiUrl = `https://3.6.1.89/api/v1/summarize`;
             const responseDiv = document.getElementById('response');
             responseDiv.innerHTML = '<p class="loading">Processing your request...</p>';
@@ -169,7 +170,7 @@
                             <div style="flex: 1;">
                                 <label for="tags" style="font-weight: bold; color: #555;">Tags:</label>
                                 <select id="tags" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                                    <option value="Market">Market</option>
+                                    <option value="Markets">Markets</option>
                                     <option value="Stocks">Stocks</option>
                                     <option value="IPO">IPO</option>
                                     <option value="Crypto">Crypto</option>
@@ -178,9 +179,11 @@
                             <div style="flex: 1;">
                                 <label for="label" style="font-weight: bold; color: #555;">Label:</label>
                                 <select id="label" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                                    <option value="Factual">Factual</option>
+                                    <option value="Opinion">Opinion</option>
+                                    <option value="Analysis">Analysis</option>
                                     <option value="Exclusive">Exclusive</option>
                                     <option value="Breaking">Breaking</option>
-                                    <option value="Partnership">Partnership</option>
                                 </select>
                             </div>
                         </div>
@@ -188,9 +191,9 @@
                             <div style="flex: 1;">
                                 <label for="provider" style="font-weight: bold; color: #555;">News Provider:</label>
                                 <select id="provider" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                                    <option value="Times of India">Times of India</option>
-                                    <option value="The Hindu">The Hindu</option>
-                                    <option value="Economic Times">Economic Times</option>
+                                    <option value="The Economic Times">The Economic Times</option>
+                                    // <option value="Times of India">Times of India</option>
+                                    // <option value="The Hindu">The Hindu</option>
                                 </select>
                             </div>
                             <div style="flex: 1;">
@@ -271,9 +274,11 @@
                 approvalResponseDiv.style.color = 'red';
                 return;
             }
-    
+
+            // Convert createdAt (YYYY-MM-DDTHH:mm) to epoch timestamp (seconds)
+            const createdAtEpoch = Math.floor(new Date(createdAt).getTime() / 1000);
             const apiUrl = `https://3.6.1.89/api/v1/approve`;
-    
+
             fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -285,10 +290,10 @@
                     id: id,
                     gen_title: genTitle,
                     summary: summary,
-                    tags: tags,
+                    tag: tags,
                     label: label,
-                    provider: provider,
-                    created_at: createdAt
+                    news_provider: provider,
+                    news_datetime: createdAtEpoch
                 })
             })
             .then(response => {
