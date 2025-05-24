@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monezy - Finance News</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS Variables for theming and consistency */
+        :root {
+            --primary-color: #00C805;
+            --text-dark: #000000;
+            --text-medium: #444444;
+            --text-light: #888888;
+            --background-light: #ffffff;
+            --background-grey: #f0f0f0;
+            --border-color: #e0e0e0;
+            --font-family-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family-main);
+            /* Removed global user-select: none; Apply selectively if needed */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on touch devices */
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden; /* To contain the iPhone frame demo */
+        }
+
+        body {
+            background-color: var(--background-grey);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* iPhone Frame Styling */
+        .iphone-frame {
+            width: 375px; /* Typical iPhone width */
+            height: 812px; /* Typical iPhone X/XS/11 Pro height */
+            background-color: #111; /* Frame color */
+            border-radius: 40px; /* Rounded corners for the frame */
+            padding: 12px; /* Padding around the screen */
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3); /* Shadow for depth */
+            position: relative;
+            overflow: hidden; /* Clip content outside the frame */
+        }
+
+        .notch {
+            position: absolute;
+            top: 12px; /* Position at the top of the frame */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px; /* Width of the notch */
+            height: 30px; /* Height of the notch */
+            background-color: #111; /* Match frame color */
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            z-index: 10; /* Above the screen content */
+        }
+
+        .iphone-screen {
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-light);
+            border-radius: 30px; /* Rounded corners for the screen */
+            overflow: hidden; /* Clip content outside the screen */
+            position: relative;
+            display: flex;
+            flex-direction: column; /* Stack header, content, footer */
+        }
+
+        /* Header Area */
+        .header-content {
+            flex-shrink: 0; /* Prevent header from shrinking */
+            background-color: var(--background-light);
+            position: relative;
+            z-index: 5; /* Above news swiper */
+            padding-top: 30px; /* Space for notch */
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 15px;
+        }
+
+        .time { font-weight: bold; color: var(--text-dark); font-size: 14px; }
+        
+        .status-bar-left-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #language-toggle {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 4px 8px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            position: relative; /* For menu positioning */
+            user-select: none; /* Prevent text selection on toggle */
+        }
+
+        #language-toggle:hover, #language-toggle:active {
+            background-color: #eaeaea;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.12);
+        }
+
+        #language-toggle i.fa-globe {
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+
+        #language-toggle #lang-text {
+            font-weight: 600;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease-in-out;
+        }
+        
+        #language-toggle:before { /* Ripple effect */
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 16px;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            opacity: 0;
+            background: radial-gradient(circle at center, rgba(0,200,5,0.1) 0%, rgba(0,200,5,0) 70%);
+        }
+
+        #language-toggle:active:before {
+            opacity: 1;
+        }
+
+        .language-menu {
+            position: absolute;
+            top: calc(100% + 5px); /* Position below the toggle */
+            left: 0; /* Align with the toggle */
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+            width: 160px; /* Slightly wider for better text fit */
+            max-height: 0;
+            transition: max-height 0.3s ease, opacity 0.2s ease, transform 0.3s ease;
+            opacity: 0;
+            z-index: 100;
+            pointer-events: none;
+            transform: translateY(-10px); /* Start slightly up */
+        }
+
+        .language-menu.show {
+            max-height: 300px;
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 14px;
+        }
+
+        .language-option:hover {
+            background-color: #f5f5f5;
+        }
+
+        .language-option.selected {
+            background-color: #f0f9f0; /* Light green for selected */
+            font-weight: 600;
+        }
+
+        .language-option .check-icon {
+            margin-left: auto;
+            color: var(--primary-color);
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .language-option.selected .check-icon {
+            opacity: 1;
+        }
+
+        .language-option .lang-code {
+            font-weight: 600;
+            margin-right: 8px;
+            min-width: 30px; /* Ensure alignment */
+            color: #333;
+        }
+
+        .language-option .lang-name {
+            color: var(--text-medium);
+        }
+        
+        .menu-overlay {
+            position: fixed; /* Cover the entire iphone-screen */
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.1); /* Softer overlay */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 99; /* Below menu, above other content */
+            border-radius: 30px; /* Match screen radius */
+        }
+
+        .menu-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .language-notification {
+            position: absolute; /* Position within iphone-screen */
+            bottom: -70px; /* Start off-screen */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 20px; /* Pill shape */
+            font-size: 13px;
+            font-weight: 500;
+            transition: bottom 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.4s ease;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .language-notification.show {
+            bottom: 80px; /* Position above footer */
+            opacity: 1;
+        }
+
+        .language-notification i {
+            color: var(--primary-color);
+        }
+
+
+        .icons { display: flex; gap: 10px; color: var(--text-dark); font-size: 14px; }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px 0;
+        }
+        .logo-black { color: var(--text-dark); }
+        .logo-green { color: var(--primary-color); }
+
+        .tab-bar {
+            display: flex;
+            overflow-x: auto; /* Allow horizontal scrolling for tabs */
+            gap: 20px;
+            padding: 10px 15px;
+            scrollbar-width: none; /* Firefox */
+            flex-shrink: 0;
+            -ms-overflow-style: none;  /* IE and Edge */
+        }
+        .tab-bar::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+        
+        .tab { 
+            white-space: nowrap; 
+            color: var(--text-light); 
+            font-size: 16px; 
+            cursor: pointer; 
+            padding-bottom: 5px; /* Space for border */
+            border-bottom: 2px solid transparent; /* Placeholder for active border */
+            transition: color 0.2s ease, border-color 0.2s ease;
+            user-select: none;
+        }
+        .tab:hover {
+            color: var(--text-medium);
+        }
+        .tab.active { 
+            color: var(--primary-color); 
+            font-weight: bold; 
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* News Swiper Area */
+        .news-swiper-container {
+            flex-grow: 1; /* Take remaining vertical space */
+            overflow: hidden; /* Crucial for card positioning */
+            position: relative;
+            background-color: var(--background-grey);
+        }
+
+        .news-swiper {
+            height: 100%;
+            position: relative;
+            /* Transform will be handled by JS for card transitions */
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother easing */
+        }
+
+        .news-card {
+            background-color: var(--background-light);
+            overflow: hidden; /* Content within card */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            opacity: 0; /* Hidden by default, shown by JS */
+            transform: translateY(100%); /* Start off-screen */
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            visibility: hidden;
+        }
+        .news-card.active {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+            z-index: 2; /* Active card on top */
+        }
+        .news-card.prev { /* For smoother transitions if needed */
+            transform: translateY(-100%);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1;
+        }
+
+
+        .news-image {
+            width: 100%;
+            height: 250px; /* Fixed height for image */
+            object-fit: cover; /* Cover the area, might crop */
+            flex-shrink: 0;
+            background-color: #eaeaea; /* Placeholder background */
+        }
+
+        .news-content {
+            padding: 15px;
+            flex-grow: 1;
+            overflow-y: auto; /* Allow scrolling for long content */
+            display: flex;
+            flex-direction: column;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) #f0f0f0;
+        }
+        .news-content::-webkit-scrollbar { width: 5px; }
+        .news-content::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 10px; }
+        .news-content::-webkit-scrollbar-track { background-color: #f0f0f0; }
+
+
+        .news-details {
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+
+        .news-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            line-height: 1.3;
+        }
+
+        .news-body {
+            font-size: 15px;
+            line-height: 1.5;
+            color: var(--text-medium);
+            /* Allow text selection in news body */
+            user-select: text; 
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+        }
+
+        .ad-placeholder {
+            height: 60px;
+            background-color: #f7f7f7; /* Lighter background */
+            border: 1px dashed #d0d0d0; /* Softer border */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #999999; /* Lighter text */
+            font-size: 12px;
+            margin: 15px 0;
+            flex-shrink: 0;
+            text-align: center;
+            padding: 5px;
+            border-radius: 8px; /* Rounded corners */
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 12px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            margin-top: auto; /* Push to bottom */
+            flex-shrink: 0;
+        }
+
+        .source-time { display: flex; gap: 5px; align-items: center; }
+        /* .source-time .time-ago {} */ /* For translation */
+        /* .source-time .source-name {} */ /* For translation, if needed */
+
+        .bookmark-share { display: flex; gap: 20px; align-items: center; }
+        .bookmark-share i { 
+            font-size: 20px; 
+            color: #555; 
+            cursor: pointer; 
+            transition: color 0.2s ease, transform 0.2s ease; 
+        }
+        .bookmark-share i:hover { color: var(--primary-color); transform: scale(1.1); }
+        .bookmark-share i.saved { color: var(--primary-color); font-weight: bold; }
+
+        .tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: var(--primary-color);
+            color: var(--background-light);
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 3; /* Above image */
+        }
+
+        /* Navigation Buttons for News Swiper */
+        .nav-button {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4; /* Above cards but below header/footer potentially */
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .nav-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+            transform: translateX(-50%) scale(1.05);
+        }
+        .nav-button.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        .nav-button:active {
+             transform: translateX(-50%) scale(0.95);
+        }
+
+        #prev-story-btn { top: 15px; } /* Positioned within news-swiper-container */
+        #next-story-btn { bottom: 15px; }
+
+        /* Footer Area */
+        .footer {
+            height: 65px;
+            background-color: var(--background-light);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 5; /* Above news swiper */
+        }
+
+        .footer-icon { 
+            font-size: 24px; 
+            color: #AAAAAA; 
+            cursor: pointer; 
+            transition: color 0.2s ease, transform 0.2s ease; 
+            padding: 10px; 
+            user-select: none;
+        }
+        .footer-icon:hover { color: #555555; transform: translateY(-2px); }
+        .footer-icon.active { color: var(--primary-color); }
+
+    </style>
+</head>
+<body>
+    <div class="iphone-frame">
+        <div class="notch"></div>
+        <div class="iphone-screen">
+
+            <div class="header-content">
+                <div class="status-bar">
+                    <div class="status-bar-left-section">
+                        <div class="time" id="status-bar-time">9:42</div>
+                        <div id="language-toggle" title="Switch Language" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-globe"></i>&nbsp;
+                            <span id="lang-text">EN</span>
+                        </div>
+                        <div class="language-menu" id="language-menu" role="menu">
+                            <div class="language-option" data-lang="en" role="menuitemradio" aria-checked="true">
+                                <span class="lang-code">EN</span>
+                                <span class="lang-name">English</span>
+                                <i class="fas fa-check check-icon"></i>
+                            </div>
+                            <div class="language-option" data-lang="hi" role="menuitemradio" aria-checked="false">
+                                <span class="lang-code">हिं</span>
+                                <span class="lang-name">हिन्दी</span>
+                                <i class="fas fa-check check-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="icons">
+                        <div><i class="fa-solid fa-signal"></i></div>
+                        <div><i class="fa-solid fa-wifi"></i></div> <div><i class="fa-solid fa-battery-full"></i></div>
+                    </div>
+                </div>
+                <div class="logo">
+                    <span class="logo-black">Mone</span><span class="logo-green">zy</span>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab active" data-tab="my_feed" data-en="My Feed" data-hi="मेरी फ़ीड" tabindex="0">My Feed</div>
+                    <div class="tab" data-tab="markets" data-en="Markets" data-hi="बाज़ार" tabindex="0">Markets</div>
+                    <div class="tab" data-tab="crypto" data-en="Crypto" data-hi="क्रिप्टो" tabindex="0">Crypto</div>
+                    <div class="tab" data-tab="stocks" data-en="Stocks" data-hi="स्टॉक्स" tabindex="0">Stocks</div>
+                    <div class="tab" data-tab="ipos" data-en="IPOs" data-hi="आईपीओ" tabindex="0">IPOs</div>
+                    <div class="tab" data-tab="global" data-en="Global" data-hi="वैश्विक" tabindex="0">Global</div>
+                </div>
+            </div>
+
+            <div class="news-swiper-container">
+                <div class="news-swiper" id="news-swiper">
+                    <div class="news-card active" data-index="0">
+                        <div class="tag" data-en="BREAKING" data-hi="ब्रेकिंग">BREAKING</div>
+                        <img src="https://placehold.co/375x250/EAEAEA/BDBDBD?text=Fed+Reserve" alt="Federal Reserve Building" class="news-image" onerror="this.onerror=null;this.src='https://placehold.co/375x250/EAEAEA/BDBDBD?text=Image+Error';">
+                        <div class="news-content">
+                            <div class="news-details">
+                                <div class="news-title" data-en="Fed signals potential rate cut in June amid cooling inflation data" data-hi="फेड ने जून में संभावित दर कटौती का संकेत दिया, मुद्रास्फीति के आंकड़ों में नरमी">Fed signals potential rate cut in June amid cooling inflation data</div>
+                                <div class="news-body" data-en="Federal Reserve officials have hinted at a possible interest rate cut as early as June, following recent data showing inflation trending downward. Chair Jerome Powell mentioned that the central bank needs to be 'confident' that inflation is sustainably moving toward the 2% target." data-hi="फेडरल रिजर्व के अधिकारियों ने हालिया आंकड़ों के बाद जून की शुरुआत में संभावित ब्याज दर में कटौती का संकेत दिया है, जिसमें मुद्रास्फीति नीचे की ओर चल रही है। अध्यक्ष जेरोम पॉवेल ने उल्लेख किया कि केंद्रीय बैंक को 'आश्वस्त' होने की आवश्यकता है कि मुद्रास्फीति स्थायी रूप से 2% लक्ष्य की ओर बढ़ रही है।">Federal Reserve officials have hinted at a possible interest rate cut as early as June, following recent data showing inflation trending downward. Chair Jerome Powell mentioned that the central bank needs to be "confident" that inflation is sustainably moving toward the 2% target.</div>
+                            </div>
+                            <div class="ad-placeholder" data-en="Advertisement Space - Support Us!" data-hi="विज्ञापन स्थान - हमारा समर्थन करें!">Advertisement Space - Support Us!</div>
+                            <div class="news-meta">
+                                <div class="source-time">
+                                    <div class="time-ago" data-en="45 min ago" data-hi="४५ मिनट पहले">45 min ago</div>&nbsp;<div data-en="|" data-hi="|">|</div>&nbsp;<div class="source-name" data-en="Bloomberg" data-hi="ब्लूमबर्ग">Bloomberg</div>
+                                </div>
+                                <div class="bookmark-share">
+                                    <i class="far fa-bookmark" role="button" tabindex="0" aria-label="Bookmark this story" data-aria-en="Bookmark this story" data-aria-hi="इस कहानी को बुकमार्क करें"></i>
+                                    <i class="fas fa-share-nodes" role="button" tabindex="0" aria-label="Share this story" data-aria-en="Share this story" data-aria-hi="इस कहानी को साझा करें"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-card" data-index="1">
+                        <img src="https://placehold.co/375x250/DDEEFF/99AACC?text=Tesla+EV" alt="Tesla Electric Vehicle" class="news-image" onerror="this.onerror=null;this.src='https://placehold.co/375x250/EAEAEA/BDBDBD?text=Image+Error';">
+                        <div class="news-content">
+                            <div class="news-details">
+                                <div class="news-title" data-en="Tesla shares surge 8% after announcing new affordable EV model" data-hi="टेस्ला के शेयरों में 8% की उछाल, नए किफायती ईवी मॉडल की घोषणा के बाद">Tesla shares surge 8% after announcing new affordable EV model</div>
+                                <div class="news-body" data-en="Tesla's stock jumped 8% in after-hours trading following CEO Elon Musk's announcement of a new affordable electric vehicle model set to launch next year. The $25,000 car aims to compete in the mass-market segment." data-hi="टेस्ला के सीईओ एलन मस्क द्वारा अगले साल लॉन्च होने वाले एक नए किफायती इलेक्ट्रिक वाहन मॉडल की घोषणा के बाद कंपनी के स्टॉक में आफ्टर-आवर्स ट्रेडिंग में 8% की उछाल आई। $25,000 की यह कार मास-मार्केट सेगमेंट में प्रतिस्पर्धा करने का लक्ष्य रखती है।">Tesla's stock jumped 8% in after-hours trading following CEO Elon Musk's announcement of a new affordable electric vehicle model set to launch next year. The $25,000 car aims to compete in the mass-market segment.</div>
+                            </div>
+                            <div class="ad-placeholder" data-en="Sponsored Content" data-hi="प्रायोजित सामग्री">Sponsored Content</div>
+                            <div class="news-meta">
+                                <div class="source-time">
+                                    <div class="time-ago" data-en="2 hours ago" data-hi="२ घंटे पहले">2 hours ago</div>&nbsp;<div data-en="|" data-hi="|">|</div>&nbsp;<div class="source-name" data-en="CNBC" data-hi="सीएनबीसी">CNBC</div>
+                                </div>
+                                <div class="bookmark-share">
+                                    <i class="far fa-bookmark" role="button" tabindex="0" aria-label="Bookmark this story" data-aria-en="Bookmark this story" data-aria-hi="इस कहानी को बुकमार्क करें"></i>
+                                    <i class="fas fa-share-nodes" role="button" tabindex="0" aria-label="Share this story" data-aria-en="Share this story" data-aria-hi="इस कहानी को साझा करें"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-card" data-index="2">
+                         <img src="https://placehold.co/375x250/FFDDAA/DDAA77?text=Bitcoin+Chart" alt="Bitcoin Price Chart" class="news-image" onerror="this.onerror=null;this.src='https://placehold.co/375x250/EAEAEA/BDBDBD?text=Image+Error';">
+                        <div class="news-content">
+                            <div class="news-details">
+                                <div class="news-title" data-en="Bitcoin surpasses $80,000 for the first time, setting new all-time high" data-hi="बिटकॉइन पहली बार $80,000 के पार, नया सर्वकालिक उच्च स्तर बनाया">Bitcoin surpasses $80,000 for the first time, setting new all-time high</div>
+                                <div class="news-body" data-en="Bitcoin has broken past the $80,000 mark for the first time in history, continuing its impressive rally. Analysts attribute the surge to increased institutional adoption and the recent halving event." data-hi="बिटकॉइन इतिहास में पहली बार $80,000 का आंकड़ा पार कर गया है, अपनी प्रभावशाली रैली जारी रखते हुए। विश्लेषक इस उछाल का श्रेय संस्थागत अपनाने में वृद्धि और हालिया हॉल्टिंग घटना को देते हैं।">Bitcoin has broken past the $80,000 mark for the first time in history, continuing its impressive rally. Analysts attribute the surge to increased institutional adoption and the recent halving event.</div>
+                            </div>
+                            <div class="ad-placeholder" data-en="Learn About Crypto Trading" data-hi="क्रिप्टो ट्रेडिंग के बारे में जानें">Learn About Crypto Trading</div>
+                            <div class="news-meta">
+                                <div class="source-time">
+                                    <div class="time-ago" data-en="3 hours ago" data-hi="३ घंटे पहले">3 hours ago</div>&nbsp;<div data-en="|" data-hi="|">|</div>&nbsp;<div class="source-name" data-en="CoinDesk" data-hi="कॉइनडेस्क">CoinDesk</div>
+                                </div>
+                                <div class="bookmark-share">
+                                    <i class="fas fa-bookmark saved" role="button" tabindex="0" aria-label="Story bookmarked" data-aria-en="Story bookmarked" data-aria-hi="कहानी बुकमार्क की गई"></i>
+                                    <i class="fas fa-share-nodes" role="button" tabindex="0" aria-label="Share this story" data-aria-en="Share this story" data-aria-hi="इस कहानी को साझा करें"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="news-card" data-index="3">
+                        <div class="tag" data-en="EXCLUSIVE" data-hi="एक्सक्लूसिव">EXCLUSIVE</div>
+                        <img src="https://placehold.co/375x250/AACCDD/7799AA?text=Amazon+Shopify" alt="Amazon and Shopify Logos" class="news-image" onerror="this.onerror=null;this.src='https://placehold.co/375x250/EAEAEA/BDBDBD?text=Image+Error';">
+                        <div class="news-content">
+                                <div class="news-details">
+                                <div class="news-title" data-en="Amazon to acquire Shopify's logistics business for $12 billion" data-hi="अमेज़ॅन $12 बिलियन में शॉपिफाई के लॉजिस्टिक्स कारोबार का अधिग्रहण करेगा">Amazon to acquire Shopify's logistics business for $12 billion</div>
+                                <div class="news-body" data-en="In a major e-commerce shake-up, Amazon has agreed to acquire Shopify's logistics and fulfillment operations for $12 billion. The deal is subject to regulatory approval and is expected to close by Q4." data-hi="एक बड़े ई-कॉमर्स फेरबदल में, अमेज़ॅन ने शॉपिफाई के लॉजिस्टिक्स और फुलफिलमेंट संचालन को $12 बिलियन में अधिग्रहित करने पर सहमति व्यक्त की है। यह सौदा नियामक अनुमोदन के अधीन है और Q4 तक पूरा होने की उम्मीद है।">In a major e-commerce shake-up, Amazon has agreed to acquire Shopify's logistics and fulfillment operations for $12 billion. The deal is subject to regulatory approval and is expected to close by Q4.</div>
+                            </div>
+                            <div class="ad-placeholder" data-en="Invest in E-commerce Stocks" data-hi="ई-कॉमर्स शेयरों में निवेश करें">Invest in E-commerce Stocks</div>
+                            <div class="news-meta">
+                                <div class="source-time">
+                                    <div class="time-ago" data-en="5 hours ago" data-hi="५ घंटे पहले">5 hours ago</div>&nbsp;<div data-en="|" data-hi="|">|</div>&nbsp;<div class="source-name" data-en="Financial Times" data-hi="फाइनेंशियल टाइम्स">Financial Times</div>
+                                </div>
+                                <div class="bookmark-share">
+                                    <i class="far fa-bookmark" role="button" tabindex="0" aria-label="Bookmark this story" data-aria-en="Bookmark this story" data-aria-hi="इस कहानी को बुकमार्क करें"></i>
+                                    <i class="fas fa-share-nodes" role="button" tabindex="0" aria-label="Share this story" data-aria-en="Share this story" data-aria-hi="इस कहानी को साझा करें"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button id="prev-story-btn" class="nav-button" aria-label="Previous Story" data-aria-en="Previous Story" data-aria-hi="पिछली कहानी"><i class="fas fa-chevron-up"></i></button>
+                <button id="next-story-btn" class="nav-button" aria-label="Next Story" data-aria-en="Next Story" data-aria-hi="अगली कहानी"><i class="fas fa-chevron-down"></i></button>
+            </div>
+
+            <div class="footer">
+                <i class="fas fa-home footer-icon active" data-section="home" aria-label="Home" data-aria-en="Home" data-aria-hi="होम" tabindex="0"></i>
+                <i class="fas fa-chart-line footer-icon" data-section="markets" aria-label="Markets" data-aria-en="Markets" data-aria-hi="बाज़ार" tabindex="0"></i>
+                <i class="fas fa-newspaper footer-icon" data-section="news" aria-label="News" data-aria-en="News" data-aria-hi="समाचार" tabindex="0"></i>
+                <i class="fas fa-bookmark footer-icon" data-section="saved" aria-label="Saved" data-aria-en="Saved" data-aria-hi="सहेजा गया" tabindex="0"></i>
+                <i class="fas fa-cog footer-icon" data-section="settings" aria-label="Settings" data-aria-en="Settings" data-aria-hi="सेटिंग्स" tabindex="0"></i>
+            </div>
+            
+            <div class="menu-overlay" id="menu-overlay"></div>
+            <div class="language-notification" id="language-notification">
+                <i class="fas fa-check-circle"></i> <span id="notification-text">Language set to English</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Element Selectors ---
+            const statusBarTime = document.getElementById('status-bar-time');
+            const languageToggle = document.getElementById('language-toggle');
+            const languageMenu = document.getElementById('language-menu');
+            const langText = document.getElementById('lang-text');
+            const languageOptions = document.querySelectorAll('.language-option');
+            const menuOverlay = document.getElementById('menu-overlay');
+            const languageNotification = document.getElementById('language-notification');
+            const notificationText = document.getElementById('notification-text');
+
+            const tabs = document.querySelectorAll('.tab');
+            const newsCards = document.querySelectorAll('.news-card');
+            const prevStoryBtn = document.getElementById('prev-story-btn');
+            const nextStoryBtn = document.getElementById('next-story-btn');
+            const footerIcons = document.querySelectorAll('.footer-icon');
+            const allTranslatableElements = document.querySelectorAll('[data-en], [data-hi]');
+            const allAriaElements = document.querySelectorAll('[data-aria-en], [data-aria-hi]');
+
+
+            let currentCardIndex = 0;
+            let currentLanguage = 'en'; // Default language
+
+            // --- API Integration for News ---
+            async function fetchAndPopulateNews() {
+                try {
+                    const response = await fetch('https://0te7y0t72e.execute-api.ap-south-1.amazonaws.com/e2e/news');
+                    const data = await response.json();
+                    if (data && data.data && Array.isArray(data.data)) {
+                        const newsSwiper = document.getElementById('news-swiper');
+                        if (!newsSwiper) return;
+                        newsSwiper.innerHTML = '';
+                        data.data.forEach((item, idx) => {
+                            // Create news-card element
+                            const card = document.createElement('div');
+                            card.className = 'news-card' + (idx === 0 ? ' active' : '');
+                            card.setAttribute('data-index', idx);
+                            // Tag (optional)
+                            let tagHtml = '';
+                            if (item.tag) {
+                                tagHtml = `<div class="tag" data-en="${item.tag}" data-hi="${item.tag}">${item.tag}</div>`;
+                            }
+                            // Image (fallback if not present)
+                            let imgUrl = 'https://placehold.co/375x250/EAEAEA/BDBDBD?text=No+Image';
+                            let imgAlt = 'News Image';
+                            if (item.image_url) {
+                                imgUrl = item.image_url;
+                                imgAlt = item.gen_title || 'News Image';
+                            }
+                            // News card HTML
+                            card.innerHTML = `
+                                ${tagHtml}
+                                <img src="${imgUrl}" alt="${imgAlt}" class="news-image" onerror="this.onerror=null;this.src='https://placehold.co/375x250/EAEAEA/BDBDBD?text=Image+Error';">
+                                <div class="news-content">
+                                    <div class="news-details">
+                                        <div class="news-title" data-en="${item.gen_title || ''}" data-hi="${item.gen_title || ''}">${item.gen_title || ''}</div>
+                                        <div class="news-body" data-en="${item.summary || ''}" data-hi="${item.summary || ''}">${item.summary || ''}</div>
+                                    </div>
+                                    <div class="ad-placeholder" data-en="Advertisement Space - Support Us!" data-hi="विज्ञापन स्थान - हमारा समर्थन करें!">Advertisement Space - Support Us!</div>
+                                    <div class="news-meta">
+                                        <div class="source-time">
+                                            <div class="time-ago" data-en="" data-hi=""></div>&nbsp;<div data-en="|" data-hi="|">|</div>&nbsp;<div class="source-name" data-en="${item.news_provider || ''}" data-hi="${item.news_provider || ''}">${item.news_provider || ''}</div>
+                                        </div>
+                                        <div class="bookmark-share">
+                                            <i class="far fa-bookmark" role="button" tabindex="0" aria-label="Bookmark this story" data-aria-en="Bookmark this story" data-aria-hi="इस कहानी को बुकमार्क करें"></i>
+                                            <i class="fas fa-share-nodes" role="button" tabindex="0" aria-label="Share this story" data-aria-en="Share this story" data-aria-hi="इस कहानी को साझा करें"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            // Set time-ago
+                            const timeAgoEl = card.querySelector('.time-ago');
+                            if (timeAgoEl && item.news_datetime) {
+                                const now = Math.floor(Date.now() / 1000);
+                                const diff = now - item.news_datetime;
+                                let timeStr = '';
+                                if (diff < 60) timeStr = 'Just now';
+                                else if (diff < 3600) timeStr = Math.floor(diff/60) + ' min ago';
+                                else if (diff < 86400) timeStr = Math.floor(diff/3600) + ' hours ago';
+                                else timeStr = Math.floor(diff/86400) + ' days ago';
+                                timeAgoEl.textContent = timeStr;
+                                timeAgoEl.setAttribute('data-en', timeStr);
+                                timeAgoEl.setAttribute('data-hi', timeStr);
+                            }
+                            // Card click: open URL if present
+                            if (item.url) {
+                                card.style.cursor = 'pointer';
+                                card.onclick = () => { window.open(item.url, '_blank'); };
+                            }
+                            newsSwiper.appendChild(card);
+                        });
+                        // Re-select newsCards NodeList after DOM update
+                        window.newsCards = document.querySelectorAll('.news-card');
+                        // Reset navigation
+                        if (window.newsCards.length > 0) {
+                            currentCardIndex = 0;
+                            showNewsCard(0);
+                        }
+                        // Re-attach bookmark/share event listeners for new cards
+                        window.newsCards.forEach(card => {
+                            card.querySelectorAll('.bookmark-share .fa-bookmark').forEach(bookmarkIcon => {
+                                bookmarkIcon.addEventListener('click', () => {
+                                    bookmarkIcon.classList.toggle('far');
+                                    bookmarkIcon.classList.toggle('fas');
+                                    bookmarkIcon.classList.toggle('saved');
+                                    const isSaved = bookmarkIcon.classList.contains('saved');
+                                    const storyTitle = bookmarkIcon.closest('.news-card').querySelector('.news-title').textContent.substring(0,30) + "...";
+                                    if (isSaved) {
+                                        bookmarkIcon.setAttribute('aria-label', bookmarkIcon.dataset.ariaEn.replace('Bookmark', 'Bookmarked'));
+                                        if (currentLanguage === 'hi') {
+                                            bookmarkIcon.setAttribute('aria-label', bookmarkIcon.dataset.ariaHi.replace('बुकमार्क करें', 'बुकमार्क किया गया'));
+                                        }
+                                    } else {
+                                        bookmarkIcon.setAttribute('aria-label', bookmarkIcon.dataset.ariaEn);
+                                        if (currentLanguage === 'hi') {
+                                            bookmarkIcon.setAttribute('aria-label', bookmarkIcon.dataset.ariaHi);
+                                        }
+                                    }
+                                });
+                                bookmarkIcon.addEventListener('keydown', (e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        bookmarkIcon.click();
+                                    }
+                                });
+                            });
+                            card.querySelectorAll('.bookmark-share .fa-share-nodes').forEach(shareIcon => {
+                                shareIcon.addEventListener('click', () => {
+                                    const storyTitle = shareIcon.closest('.news-card').querySelector('.news-title').textContent.substring(0,30) + "...";
+                                    if (navigator.share) {
+                                        navigator.share({
+                                            title: shareIcon.closest('.news-card').querySelector('.news-title').textContent,
+                                            text: shareIcon.closest('.news-card').querySelector('.news-body').textContent.substring(0, 100) + "...",
+                                            url: window.location.href,
+                                        })
+                                        .then(() => console.log('Successful share'))
+                                        .catch((error) => console.log('Error sharing', error));
+                                    } else {
+                                        alert(`Sharing: ${storyTitle}\n(Implement actual sharing functionality)`);
+                                    }
+                                });
+                                shareIcon.addEventListener('keydown', (e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        shareIcon.click();
+                                    }
+                                });
+                            });
+                        });
+                    }
+                } catch (e) {
+                    console.error('Failed to fetch news:', e);
+                }
+            }
+            fetchAndPopulateNews();
+
+            // --- Time Update ---
+            function updateTime() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                if (statusBarTime) {
+                    statusBarTime.textContent = `${hours}:${minutes}`;
+                }
+            }
+            updateTime();
+            setInterval(updateTime, 1000 * 30); // Update time every 30 seconds
+
+            // --- Language Switcher ---
+            function toggleLanguageMenu() {
+                const isExpanded = languageMenu.classList.toggle('show');
+                menuOverlay.classList.toggle('show', isExpanded);
+                languageToggle.setAttribute('aria-expanded', isExpanded.toString());
+            }
+            
+            if (languageToggle) {
+                languageToggle.addEventListener('click', toggleLanguageMenu);
+                languageToggle.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleLanguageMenu();
+                    }
+                });
+            }
+
+            if (menuOverlay) {
+                menuOverlay.addEventListener('click', toggleLanguageMenu);
+            }
+
+            languageOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const selectedLang = option.getAttribute('data-lang');
+                    if (selectedLang !== currentLanguage) {
+                        setLanguage(selectedLang);
+                    }
+                    toggleLanguageMenu(); // Close menu after selection
+                });
+                 option.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const selectedLang = option.getAttribute('data-lang');
+                         if (selectedLang !== currentLanguage) {
+                            setLanguage(selectedLang);
+                        }
+                        toggleLanguageMenu();
+                    }
+                });
+            });
+
+            function setLanguage(lang) {
+                currentLanguage = lang;
+                langText.textContent = lang.toUpperCase();
+
+                // Update all elements with data-lang attributes
+                allTranslatableElements.forEach(el => {
+                    const text = el.getAttribute(`data-${lang}`);
+                    if (text) {
+                        // Preserve child elements if only text content needs changing
+                        if (el.childNodes.length > 0 && el.childNodes[0].nodeType === Node.TEXT_NODE) {
+                           // Check if the element is a direct text container or has mixed content
+                            let onlyTextChildren = true;
+                            el.childNodes.forEach(cn => { if(cn.nodeType !== Node.TEXT_NODE && cn.nodeName !== 'BR') onlyTextChildren = false; });
+
+                            if(onlyTextChildren || el.classList.contains('news-title') || el.classList.contains('news-body') || el.classList.contains('tab') || el.classList.contains('tag') || el.classList.contains('time-ago') || el.classList.contains('source-name') || el.classList.contains('ad-placeholder')) {
+                                el.textContent = text;
+                            } else {
+                                // More complex scenario, might need specific handling or accept that innerHTML is simpler
+                                // For now, if it's not simple text, we might be replacing more than intended.
+                                // A robust solution would traverse and replace only text nodes.
+                                // For this example, we assume simple text or full replacement is fine for these elements.
+                                 if (el.firstChild && el.firstChild.nodeType === Node.TEXT_NODE) {
+                                    el.firstChild.nodeValue = text + (el.innerHTML.includes('&nbsp;') ? '&nbsp;' : ''); // Preserve nbsp
+                                } else {
+                                     el.textContent = text; // Fallback
+                                }
+                            }
+                        } else {
+                             el.textContent = text;
+                        }
+                    }
+                });
+                
+                // Update ARIA labels
+                allAriaElements.forEach(el => {
+                    const ariaText = el.getAttribute(`data-aria-${lang}`);
+                    if (ariaText) {
+                        el.setAttribute('aria-label', ariaText);
+                    }
+                });
+
+
+                // Update language options visual state
+                languageOptions.forEach(opt => {
+                    const optLang = opt.getAttribute('data-lang');
+                    const isSelected = optLang === lang;
+                    opt.classList.toggle('selected', isSelected);
+                    opt.setAttribute('aria-checked', isSelected.toString());
+                    opt.querySelector('.check-icon').style.opacity = isSelected ? '1' : '0';
+                });
+
+                // Show notification
+                const langName = document.querySelector(`.language-option[data-lang="${lang}"] .lang-name`).textContent;
+                notificationText.textContent = `Language set to ${langName}`; // Simple notification
+                if (lang === 'hi') {
+                     notificationText.textContent = `${langName} भाषा चुनी गई`;
+                }
+                languageNotification.classList.add('show');
+                setTimeout(() => {
+                    languageNotification.classList.remove('show');
+                }, 2500);
+            }
+            
+            // Initialize language based on current setting (default 'en')
+            setLanguage(currentLanguage);
+
+
+            // --- Tab Bar ---
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    // Add logic here to filter news or change content based on tab
+                    console.log(`Tab selected: ${tab.dataset.tab}`);
+                });
+                tab.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        tab.click();
+                    }
+                });
+            });
+
+            // --- News Card Navigation ---
+            function showNewsCard(index) {
+                // Always use the latest NodeList
+                const cards = window.newsCards || document.querySelectorAll('.news-card');
+                cards.forEach((card, i) => {
+                    card.classList.remove('active', 'prev');
+                    if (i === index) {
+                        card.classList.add('active');
+                    } else if (i < index) {
+                        // card.classList.add('prev');
+                    }
+                });
+                currentCardIndex = index;
+                updateNavButtons();
+            }
+            function updateNavButtons() {
+                const cards = window.newsCards || document.querySelectorAll('.news-card');
+                if(prevStoryBtn) prevStoryBtn.classList.toggle('disabled', currentCardIndex === 0);
+                if(nextStoryBtn) nextStoryBtn.classList.toggle('disabled', currentCardIndex === cards.length - 1);
+            }
+            if (prevStoryBtn) {
+                prevStoryBtn.addEventListener('click', () => {
+                    const cards = window.newsCards || document.querySelectorAll('.news-card');
+                    if (currentCardIndex > 0) {
+                        showNewsCard(currentCardIndex - 1);
+                    }
+                });
+            }
+            if (nextStoryBtn) {
+                nextStoryBtn.addEventListener('click', () => {
+                    const cards = window.newsCards || document.querySelectorAll('.news-card');
+                    if (currentCardIndex < cards.length - 1) {
+                        showNewsCard(currentCardIndex + 1);
+                    }
+                });
+            }
+            // Initialize first card and nav buttons
+            if ((window.newsCards || document.querySelectorAll('.news-card')).length > 0) {
+                showNewsCard(0);
+            } else {
+                if(prevStoryBtn) prevStoryBtn.classList.add('disabled');
+                if(nextStoryBtn) nextStoryBtn.classList.add('disabled');
+            }
+
+
+            // --- Bookmark and Share ---
+            document.querySelectorAll('.bookmark-share .fa-bookmark').forEach(bookmarkIcon => {
+                bookmarkIcon.addEventListener('click', () => {
+                    bookmarkIcon.classList.toggle('far'); // Regular icon
+                    bookmarkIcon.classList.toggle('fas'); // Solid icon
+                    bookmarkIcon.classList.toggle('saved');
+                    const isSaved = bookmarkIcon.classList.contains('saved');
+                    const storyTitle = bookmarkIcon.closest('.news-card').querySelector('.news-title').textContent.substring(0,30) + "...";
+                    if (isSaved) {
+                        console.log(`Bookmarked: ${storyTitle}`);
+                        bookmarkIcon.setAttribute('aria-label', bookmarkIcon.dataset.ariaEn.replace('Bookmark', 'Bookmarked'));
+                        if (currentLanguage === 'hi') {
+                             bookmarkIcon.setAttribute('aria-label', bookmarkIcon.dataset.ariaHi.replace('बुकमार्क करें', 'बुकमार्क किया गया'));
+                        }
+                    } else {
+                        console.log(`Removed bookmark: ${storyTitle}`);
+                        bookmarkIcon.setAttribute('aria-label', bookmarkIcon.dataset.ariaEn);
+                         if (currentLanguage === 'hi') {
+                             bookmarkIcon.setAttribute('aria-label', bookmarkIcon.dataset.ariaHi);
+                        }
+                    }
+                });
+                 bookmarkIcon.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        bookmarkIcon.click();
+                    }
+                });
+            });
+
+            document.querySelectorAll('.bookmark-share .fa-share-nodes').forEach(shareIcon => {
+                shareIcon.addEventListener('click', () => {
+                    const storyTitle = shareIcon.closest('.news-card').querySelector('.news-title').textContent.substring(0,30) + "...";
+                    // Replace with actual share functionality (e.g., Web Share API)
+                    if (navigator.share) {
+                        navigator.share({
+                            title: shareIcon.closest('.news-card').querySelector('.news-title').textContent,
+                            text: shareIcon.closest('.news-card').querySelector('.news-body').textContent.substring(0, 100) + "...",
+                            url: window.location.href, // Or actual article URL
+                        })
+                        .then(() => console.log('Successful share'))
+                        .catch((error) => console.log('Error sharing', error));
+                    } else {
+                        console.log(`Share clicked for: ${storyTitle}. Web Share API not supported.`);
+                        alert(`Sharing: ${storyTitle}\n(Implement actual sharing functionality)`);
+                    }
+                });
+                 shareIcon.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        shareIcon.click();
+                    }
+                });
+            });
+
+            // --- Footer Icons ---
+            footerIcons.forEach(icon => {
+                icon.addEventListener('click', () => {
+                    footerIcons.forEach(i => i.classList.remove('active'));
+                    icon.classList.add('active');
+                    console.log(`Footer section selected: ${icon.dataset.section}`);
+                    // Add logic here to change view or navigate
+                });
+                 icon.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        icon.click();
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
