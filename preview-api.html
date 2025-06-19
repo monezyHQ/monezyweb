@@ -675,15 +675,17 @@
             const footerIcons = document.querySelectorAll('.footer-icon');
             const allTranslatableElements = document.querySelectorAll('[data-en], [data-hi]');
             const allAriaElements = document.querySelectorAll('[data-aria-en], [data-aria-hi]');
-
+            const apiUrl = "https://0te7y0t72e.execute-api.ap-south-1.amazonaws.com/e2e/news";
+            // const apiUrl = "http://127.0.0.1:8000/news";
 
             let currentCardIndex = 0;
             let currentLanguage = 'en'; // Default language
 
+
             // --- API Integration for News ---
             async function fetchAndPopulateNews() {
                 try {
-                    const response = await fetch('https://0te7y0t72e.execute-api.ap-south-1.amazonaws.com/e2e/news');
+                    const response = await fetch(apiUrl);
                     const data = await response.json();
                     if (data && data.data && Array.isArray(data.data)) {
                         const newsSwiper = document.getElementById('news-swiper');
@@ -700,16 +702,23 @@
                                 tagHtml = `<div class="tag" data-en="${item.tag}" data-hi="${item.tag}">${item.tag}</div>`;
                             }
                             // Image (fallback if not present)
-                            let imgUrl = 'https://placehold.co/375x250/EAEAEA/BDBDBD?text=No+Image';
+                            let imgUrl = '';
                             let imgAlt = 'News Image';
-                            if (item.image_url) {
+                            let showNoImageTitle = false;
+                            if (item.image_presigned_url) {
+                                imgUrl = item.image_presigned_url;
+                                imgAlt = item.gen_title || 'News Image';
+                            } else if (item.image_url) {
                                 imgUrl = item.image_url;
                                 imgAlt = item.gen_title || 'News Image';
+                            } else {
+                                imgUrl = '';
+                                showNoImageTitle = true;
                             }
                             // News card HTML
                             card.innerHTML = `
                                 ${tagHtml}
-                                <img src="${imgUrl}" alt="${imgAlt}" class="news-image" onerror="this.onerror=null;this.src='https://placehold.co/375x250/EAEAEA/BDBDBD?text=Image+Error';">
+                                ${showNoImageTitle ? `<div class="news-image" style="display:flex;align-items:center;justify-content:center;height:250px;background:#eaeaea;color:#888;font-size:18px;">[No Image] ${item.gen_title}</div>` : `<img src="${imgUrl}" alt="${imgAlt}" class="news-image" onerror="this.onerror=null;this.src='https://placehold.co/375x250/EAEAEA/BDBDBD?text=Image+Error';">`}
                                 <div class="news-content">
                                     <div class="news-details">
                                         <div class="news-title" data-en="${item.gen_title || ''}" data-hi="${item.gen_title || ''}">${item.gen_title || ''}</div>
