@@ -98,6 +98,27 @@
             color: #666;
             font-style: italic;
         }
+
+        .image-upload-container {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .image-preview {
+            max-width: 300px;
+            margin: 10px auto;
+            display: none;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -130,6 +151,7 @@
             const apiToken = document.getElementById('apiToken').value;
             const language = document.getElementById('language').value;
             const apiUrl = `https://api.monezy.in/api/v1/summarize`;
+            // const apiUrl = "http://localhost:8000/api/v1/summarize"; // For local testing, change to your API URL
             const responseDiv = document.getElementById('response');
             responseDiv.innerHTML = '<p class="loading">Processing your request...</p>';
             responseDiv.className = ''; // Remove any previous error class
@@ -217,6 +239,13 @@
                                 <input type="datetime-local" id="createdAt" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
                             </div>
                         </div>
+                        <div class="image-upload-container">
+                            <label for="newsImage" style="font-weight: bold; color: #555;">News Image:</label>
+                            <input type="file" id="newsImage" accept="image/*" onchange="previewImage(event)" style="margin: 10px 0;">
+                            <div id="imagePreview" class="image-preview">
+                                <img id="previewImg" src="" alt="Image preview">
+                            </div>
+                        </div>
                         <button type="button" onclick="approveContent('${data.id}')" style="margin-top: 10px; background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;">Approve News</button>
                         <div id="approvalResponse" style="margin-top: 10px;"></div>
                     </div>
@@ -261,7 +290,7 @@
             }
         }
     
-        function approveContent(id) {
+        async function approveContent(id) {
             const apiToken = document.getElementById('apiToken').value;
             const tags = document.getElementById('tags').value;
             const label = document.getElementById('label').value;
@@ -298,8 +327,28 @@
                 approvalResponseDiv.style.color = 'red';
                 return;
             }
+
+            // Handle image upload
+            let imageData = null;
+            const imageFile = document.getElementById('newsImage').files[0];
+            if (imageFile) {
+                try {
+                    const compressedImage = await compressImage(imageFile);
+                    const reader = new FileReader();
+                    imageData = await new Promise((resolve) => {
+                        reader.onload = () => resolve(reader.result.split(',')[1]); // Get base64 data without prefix
+                        reader.readAsDataURL(compressedImage);
+                    });
+                } catch (error) {
+                    approvalResponseDiv.innerHTML = `Error processing image: ${error.message}`;
+                    approvalResponseDiv.style.color = 'red';
+                    return;
+                }
+            }
+
             const createdAtEpoch = Math.floor(new Date(createdAt).getTime() / 1000);
             const apiUrl = `https://api.monezy.in/api/v1/approve`;
+            // const apiUrl = `http://localhost:8000/api/v1/approve`;
             fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -315,7 +364,8 @@
                     label: label,
                     news_provider: provider,
                     news_datetime: createdAtEpoch,
-                    selected_ver: selectedVer
+                    selected_ver: selectedVer,
+                    image_data: imageData
                 })
             })
             .then(response => {
@@ -339,6 +389,65 @@
         function autoExpand(field) {
             field.style.height = 'auto';
             field.style.height = (field.scrollHeight) + 'px';
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                const preview = document.getElementById('imagePreview');
+                const previewImg = document.getElementById('previewImg');
+
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function compressImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        // Max dimensions
+                        const MAX_WIDTH = 1200;
+                        const MAX_HEIGHT = 1200;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height = Math.round((height * MAX_WIDTH) / width);
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width = Math.round((width * MAX_HEIGHT) / height);
+                                height = MAX_HEIGHT;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Get compressed image as base64 string
+                        canvas.toBlob((blob) => {
+                            resolve(blob);
+                        }, 'image/jpeg', 0.8); // 0.8 is the quality, adjust as needed
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
         }
     </script>
 </body>
