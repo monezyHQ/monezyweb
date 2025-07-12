@@ -230,8 +230,9 @@
                                 <label for="provider" style="font-weight: bold; color: #555;">News Provider:</label>
                                 <select id="provider" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
                                     <option value="The Economic Times">The Economic Times</option>
-                                    // <option value="Times of India">Times of India</option>
-                                    // <option value="The Hindu">The Hindu</option>
+                                    <option value="Times of India">Times of India</option>
+                                    <option value="The Hindu">The Hindu</option>
+                                    <option value="X.com">X.com</option>
                                 </select>
                             </div>
                             <div style="flex: 1;">
@@ -261,6 +262,11 @@
                 const localISO = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + 'T' + pad(now.getHours()) + ':' + pad(now.getMinutes());
                 const createdAtInput = document.getElementById('createdAt');
                 if (createdAtInput) createdAtInput.value = localISO;
+                // Auto-select provider based on URL
+                const providerInput = document.getElementById('provider');
+                const newsUrl = document.getElementById('newsUrl').value;
+                const detectedProvider = getProviderFromUrl(newsUrl);
+                if (providerInput && detectedProvider) providerInput.value = detectedProvider;
             })
             .catch(error => {
                 responseDiv.innerHTML = `<p class="error-message">Error: ${error.message}</p>`;
@@ -448,6 +454,17 @@
                 };
                 reader.readAsDataURL(file);
             });
+        }
+
+        function getProviderFromUrl(url) {
+            if (!url) return '';
+            url = url.toLowerCase();
+            if (url.includes('economictimes')) return 'The Economic Times';
+            if (url.includes('timesofindia')) return 'Times of India';
+            if (url.includes('thehindu')) return 'The Hindu';
+            if (url.includes('x.com') || url.includes('twitter.com')) return 'X.com';
+            // Add more patterns as needed
+            return '';
         }
     </script>
 </body>
