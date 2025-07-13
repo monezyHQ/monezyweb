@@ -139,6 +139,10 @@
                 <option value="HI">Hindi</option>
             </select><br><br>
         </div>
+        <div>
+            <label for="articleText">Article Text (optional):</label>
+            <textarea id="articleText" name="article_text" rows="6" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;box-sizing:border-box;font-size:16px;"></textarea>
+        </div>
         <button type="button" onclick="submitRequest()">Generate Summary</button>
     </form>
 
@@ -150,11 +154,17 @@
             const newsUrl = document.getElementById('newsUrl').value;
             const apiToken = document.getElementById('apiToken').value;
             const language = document.getElementById('language').value;
+            const articleText = document.getElementById('articleText').value;
             const apiUrl = `https://api.monezy.in/api/v1/summarize`;
             // const apiUrl = "http://localhost:8000/api/v1/summarize"; // For local testing, change to your API URL
             const responseDiv = document.getElementById('response');
             responseDiv.innerHTML = '<p class="loading">Processing your request...</p>';
             responseDiv.className = ''; // Remove any previous error class
+    
+            const bodyData = { url: newsUrl, language: language };
+            if (articleText && articleText.trim().length > 0) {
+                bodyData.article_text = articleText;
+            }
     
             fetch(apiUrl, {
                 method: 'POST',
@@ -163,7 +173,7 @@
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ url: newsUrl, language: language })
+                body: JSON.stringify(bodyData)
             })
             .then(response => {
                 if (!response.ok) {
@@ -233,6 +243,7 @@
                                     <option value="Times of India">Times of India</option>
                                     <option value="The Hindu">The Hindu</option>
                                     <option value="X.com">X.com</option>
+                                    <option value="mint">mint</option>
                                 </select>
                             </div>
                             <div style="flex: 1;">
@@ -460,8 +471,7 @@
             if (!url) return '';
             url = url.toLowerCase();
             if (url.includes('economictimes')) return 'The Economic Times';
-            if (url.includes('timesofindia')) return 'Times of India';
-            if (url.includes('thehindu')) return 'The Hindu';
+            if (url.includes('livemint')) return 'mint';
             if (url.includes('x.com') || url.includes('twitter.com')) return 'X.com';
             // Add more patterns as needed
             return '';
