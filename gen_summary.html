@@ -119,10 +119,73 @@
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
+        .env-dropdown-container {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            z-index: 1000;
+        }
+        .env-dropdown {
+            padding: 8px 18px;
+            border-radius: 6px;
+            border: 1.5px solid #e74c3c;
+            font-size: 16px;
+            background: linear-gradient(90deg, #fff 60%, #eaf4ff 100%);
+            color: #007bff;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.08);
+            min-width: 140px;
+            width: auto;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .env-dropdown.production {
+            background: linear-gradient(90deg, #fff 60%, #ffeaea 100%);
+            color: #d32f2f;
+            border-color: #e74c3c;
+            box-shadow: 0 2px 8px rgba(231,76,60,0.08);
+        }
+        .env-dropdown.staging {
+            background: linear-gradient(90deg, #fff 60%, #f7f7f7 100%);
+            color: #333;
+            border-color: #bbb;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .prod-title {
+            background: linear-gradient(90deg, #ff5e62 0%, #ff9966 100%);
+            color: #fff !important;
+            border: none !important;
+            box-shadow: 0 2px 12px #ff5e6233;
+            padding: 18px 0 18px 0 !important;
+            border-radius: 10px;
+            letter-spacing: 1px;
+        }
+        .dev-title {
+            background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
+            color: #fff !important;
+            border: none !important;
+            box-shadow: 0 2px 12px #007bff33;
+            padding: 18px 0 18px 0 !important;
+            border-radius: 10px;
+            letter-spacing: 1px;
+        }
+        .prod-ui-border {
+            border: 3px solid #ff3b3b !important;
+            box-shadow: 0 0 12px #ff3b3b33 !important;
+            border-radius: 16px;
+            padding: 16px;
+        }
     </style>
 </head>
-<body>
-    <h1>Generate News Summary</h1>
+<body id="mainBody">
+    <div class="env-dropdown-container">
+        <select id="envDropdown" class="env-dropdown" onchange="handleEnvChange()">
+            <option value="development">Development</option>
+            <option value="staging" selected>Staging</option>
+            <option value="production">Production</option>
+        </select>
+    </div>
+    <h1 id="mainTitle">Generate News Summary</h1>
     <form id="newsForm">
         <div>
             <label for="newsUrl">Source News URL:</label>
@@ -150,22 +213,30 @@
 
     <script>
         let latestSummaries = [];
+        function getApiBaseUrl() {
+            const env = document.getElementById('envDropdown')?.value || 'development';
+            if (env === 'production') {
+                return 'https://8es82vxnxj.execute-api.ap-south-1.amazonaws.com/e2e';
+            } else if (env === 'staging') {
+                return 'https://8es82vxnxj.execute-api.ap-south-1.amazonaws.com/e2e';
+            } else {
+                return 'http://localhost:8000';
+            }
+        }
         function submitRequest() {
             const newsUrl = document.getElementById('newsUrl').value;
             const apiToken = document.getElementById('apiToken').value;
             const language = document.getElementById('language').value;
             const articleText = document.getElementById('articleText').value;
-            const apiUrl = `https://8es82vxnxj.execute-api.ap-south-1.amazonaws.com/e2e/v0/news/summarize`;
-            // const apiUrl = "http://localhost:8000/v0/news/summarize"; // For local testing, change to your API URL
+            const env = document.getElementById('envDropdown').value;
+            const apiUrl = `${getApiBaseUrl()}/v0/news/summarize`;
             const responseDiv = document.getElementById('response');
             responseDiv.innerHTML = '<p class="loading">Processing your request...</p>';
-            responseDiv.className = ''; // Remove any previous error class
-    
-            const bodyData = { url: newsUrl, language: language };
+            responseDiv.className = '';
+            const bodyData = { url: newsUrl, language: language, env: env };
             if (articleText && articleText.trim().length > 0) {
                 bodyData.article_text = articleText;
             }
-    
             fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -327,7 +398,6 @@
             const summary = document.getElementById('summary' + idx).value;
             const genTitleError = document.getElementById('genTitleError' + idx);
             const summaryError = document.getElementById('summaryError' + idx);
-            // Get selected version string (e.g., v1, v2, v3)
             const selectedVer = latestSummaries && latestSummaries[idx] && latestSummaries[idx].version ? latestSummaries[idx].version : '';
             approvalResponseDiv.innerHTML = '';
             approvalResponseDiv.style.color = '';
@@ -344,8 +414,6 @@
                 approvalResponseDiv.style.color = 'red';
                 return;
             }
-
-            // Handle image upload
             let imageData = null;
             const imageFile = document.getElementById('newsImage').files[0];
             if (imageFile) {
@@ -353,7 +421,7 @@
                     const compressedImage = await compressImage(imageFile);
                     const reader = new FileReader();
                     imageData = await new Promise((resolve) => {
-                        reader.onload = () => resolve(reader.result.split(',')[1]); // Get base64 data without prefix
+                        reader.onload = () => resolve(reader.result.split(',')[1]);
                         reader.readAsDataURL(compressedImage);
                     });
                 } catch (error) {
@@ -362,10 +430,9 @@
                     return;
                 }
             }
-
             const createdAtEpoch = Math.floor(new Date(createdAt).getTime() / 1000);
-            const apiUrl = `https://8es82vxnxj.execute-api.ap-south-1.amazonaws.com/e2e/v0/news/approve`;
-            // const apiUrl = `http://localhost:8000/v0/news/approve`;
+            const env = document.getElementById('envDropdown').value;
+            const apiUrl = `${getApiBaseUrl()}/v0/news/approve`;
             fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -382,7 +449,8 @@
                     news_provider: provider,
                     news_datetime: createdAtEpoch,
                     selected_ver: selectedVer,
-                    image_data: imageData
+                    image_data: imageData,
+                    env: env
                 })
             })
             .then(response => {
@@ -476,6 +544,30 @@
             // Add more patterns as needed
             return '';
         }
+
+        function handleEnvChange() {
+            const env = document.getElementById('envDropdown').value;
+            const title = document.getElementById('mainTitle');
+            const mainBody = document.getElementById('mainBody');
+            const dropdown = document.getElementById('envDropdown');
+            title.classList.remove('prod-title', 'dev-title');
+            mainBody.classList.remove('prod-ui-border');
+            dropdown.classList.remove('production', 'staging');
+            if (env === 'production') {
+                title.classList.add('prod-title');
+                mainBody.classList.add('prod-ui-border');
+                dropdown.classList.add('production');
+            } else if (env === 'development') {
+                title.classList.add('dev-title');
+                dropdown.classList.remove('production', 'staging');
+            } else if (env === 'staging') {
+                dropdown.classList.add('staging');
+            }
+        }
+        // Set default on load
+        window.onload = function() {
+            handleEnvChange();
+        };
     </script>
 </body>
 </html>
