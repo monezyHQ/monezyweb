@@ -155,8 +155,8 @@
             const apiToken = document.getElementById('apiToken').value;
             const language = document.getElementById('language').value;
             const articleText = document.getElementById('articleText').value;
-            const apiUrl = `https://api.monezy.in/api/v1/summarize`;
-            // const apiUrl = "http://localhost:8000/api/v1/summarize"; // For local testing, change to your API URL
+            const apiUrl = `https://8es82vxnxj.execute-api.ap-south-1.amazonaws.com/e2e/v0/news/summarize`;
+            // const apiUrl = "http://localhost:8000/v0/news/summarize"; // For local testing, change to your API URL
             const responseDiv = document.getElementById('response');
             responseDiv.innerHTML = '<p class="loading">Processing your request...</p>';
             responseDiv.className = ''; // Remove any previous error class
@@ -364,8 +364,8 @@
             }
 
             const createdAtEpoch = Math.floor(new Date(createdAt).getTime() / 1000);
-            const apiUrl = `https://api.monezy.in/api/v1/approve`;
-            // const apiUrl = `http://localhost:8000/api/v1/approve`;
+            const apiUrl = `https://8es82vxnxj.execute-api.ap-south-1.amazonaws.com/e2e/v0/news/approve`;
+            // const apiUrl = `http://localhost:8000/v0/news/approve`;
             fetch(apiUrl, {
                 method: 'POST',
                 headers: {
