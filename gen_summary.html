@@ -288,10 +288,9 @@
                             <div style="flex: 1;">
                                 <label for="category" style="font-weight: bold; color: #555;">Category:</label>
                                 <select id="category" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                                    <option value="Markets">Markets</option>
+                                    <option value="Pulse">Pulse</option>
                                     <option value="Stocks">Stocks</option>
-                                    <option value="IPO">IPO</option>
-                                    <option value="Crypto">Crypto</option>
+                                    <option value="X-Press">X-Press</option>
                                 </select>
                             </div>
                             <div style="flex: 1;">
@@ -544,6 +543,18 @@
             // Add more patterns as needed
             return '';
         }
+
+        function setCategoryBasedOnUrl(url) {
+            const categorySelect = document.getElementById('category');
+            if (url && (url.includes('x.com') || url.includes('twitter.com'))) {
+                categorySelect.value = 'X-Press';
+            } else {
+                categorySelect.value = 'Pulse'; // Default value
+            }
+        }
+        document.getElementById('newsUrl').addEventListener('input', function(e) {
+            setCategoryBasedOnUrl(e.target.value);
+        });
 
         function handleEnvChange() {
             const env = document.getElementById('envDropdown').value;
