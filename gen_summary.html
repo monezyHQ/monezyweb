@@ -295,14 +295,14 @@
                             </div>
                             <div style="flex: 1;">
                                 <label for="label" style="font-weight: bold; color: #555;">Label:</label>
-                                <select id="label" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                                    <option value="" selected></option>
-                                    <option value="Factual">Factual</option>
-                                    <option value="Opinion">Opinion</option>
-                                    <option value="Analysis">Analysis</option>
-                                    <option value="Exclusive">Exclusive</option>
-                                    <option value="Breaking">Breaking</option>
-                                </select>
+                                <input list="labelSuggestions" id="label" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" placeholder="Enter or select label" />
+                                <datalist id="labelSuggestions">
+                                    <option value="Factual">
+                                    <option value="Opinion">
+                                    <option value="Analysis">
+                                    <option value="Exclusive">
+                                    <option value="Breaking">
+                                </datalist>
                             </div>
                         </div>
                         <div style="display: flex; gap: 20px; margin-bottom: 15px;">
@@ -380,7 +380,7 @@
         async function approveContent(id) {
             const apiToken = document.getElementById('apiToken').value;
             const category = document.getElementById('category').value;
-            const label = document.getElementById('label').value;
+            const label = document.getElementById('label').value.trim();
             const provider = document.getElementById('provider').value;
             const createdAt = document.getElementById('createdAt').value;
             const approvalResponseDiv = document.getElementById('approvalResponse');
