@@ -348,6 +348,12 @@
                 const newsUrl = document.getElementById('newsUrl').value;
                 const detectedProvider = getProviderFromUrl(newsUrl);
                 if (providerInput && detectedProvider) providerInput.value = detectedProvider;
+
+                // Update category based on current news URL after rendering the dropdown
+                const newsUrlInput = document.getElementById('newsUrl');
+                if (newsUrlInput) {
+                    setCategoryBasedOnUrl(newsUrlInput.value);
+                }
             })
             .catch(error => {
                 responseDiv.innerHTML = `<p class="error-message">Error: ${error.message}</p>`;
@@ -546,15 +552,13 @@
 
         function setCategoryBasedOnUrl(url) {
             const categorySelect = document.getElementById('category');
+            if (!categorySelect) return; // Prevent error if dropdown not present
             if (url && (url.includes('x.com') || url.includes('twitter.com'))) {
                 categorySelect.value = 'X-Press';
             } else {
                 categorySelect.value = 'Pulse'; // Default value
             }
         }
-        document.getElementById('newsUrl').addEventListener('input', function(e) {
-            setCategoryBasedOnUrl(e.target.value);
-        });
 
         function handleEnvChange() {
             const env = document.getElementById('envDropdown').value;
