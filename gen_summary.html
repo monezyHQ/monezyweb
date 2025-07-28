@@ -309,11 +309,11 @@
                             <div style="flex: 1;">
                                 <label for="provider" style="font-weight: bold; color: #555;">News Provider:</label>
                                 <select id="provider" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                                    <option value="The Economic Times">The Economic Times</option>
+                                    <option value="Economic Times">Economic Times</option>
                                     <option value="Times of India">Times of India</option>
                                     <option value="The Hindu">The Hindu</option>
                                     <option value="X.com">X.com</option>
-                                    <option value="mint">mint</option>
+                                    <option value="Mint">Mint</option>
                                 </select>
                             </div>
                             <div style="flex: 1;">
@@ -543,8 +543,8 @@
         function getProviderFromUrl(url) {
             if (!url) return '';
             url = url.toLowerCase();
-            if (url.includes('economictimes')) return 'The Economic Times';
-            if (url.includes('livemint')) return 'mint';
+            if (url.includes('economictimes')) return 'Economic Times';
+            if (url.includes('livemint')) return 'Mint';
             if (url.includes('x.com') || url.includes('twitter.com')) return 'X.com';
             // Add more patterns as needed
             return '';
