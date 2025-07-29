@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "monezy.inapp",
+      "sha256_cert_fingerprints": [
+       "9A:1D:75:52:36:BD:EC:2D:D0:86:8D:E0:B4:09:0A:C8:52:21:0B:82:A5:2A:8D:9F:58:97:7C:96:53:EB:A7:45",
+        "B6:97:32:FB:9B:57:29:AE:9E:DA:0D:30:BA:53:55:D1:2D:F4:05:83:E4:2F:5C:D1:71:4E:E8:FA:15:D9:D9:C1"
+      ]
+    }
+  }
+]
