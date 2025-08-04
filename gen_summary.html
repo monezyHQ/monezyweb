@@ -178,15 +178,16 @@
     </style>
 </head>
 <body id="mainBody">
-    <div class="env-dropdown-container">
-        <select id="envDropdown" class="env-dropdown" onchange="handleEnvChange()">
-            <option value="development">Development</option>
-            <option value="staging" selected>Staging</option>
-            <option value="production">Production</option>
-        </select>
-    </div>
     <h1 id="mainTitle">Generate News Summary</h1>
     <form id="newsForm">
+        <div>
+            <label for="envDropdown">Environment:</label>
+            <select id="envDropdown" name="envDropdown" class="env-dropdown" style="width: calc(100% - 12px);" onchange="handleEnvChange()">
+                <option value="development">Development</option>
+                <option value="staging" selected>Staging</option>
+                <option value="production">Production</option>
+            </select>
+        </div>
         <div>
             <label for="newsUrl">Source News URL:</label>
             <input type="url" id="newsUrl" name="src" size="50" required><br><br>
