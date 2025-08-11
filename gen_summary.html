@@ -311,7 +311,7 @@
                                 <label for="provider" style="font-weight: bold; color: #555;">News Provider:</label>
                                 <input list="providerSuggestions" id="provider" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" placeholder="Enter or select provider" />
                                 <datalist id="providerSuggestions">
-                                    <option value="Economic Times">
+                                    <option value="ET">
                                     <option value="Times of India">
                                     <option value="The Hindu">
                                     <option value="X.com">
@@ -545,7 +545,7 @@
         function getProviderFromUrl(url) {
             if (!url) return '';
             url = url.toLowerCase();
-            if (url.includes('economictimes')) return 'Economic Times';
+            if (url.includes('economictimes')) return 'ET';
             if (url.includes('livemint')) return 'Mint';
             if (url.includes('x.com') || url.includes('twitter.com')) return 'X.com';
             // Add more patterns as needed
