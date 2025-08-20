@@ -688,7 +688,7 @@
         justify-content: center;
       }
     }
-    /* Ensure the QR code container is fixed to the bottom-right */
+     /* Ensure the QR code container is fixed to the bottom-right */
     .qr-container-fixed {
         position: fixed;
         bottom: 1.5rem; /* Equivalent to bottom-6 in Tailwind */
@@ -698,6 +698,13 @@
     }
     .qr-container-fixed:hover {
         transform: scale(1.05);
+    }
+    
+    /* Hide the QR code on smaller screens (mobile/tablet) */
+    @media (max-width: 768px) {
+        .qr-container-fixed {
+            display: none;
+        }
     }
   </style>
 </head>
@@ -866,6 +873,12 @@
   </section>
 
   <!-- This is the container for the fixed QR code widget -->
+<div class="qr-container-fixed bg-white p-4 rounded-lg shadow-2xl flex flex-col items-center border border-gray-200">
+    <div id="qrcode" class="mb-2"></div>
+    <span class="text-xs text-gray-500 mt-2 font-semibold">Scan to Download</span>
+</div>
+
+<!-- This is the container for the fixed QR code widget -->
 <div class="qr-container-fixed bg-white p-4 rounded-lg shadow-2xl flex flex-col items-center border border-gray-200">
     <div id="qrcode" class="mb-2"></div>
     <span class="text-xs text-gray-500 mt-2 font-semibold">Scan to Download</span>
