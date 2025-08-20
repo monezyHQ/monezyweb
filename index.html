@@ -688,6 +688,17 @@
         justify-content: center;
       }
     }
+    /* Ensure the QR code container is fixed to the bottom-right */
+    .qr-container-fixed {
+        position: fixed;
+        bottom: 1.5rem; /* Equivalent to bottom-6 in Tailwind */
+        right: 1.5rem; /* Equivalent to right-6 in Tailwind */
+        z-index: 1000; /* Ensures it's on top of other content */
+        transition: transform 0.3s ease-in-out;
+    }
+    .qr-container-fixed:hover {
+        transform: scale(1.05);
+    }
   </style>
 </head>
 <body>
@@ -854,7 +865,33 @@
     </div>
   </section>
 
-  
+  <!-- This is the container for the fixed QR code widget -->
+<div class="qr-container-fixed bg-white p-4 rounded-lg shadow-2xl flex flex-col items-center border border-gray-200">
+    <div id="qrcode" class="mb-2"></div>
+    <span class="text-xs text-gray-500 mt-2 font-semibold">Scan to Download</span>
+</div>
+
+<!-- QR Code library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+<script>
+    // Define the URL for the QR code here
+    const urlToEncode = 'https://play.google.com/store/apps/details?id=monezy.inapp'; // Change this to your download link
+
+    // Get the QR code container
+    const qrcodeContainer = document.getElementById('qrcode');
+
+    // Initialize the QRCode object with the specified URL
+    const qr = new QRCode(qrcodeContainer, {
+        text: urlToEncode,
+        width: 128,
+        height: 128,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+</script>
+
 
   <footer>
     <div class="container">
@@ -867,3 +904,5 @@
             <a href="https://www.linkedin.com/company/monezy/about/?viewAsMember=true" class="social-link">in</a>
             <a href="https://www.instagram.com/monezy.in/" class="social-link"><i class="fa fa-instagram" aria-hidden="true"></i></a>
           </div>
+
+          
