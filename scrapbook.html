@@ -3,62 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Memory Archive</title>
-    <!-- Modern, cool typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Outfit:wght@300;500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>The Enchanted Archives</title>
+    
+    <!-- Magical & Storybook Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Dancing+Script:wght@500;700&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- Cool & Clean Variables --- */
+        /* --- Enchanted Variables --- */
         :root {
-            --bg-color: #eef2f5;
-            --surface: rgba(255, 255, 255, 0.75);
-            --surface-solid: #ffffff;
-            --accent: #8b9dc3; /* Cool dusty blue */
-            --accent-hover: #7388b5;
-            --text-main: #2b3440;
-            --text-muted: #64748b;
-            --font-body: 'Plus Jakarta Sans', sans-serif;
-            --font-heading: 'Outfit', sans-serif;
-            --font-handwriting: 'Caveat', cursive;
-            --tape-color: rgba(216, 226, 236, 0.8);
+            --bg-midnight: #0B132B;
+            --bg-twilight: #1C2541;
+            --gold-light: #F9E596;
+            --gold-rich: #D4AF37;
+            --gold-glow: rgba(212, 175, 55, 0.4);
+            --glass-panel: rgba(28, 37, 65, 0.6);
+            --parchment: #FDFBF7;
+            --text-dark: #2C3E50;
+            --text-light: #EAEAEA;
+            
+            --font-ui: 'Quicksand', sans-serif;
+            --font-magic: 'Cinzel', serif;
+            --font-script: 'Dancing Script', cursive;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: var(--font-body);
-            background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(at 0% 0%, hsla(253,16%,77%,1) 0, transparent 50%), 
-                radial-gradient(at 50% 0%, hsla(225,39%,80%,1) 0, transparent 50%), 
-                radial-gradient(at 100% 0%, hsla(339,29%,83%,1) 0, transparent 50%);
-            color: var(--text-main);
+            font-family: var(--font-ui);
+            background: radial-gradient(circle at 50% 0%, var(--bg-twilight) 0%, var(--bg-midnight) 100%);
+            color: var(--text-light);
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* App view is fixed height */
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- CSS Pixie Dust (Background Animation) --- */
+        .dust-particles {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, var(--gold-light), rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(3px 3px at 50px 160px, var(--gold-light), rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 130px 80px, var(--gold-light), rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: drift 60s linear infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes drift {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-200px); }
         }
 
         /* --- Header --- */
         header {
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 20px 40px;
+            padding: 25px 40px;
             text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.4);
+            position: relative;
             z-index: 10;
+            background: linear-gradient(to bottom, rgba(11, 19, 43, 0.9), transparent);
         }
 
         header h1 {
-            font-family: var(--font-heading);
+            font-family: var(--font-magic);
             font-weight: 800;
-            color: var(--text-main);
-            font-size: 2.2rem;
-            letter-spacing: -1px;
-            text-transform: uppercase;
-        }
-        header span {
-            color: var(--accent);
+            font-size: 2.5rem;
+            color: var(--gold-light);
+            text-shadow: 0 0 15px var(--gold-glow);
+            letter-spacing: 2px;
         }
 
         /* --- Main Layout --- */
@@ -66,126 +85,138 @@
             display: flex;
             flex: 1;
             overflow: hidden;
+            position: relative;
+            z-index: 5;
+            padding: 0 20px 20px 20px;
+            gap: 20px;
         }
 
-        /* --- Left Input Panel --- */
+        /* --- Left Input Panel (The Spellbook) --- */
         .input-panel {
-            width: 400px;
-            background: var(--surface-solid);
+            width: 420px;
+            background: var(--glass-panel);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
             padding: 35px 30px;
             overflow-y: auto;
-            border-right: 1px solid rgba(0,0,0,0.05);
-            box-shadow: 4px 0 24px rgba(0,0,0,0.02);
+            box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.05), 0 10px 30px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
             gap: 15px;
-            z-index: 5;
         }
+
+        .input-panel::-webkit-scrollbar { width: 6px; }
+        .input-panel::-webkit-scrollbar-thumb { background: var(--gold-rich); border-radius: 10px; }
 
         .input-panel h2 {
-            font-family: var(--font-heading);
-            color: var(--text-main);
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-family: var(--font-magic);
+            color: var(--gold-rich);
+            font-size: 1.6rem;
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 10px;
         }
 
-        .form-group { margin-bottom: 12px; }
+        .form-group { margin-bottom: 15px; }
 
         label {
             display: block;
             font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            color: var(--gold-light);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
         }
 
         input[type="text"], input[type="date"], textarea, input[type="file"] {
             width: 100%;
             padding: 12px 14px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-family: var(--font-body);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            font-family: var(--font-ui);
             font-size: 0.95rem;
-            background-color: #f8fafc;
-            color: var(--text-main);
-            transition: all 0.2s ease;
+            color: white;
+            transition: all 0.3s ease;
         }
 
         input[type="text"]:focus, input[type="date"]:focus, textarea:focus {
             outline: none;
-            border-color: var(--accent);
-            background-color: #fff;
-            box-shadow: 0 0 0 4px rgba(139, 157, 195, 0.15);
+            border-color: var(--gold-rich);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px var(--gold-glow);
         }
 
-        textarea { height: 90px; resize: vertical; }
+        textarea { height: 100px; resize: none; }
 
         .btn-add {
-            background-color: var(--text-main);
-            color: white;
+            background: linear-gradient(135deg, var(--gold-rich), #F9E596, var(--gold-rich));
+            background-size: 200% auto;
+            color: var(--bg-midnight);
             border: none;
-            padding: 14px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-family: var(--font-body);
-            font-size: 1rem;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-family: var(--font-ui);
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
+            transition: 0.5s;
             margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px var(--gold-glow);
         }
 
-        .btn-add:hover { background-color: #1a202c; transform: translateY(-1px); }
+        .btn-add:hover { background-position: right center; transform: translateY(-2px); }
         .btn-add:active { transform: translateY(1px); }
 
         .btn-print {
-            background-color: transparent;
-            color: var(--accent);
-            border: 2px solid var(--accent);
+            background: transparent;
+            color: var(--gold-light);
+            border: 1px solid var(--gold-rich);
             padding: 12px;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: 600;
-            font-family: var(--font-body);
-            font-size: 1rem;
+            font-family: var(--font-ui);
             cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 10px;
+            transition: all 0.3s;
+            margin-top: 5px;
         }
+        .btn-print:hover { background: var(--gold-glow); }
 
-        .btn-print:hover { background-color: var(--accent); color: #fff; }
-
-        /* --- Right Preview Panel (Slideshow) --- */
+        /* --- Right Preview Panel (The Canvas) --- */
         .preview-panel {
             flex: 1;
-            padding: 20px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
         }
 
         .slideshow-container {
-            width: 90%;
+            width: 100%;
             max-width: 900px;
             aspect-ratio: 16/9;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
+            background: var(--parchment);
+            border-radius: 12px;
             padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 60px rgba(139, 115, 85, 0.1);
             position: relative;
-            border: 1px solid rgba(255,255,255,0.6);
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 8px solid white;
         }
+
+        /* Gold corners for the storybook feel */
+        .slideshow-container::before, .slideshow-container::after {
+            content: ''; position: absolute; width: 40px; height: 40px; border: 2px solid var(--gold-rich); pointer-events: none; z-index: 10;
+        }
+        .slideshow-container::before { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+        .slideshow-container::after { bottom: 10px; right: 10px; border-left: none; border-top: none; }
 
         .slide {
             display: none;
@@ -195,437 +226,328 @@
             top: 0; left: 0;
             padding: 40px 60px;
             opacity: 0;
-            transition: opacity 0.4s ease;
-            display: flex;
+            transition: opacity 0.6s ease-in-out;
             align-items: center;
             justify-content: center;
             gap: 50px;
-            z-index: 1;
         }
 
-        .slide.active { opacity: 1; z-index: 2; position: relative; }
+        .slide.active { display: flex; opacity: 1; z-index: 2; }
 
-        /* Slide Content Styling */
+        /* Slide Content */
         .slide-photo-container {
             flex: 1;
-            max-width: 400px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 16px;
-            background-color: #fff;
-            border-radius: 4px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            max-width: 350px;
+            background: white;
+            padding: 12px 12px 40px 12px; /* Polaroid effect */
+            box-shadow: 2px 8px 20px rgba(0,0,0,0.15);
+            transform: rotate(-3deg);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
-            transform: rotate(-2deg);
-            transition: transform 0.3s;
         }
-        
-        .slide-photo-container:hover { transform: rotate(0deg) scale(1.02); }
-
-        .slide-photo-container::before {
-            content: '';
-            position: absolute;
-            top: -12px; 
-            left: 50%;
-            transform: translateX(-50%) rotate(-3deg);
-            width: 80px; 
-            height: 25px;
-            background-color: var(--tape-color);
-            backdrop-filter: blur(4px);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            z-index: 2;
-        }
+        .slide-photo-container:hover { transform: rotate(1deg) scale(1.05); z-index: 5; }
 
         .slide-image {
-            max-width: 100%;
-            max-height: 350px;
+            width: 100%;
+            height: 300px;
             object-fit: cover;
             border-radius: 2px;
+            filter: sepia(10%);
         }
 
         .slide-text-content {
             flex: 1.2;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            transform: rotate(1deg);
+            gap: 15px;
+            color: var(--text-dark);
         }
 
         .slide-title {
-            font-family: var(--font-heading);
-            font-size: 2.8rem;
+            font-family: var(--font-magic);
+            font-size: 2.6rem;
             font-weight: 800;
-            color: var(--text-main);
+            color: var(--bg-midnight);
             line-height: 1.1;
-            margin-bottom: 5px;
         }
 
         .slide-info {
-            font-family: var(--font-body);
-            font-weight: 500;
-            font-size: 1rem;
-            color: var(--accent);
+            font-family: var(--font-ui);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--gold-rich);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
+            letter-spacing: 2px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 10px;
         }
 
         .slide-notes {
-            font-family: var(--font-handwriting);
-            font-size: 1.8rem;
-            line-height: 1.4;
-            color: #475569;
-            margin-top: 15px;
+            font-family: var(--font-script);
+            font-size: 2.2rem;
+            line-height: 1.5;
+            color: #4A4A4A;
         }
 
-        /* Navigation */
-        .prev, .next {
+        /* Navigation Controls */
+        .nav-btn {
             cursor: pointer;
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
+            background: var(--gold-rich);
+            color: var(--bg-midnight);
+            font-family: var(--font-magic);
+            font-size: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--surface-solid);
-            color: var(--text-main);
-            font-size: 18px;
-            font-weight: bold;
             border-radius: 50%;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: 0.3s ease;
-            z-index: 5;
-            user-select: none;
+            box-shadow: 0 4px 15px var(--gold-glow);
+            transition: 0.3s;
+            z-index: 10;
+            border: 2px solid white;
         }
-
-        .next { right: 20px; }
-        .prev { left: 20px; }
-        .prev:hover, .next:hover { background: var(--text-main); color: #fff; }
+        .nav-btn:hover { background: white; color: var(--gold-rich); transform: translateY(-50%) scale(1.1); }
+        .prev { left: -25px; }
+        .next { right: -25px; }
 
         .slide-counter {
             position: absolute;
-            bottom: 20px;
+            bottom: -40px;
             left: 50%;
             transform: translateX(-50%);
-            color: var(--text-muted);
-            font-family: var(--font-body);
-            font-size: 0.9rem;
-            font-weight: 600;
-            background: rgba(255,255,255,0.8);
-            padding: 5px 15px;
-            border-radius: 20px;
+            color: var(--gold-light);
+            font-family: var(--font-magic);
+            font-weight: 700;
+            letter-spacing: 2px;
         }
 
         .no-entries-msg {
-            font-family: var(--font-heading);
-            font-size: 1.8rem;
-            color: var(--text-muted);
+            font-family: var(--font-script);
+            font-size: 2.5rem;
+            color: var(--gold-light);
             text-align: center;
-            font-weight: 300;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; text-shadow: 0 2px 20px var(--gold-glow); }
         }
 
         /* ========================================= */
-        /* --- PRINT STYLES - FIXED PAGE BREAKS  --- */
+        /* --- ENCHANTED PRINT STYLES --- */
         /* ========================================= */
         #print-content { display: none; }
 
         @media print {
-            @page {
-                size: landscape;
-                margin: 0;
-            }
-
-            /* FIX: Allow body and HTML to grow dynamically, stripping the 100vh lock */
+            @page { size: landscape; margin: 0; }
             html, body {
-                width: auto !important;
-                height: auto !important;
-                overflow: visible !important;
-                background: white !important;
-                margin: 0; 
-                padding: 0;
+                width: auto !important; height: auto !important;
+                background: var(--parchment) !important; color: var(--text-dark) !important;
             }
+            header, .container, .dust-particles { display: none !important; }
 
-            /* Hide UI components completely */
-            header, .container { 
-                display: none !important; 
-            }
-
-            /* Reveal print content and allow it to format fully */
-            #print-content {
-                display: block !important;
-                width: 100%;
-                height: auto !important;
-                overflow: visible !important;
-                background-color: white;
-            }
+            #print-content { display: block !important; width: 100%; }
 
             .print-page {
-                width: 100vw;
-                height: 100vh;
+                width: 100vw; height: 100vh;
                 page-break-after: always;
-                break-after: page;
-                padding: 40px;
-                box-sizing: border-box;
-                display: flex !important;
-                align-items: center;
-                justify-content: center;
-                gap: 50px;
-                background-color: #fafaf9; /* soft warm white for paper */
-                
-                /* Aesthetic modern double border for printing */
-                border: 20px solid transparent;
-                outline: 2px solid var(--accent);
-                outline-offset: -30px;
+                padding: 50px; box-sizing: border-box;
+                display: flex !important; align-items: center; justify-content: center; gap: 50px;
+                border: 15px solid transparent;
+                border-image: linear-gradient(to right, var(--gold-rich), #F9E596, var(--gold-rich)) 1;
             }
 
             .print-photo-container {
-                flex: 1;
-                max-width: 450px;
-                padding: 20px;
-                background-color: #fff;
-                border: 1px solid #e2e8f0;
+                flex: 1; max-width: 400px;
+                padding: 15px 15px 50px 15px;
+                background: white; border: 1px solid #ddd;
+                box-shadow: 5px 10px 15px rgba(0,0,0,0.1) !important;
                 transform: rotate(-2deg);
-                text-align: center;
-                position: relative;
             }
 
-            .print-image {
-                max-width: 100%;
-                max-height: 500px;
-                object-fit: cover;
-            }
+            .print-image { width: 100%; height: 400px; object-fit: cover; filter: sepia(15%); }
 
-            .print-text-content {
-                flex: 1.2;
-                display: flex;
-                flex-direction: column;
-                gap: 15px;
-                padding: 20px;
-            }
+            .print-text-content { flex: 1.2; display: flex; flex-direction: column; gap: 15px; }
 
-            .print-title {
-                font-family: var(--font-heading);
-                font-size: 3.5rem;
-                font-weight: 800;
-                color: #1a202c;
-                line-height: 1;
-                margin-bottom: 10px;
-            }
-
-            .print-info {
-                font-family: var(--font-body);
-                font-size: 1.2rem;
-                color: var(--accent);
-                font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                border-bottom: 2px solid #e2e8f0;
-                padding-bottom: 15px;
-            }
-
-            .print-notes {
-                font-family: var(--font-handwriting);
-                font-size: 2.2rem;
-                line-height: 1.4;
-                color: #334155;
-                margin-top: 20px;
-            }
-
-            /* Strip shadows in print for cleaner look */
-            * { box-shadow: none !important; -webkit-box-shadow: none !important; }
+            .print-title { font-family: var(--font-magic); font-size: 3.5rem; color: #111; }
+            .print-info { font-family: var(--font-ui); font-size: 1.2rem; color: var(--gold-rich); font-weight: bold; border-bottom: 2px solid var(--gold-rich); padding-bottom: 10px; }
+            .print-notes { font-family: var(--font-script); font-size: 2.5rem; line-height: 1.4; color: #333; }
         }
     </style>
 </head>
 <body>
 
+    <div class="dust-particles"></div>
+
     <header>
-        <h1>The <span>Memory</span> Archive</h1>
+        <h1>The Enchanted Archives</h1>
     </header>
 
     <div class="container">
-        <!-- Input Panel -->
+        <!-- The Spellbook (Input) -->
         <aside class="input-panel">
-            <h2>✨ Capture the Moment</h2>
+            <h2>✨ Chronicle a Tale</h2>
             <form id="scrapbook-form">
                 <div class="form-group">
-                    <label for="date">🗓️ When did it happen?</label>
+                    <label for="date">When did the magic happen?</label>
                     <input type="date" id="date" required>
                 </div>
                 <div class="form-group">
-                    <label for="location">📍 Where were you?</label>
-                    <input type="text" id="location" placeholder="e.g., A quiet cafe in Tokyo" required>
+                    <label for="location">Where did this unfold?</label>
+                    <input type="text" id="location" placeholder="e.g., A lantern-lit boat ride" required>
                 </div>
                 <div class="form-group">
-                    <label for="title">⚡ The Vibe / Headline</label>
-                    <input type="text" id="title" placeholder="e.g., Midnight Ramen Run" required>
+                    <label for="title">The Chapter Title</label>
+                    <input type="text" id="title" placeholder="e.g., I See The Light" required>
                 </div>
                 <div class="form-group">
-                    <label for="notes">🖋️ Spill the details...</label>
-                    <textarea id="notes" placeholder="What made this moment special?"></textarea>
+                    <label for="notes">Pen the details...</label>
+                    <textarea id="notes" placeholder="What made this moment unforgettable?"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="image">📸 Attach a visual (Optional)</label>
+                    <label for="image">Attach a vision (Optional)</label>
                     <input type="file" id="image" accept="image/*">
                 </div>
-                <button type="submit" class="btn-add">Lock it in 🔒</button>
+                <button type="submit" class="btn-add">Seal this Memory ✨</button>
             </form>
-            <button class="btn-print" onclick="window.print();">Export / Print Archive 🖨️</button>
+            <button class="btn-print" onclick="window.print();">Export Tome to Parchment 🖨️</button>
         </aside>
 
-        <!-- Preview Panel -->
+        <!-- The Canvas (Preview) -->
         <main class="preview-panel">
-            <div id="no-entries" class="no-entries-msg">It's quiet here.<br>Start filling your archive from the left.</div>
-            <div id="slideshow" class="slideshow-container" style="display: none;">
-                <!-- Slides will be inserted here by JavaScript -->
-                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-                <a class="next" onclick="plusSlides(1)">&#10095;</a>
-                <div class="slide-counter"><span id="current-index">1</span> of <span id="total-entries">0</span></div>
+            <div id="no-entries" class="no-entries-msg">The pages are blank.<br>Begin writing your story on the left.</div>
+            <div id="slideshow-wrapper" style="display: none; position: relative; width: 100%; max-width: 900px;">
+                <div class="slideshow-container" id="slideshow">
+                    <!-- Slides injected via JS -->
+                </div>
+                <div class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</div>
+                <div class="nav-btn next" onclick="changeSlide(1)">&#10095;</div>
+                <div class="slide-counter">Memory <span id="current-index">1</span> of <span id="total-entries">0</span></div>
             </div>
         </main>
     </div>
 
     <!-- Hidden Print Container -->
-    <div id="print-content">
-        <!-- Print pages dynamically injected here -->
-    </div>
+    <div id="print-content"></div>
 
     <script>
-        let entries = [];
-        let slideIndex = 1;
+        const state = { entries: [], currentIndex: 0 };
+        
+        const DOM = {
+            form: document.getElementById('scrapbook-form'),
+            noEntries: document.getElementById('no-entries'),
+            slideWrapper: document.getElementById('slideshow-wrapper'),
+            slideshow: document.getElementById('slideshow'),
+            printBox: document.getElementById('print-content'),
+            currentSpan: document.getElementById('current-index'),
+            totalSpan: document.getElementById('total-entries')
+        };
 
-        const form = document.getElementById('scrapbook-form');
-        const noEntriesDiv = document.getElementById('no-entries');
-        const slideshowDiv = document.getElementById('slideshow');
-        const slideshowContainer = document.querySelector('.slideshow-container');
-        const totalEntriesSpan = document.getElementById('total-entries');
-        const currentIndexSpan = document.getElementById('current-index');
-        const printContentDiv = document.getElementById('print-content');
+        DOM.form.addEventListener('submit', handleSubmission);
 
-        // Form Submission
-        form.addEventListener('submit', function(e) {
+        function handleSubmission(e) {
             e.preventDefault();
             const fileInput = document.getElementById('image');
             
             if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(event) {
-                    processNewEntry(event.target.result);
-                };
+                reader.onload = (event) => saveEntry(event.target.result);
                 reader.readAsDataURL(fileInput.files[0]);
             } else {
-                processNewEntry(''); 
+                saveEntry(null); 
             }
-        });
+        }
 
-        function processNewEntry(imageUrl) {
-            // Format Date Nicely
+        function saveEntry(imageUrl) {
             const rawDate = document.getElementById('date').value;
             const dateObj = new Date(rawDate);
-            const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-
-            const newEntry = {
-                date: formattedDate,
+            
+            const entry = {
+                date: dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
                 location: document.getElementById('location').value,
                 title: document.getElementById('title').value,
                 notes: document.getElementById('notes').value,
                 imageUrl: imageUrl
             };
 
-            entries.push(newEntry);
-            form.reset();
-            updateViews();
+            state.entries.push(entry);
+            DOM.form.reset();
+            state.currentIndex = state.entries.length - 1; // Jump to newest
+            render();
         }
 
-        function updateViews() {
-            if (entries.length === 0) return;
+        function render() {
+            if (state.entries.length === 0) return;
 
-            noEntriesDiv.style.display = 'none';
-            slideshowDiv.style.display = 'flex';
-            totalEntriesSpan.textContent = entries.length;
+            DOM.noEntries.style.display = 'none';
+            DOM.slideWrapper.style.display = 'block';
+            DOM.totalSpan.textContent = state.entries.length;
+            
+            DOM.slideshow.innerHTML = '';
+            DOM.printBox.innerHTML = ''; 
 
-            // Clear previous DOM elements to prevent duplicates
-            document.querySelectorAll('.slide').forEach(slide => slide.remove());
-            printContentDiv.innerHTML = ''; 
-
-            entries.forEach((entry, index) => {
-                // 1. Build Slideshow Preview
+            state.entries.forEach((entry, index) => {
+                // 1. Render DOM Slide
                 const slide = document.createElement('div');
-                slide.className = 'slide';
-
-                const photoContainer = document.createElement('div');
-                photoContainer.className = 'slide-photo-container';
-                if (entry.imageUrl) {
-                    photoContainer.innerHTML = `<img src="${entry.imageUrl}" class="slide-image" alt="Memory">`;
-                } else {
-                    photoContainer.innerHTML = `<div style="color:#94a3b8; font-family:'Plus Jakarta Sans'; font-size: 0.9rem;">No image attached</div>`;
-                }
+                slide.className = `slide ${index === state.currentIndex ? 'active' : ''}`;
                 
-                const textContent = document.createElement('div');
-                textContent.className = 'slide-text-content';
-                textContent.innerHTML = `
-                    <h2 class="slide-title">${entry.title}</h2>
-                    <div class="slide-info">
-                        <span>🗓️ ${entry.date}</span>
-                        <span>•</span>
-                        <span>📍 ${entry.location}</span>
+                const imageHTML = entry.imageUrl 
+                    ? `<img src="${entry.imageUrl}" class="slide-image" alt="Memory">` 
+                    : `<div style="color:#aaa; font-family:var(--font-ui); text-align:center; padding-top:40%;">A fleeting thought<br>(No visual)</div>`;
+
+                slide.innerHTML = `
+                    <div class="slide-photo-container">${imageHTML}</div>
+                    <div class="slide-text-content">
+                        <h2 class="slide-title">${entry.title}</h2>
+                        <div class="slide-info">✨ ${entry.date} &nbsp;|&nbsp; 🏰 ${entry.location}</div>
+                        <p class="slide-notes">${entry.notes.replace(/\n/g, '<br>')}</p>
                     </div>
-                    <p class="slide-notes">${entry.notes.replace(/\n/g, '<br>')}</p>
                 `;
+                DOM.slideshow.appendChild(slide);
 
-                slide.appendChild(photoContainer);
-                slide.appendChild(textContent);
-                slideshowContainer.appendChild(slide);
-
-                // 2. Build Print Pages
+                // 2. Render Print Page
                 const printPage = document.createElement('div');
                 printPage.className = 'print-page';
-                
-                const printPhoto = entry.imageUrl 
-                    ? `<img src="${entry.imageUrl}" class="print-image">` 
-                    : `<div style="color:#94a3b8;">No Image</div>`;
-
                 printPage.innerHTML = `
-                    <div class="print-photo-container">
-                        ${printPhoto}
-                    </div>
+                    <div class="print-photo-container">${imageHTML.replace('slide-image', 'print-image')}</div>
                     <div class="print-text-content">
                         <h2 class="print-title">${entry.title}</h2>
                         <div class="print-info">${entry.date} &nbsp;|&nbsp; ${entry.location}</div>
                         <p class="print-notes">${entry.notes.replace(/\n/g, '<br>')}</p>
                     </div>
                 `;
-                printContentDiv.appendChild(printPage);
+                DOM.printBox.appendChild(printPage);
             });
 
-            // Navigate to the newest slide
-            showSlides(slideIndex = entries.length);
+            updateCounter();
         }
 
-        // Slideshow Controls
-        function plusSlides(n) {
-            showSlides(slideIndex += n);
-        }
+        function changeSlide(direction) {
+            const slides = document.querySelectorAll('.slide');
+            if (!slides.length) return;
 
-        function showSlides(n) {
-            let slides = document.getElementsByClassName("slide");
-            if (slides.length === 0) return;
-
-            if (n > slides.length) slideIndex = 1;
-            if (n < 1) slideIndex = slides.length;
-
-            for (let i = 0; i < slides.length; i++) {
-                slides[i].classList.remove("active");
-                slides[i].style.display = "none"; 
-            }
-            slides[slideIndex-1].classList.add("active");
-            slides[slideIndex-1].style.display = "flex"; 
+            slides[state.currentIndex].classList.remove('active');
             
-            currentIndexSpan.textContent = slideIndex;
+            state.currentIndex += direction;
+            if (state.currentIndex >= slides.length) state.currentIndex = 0;
+            if (state.currentIndex < 0) state.currentIndex = slides.length - 1;
+            
+            // Slight delay allows display:flex to trigger before opacity fades in
+            setTimeout(() => {
+                slides[state.currentIndex].classList.add('active');
+            }, 50);
+            
+            updateCounter();
+        }
+
+        function updateCounter() {
+            DOM.currentSpan.textContent = state.currentIndex + 1;
         }
     </script>
 </body>
