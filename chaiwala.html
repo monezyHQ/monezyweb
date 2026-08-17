@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chaipilado — Fund My Carefree, Lavish Lifestyle One Chai At A Time</title>
+<meta name="description" content="Why work a 9-to-5 when the internet can finance my unbothered existence? Buy me a chai so I can sit back, gossip, and live rent-free in luxury.">
+<meta name="theme-color" content="#17100C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Fraunces:ital,opsz,wght@1,9..144,600..800&family=Hanken+Grotesk:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- QRCode.js standalone library to dynamically generate valid standard QR codes directly in browser -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='78' font-size='80'%3E%F0%9F%AB%96%3C/text%3E%3C/svg%3E">
+<style>
+/* ============ tokens ============ */
+:root{
+  --kadak:#17100C;        /* boiled-down tea, near black */
+  --kadak-2:#20150F;
+  --doodh:#FFF2E0;        /* milk */
+  --haldi:#FFB43D;        /* saffron — primary */
+  --gulabi:#FF3D7F;       /* mithai-box pink — accent */
+  --elaichi:#9BD46A;      /* cardamom — utility */
+  --adrak:#C9713A;
+
+  --ink:var(--doodh);
+  --ink-2:rgba(255,242,224,.62);
+  --ink-3:rgba(255,242,224,.38);
+  --line:rgba(255,242,224,.13);
+  --line-2:rgba(255,242,224,.07);
+
+  --glass:rgba(255,242,224,.055);
+  --glass-2:rgba(255,242,224,.085);
+  --blur:saturate(160%) blur(18px);
+
+  --display:"Bricolage Grotesque","Hanken Grotesk",system-ui,sans-serif;
+  --serif:"Fraunces",Georgia,serif;
+  --body:"Hanken Grotesk",system-ui,-apple-system,sans-serif;
+  --mono:"DM Mono",ui-monospace,"SF Mono",monospace;
+
+  --r-lg:30px; --r-md:20px; --r-sm:13px;
+  --pad:clamp(20px,5vw,64px);
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--kadak);color:var(--ink);
+  font-family:var(--body);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2.5px solid var(--haldi);outline-offset:3px;border-radius:6px}
+::selection{background:var(--gulabi);color:#fff}
+
+/* ambient chai-stain glows */
+.atmo{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.atmo i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5}
+.atmo i:nth-child(1){width:52vw;height:52vw;left:-14vw;top:-16vw;background:#8A3E12}
+.atmo i:nth-child(2){width:40vw;height:40vw;right:-10vw;top:8vw;background:#B3245A;opacity:.32}
+.atmo i:nth-child(3){width:46vw;height:46vw;left:24vw;top:74vh;background:#3E5220;opacity:.28}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E")}
+.wrap{position:relative;z-index:2}
+
+/* ============ shared bits ============ */
+.shell{width:100%;max-width:1220px;margin:0 auto;padding-inline:var(--pad)}
+.sec{padding-block:clamp(72px,10vw,132px)}
+.glass{
+  background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border:1px solid var(--line);border-radius:var(--r-md);
+  box-shadow:0 1px 0 rgba(255,242,224,.09) inset,0 30px 60px -30px rgba(0,0,0,.7);
+}
+.eyebrow{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-3);display:flex;align-items:center;gap:10px;
+}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--haldi);opacity:.7}
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.035em;line-height:.96;margin:0;font-stretch:88%}
+h2{font-size:clamp(34px,5.6vw,62px)}
+h3{font-size:20px;letter-spacing:-.02em;line-height:1.15}
+em.swoop{font-family:var(--serif);font-style:italic;font-weight:700;color:var(--gulabi);letter-spacing:-.01em}
+.lede{color:var(--ink-2);font-size:clamp(16px,1.35vw,19px);max-width:54ch}
+.ico{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;
+  border:0;border-radius:100px;padding:15px 26px;font-family:var(--display);font-weight:700;
+  letter-spacing:-.015em;font-size:16px;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#FFCB66,var(--haldi));color:#2B1503;
+  box-shadow:0 12px 30px -10px rgba(255,180,61,.6),0 1px 0 rgba(255,255,255,.6) inset;
+  transition:transform .18s var(--ease),box-shadow .25s var(--ease),filter .2s;
+}
+.btn:hover{transform:translateY(-2px) scale(1.015);box-shadow:0 20px 42px -12px rgba(255,180,61,.75),0 1px 0 rgba(255,255,255,.6) inset}
+.btn:active{transform:translateY(1px) scale(.985)}
+.btn::after{
+  content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);
+  transform:skewX(-18deg);animation:sheen 4.5s var(--ease) infinite;
+}
+@keyframes sheen{0%,68%{left:-60%}88%,100%{left:130%}}
+.btn.ghost{background:var(--glass-2);color:var(--ink);border:1px solid var(--line);box-shadow:none;backdrop-filter:var(--blur)}
+.btn.ghost::after{display:none}
+.btn.ghost:hover{background:rgba(255,242,224,.14);box-shadow:none}
+.btn.big{padding:19px 30px;font-size:18px;width:100%}
+
+/* ============ nav ============ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:60;transition:padding .3s var(--ease)}
+.nav-in{
+  display:flex;align-items:center;gap:18px;margin-top:14px;padding:11px 12px 11px 18px;
+  border-radius:100px;border:1px solid transparent;transition:all .35s var(--ease);
+}
+.nav.stuck .nav-in{
+  background:rgba(23,16,12,.62);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border-color:var(--line);box-shadow:0 20px 50px -28px #000;
+}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.04em;margin-right:auto}
+.brand span{color:var(--haldi)}
+.nav-links{display:flex;gap:4px}
+.nav-links a{padding:8px 14px;border-radius:100px;font-size:14.5px;color:var(--ink-2);transition:.2s}
+.nav-links a:hover{color:var(--ink);background:var(--glass-2)}
+.nav .btn{padding:11px 20px;font-size:14.5px}
+.burger{display:none}
+@media(max-width:900px){.nav-links{display:none}}
+
+/* ============ hero ============ */
+.hero{padding-top:clamp(112px,15vw,168px);padding-bottom:clamp(40px,6vw,72px)}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,4vw,64px);align-items:center}
+@media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:40px}}
+.tag{
+  display:inline-flex;align-items:center;gap:9px;padding:8px 15px 8px 11px;border-radius:100px;
+  background:var(--glass);border:1px solid var(--line);backdrop-filter:var(--blur);
+  font-family:var(--mono);font-size:12px;letter-spacing:.02em;color:var(--ink-2);
+}
+.tag b{color:var(--elaichi);font-weight:500}
+h1{font-size:clamp(45px,7.6vw,88px);margin:22px 0 20px}
+h1 .line{display:block}
+.uline{position:relative;display:inline-block}
+.uline svg{position:absolute;left:-2%;bottom:-.16em;width:104%;height:.3em;overflow:visible}
+.uline path{fill:none;stroke:var(--gulabi);stroke-width:7;stroke-linecap:round;
+  stroke-dasharray:420;stroke-dashoffset:420;animation:draw 1.1s .55s var(--ease) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin:30px 0 34px}
+.stats{display:flex;gap:0;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:20px}
+.stat{padding-right:26px;margin-right:26px;border-right:1px solid var(--line-2)}
+.stat:last-child{border:0;margin:0;padding:0}
+.stat b{display:block;font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.03em;line-height:1}
+.stat small{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+
+/* ---- the kadak meter ---- */
+.pad{padding:24px;border-radius:var(--r-lg);position:relative}
+.pad-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pad-top .eyebrow::before{width:18px}
+.amt{font-family:var(--display);font-weight:800;font-size:34px;letter-spacing:-.05em;line-height:1;
+  font-variant-numeric:tabular-nums;transition:color .3s}
+.glass-stage{display:grid;place-items:center;padding:6px 0 2px;position:relative}
+.tumbler{width:min(210px,44vw);height:auto;overflow:visible;cursor:grab}
+.tumbler:active{cursor:grabbing}
+#liquid{transition:transform .55s var(--ease)}
+#wave{animation:slosh 3.4s linear infinite}
+@keyframes slosh{to{transform:translateX(120px)}}
+.steam path{stroke:var(--doodh);fill:none;stroke-width:4;stroke-linecap:round;opacity:0;
+  transform-origin:bottom center;animation:rise 3.6s ease-in-out infinite}
+.steam path:nth-child(2){animation-delay:1.2s}
+.steam path:nth-child(3){animation-delay:2.3s}
+@keyframes rise{
+  0%{opacity:0;transform:translateY(6px) scaleY(.7)}
+  35%{opacity:.5}
+  100%{opacity:0;transform:translateY(-34px) scaleY(1.25)}
+}
+.tier{text-align:center;min-height:66px;padding:2px 6px 0}
+.tier h3{font-size:19px}
+.tier p{margin:5px 0 0;color:var(--ink-2);font-size:14.5px;line-height:1.45}
+.tier.flip{animation:flip .4s var(--ease)}
+@keyframes flip{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+
+.range{position:relative;padding:8px 2px 2px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;background:transparent;margin:0;height:30px;cursor:ew-resize}
+input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:99px;
+  background:linear-gradient(90deg,var(--haldi) var(--p,10%),rgba(255,242,224,.13) var(--p,10%))}
+input[type=range]::-moz-range-track{height:8px;border-radius:99px;background:rgba(255,242,224,.13)}
+input[type=range]::-moz-range-progress{height:8px;border-radius:99px;background:var(--haldi)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-9px;
+  border-radius:50%;background:var(--doodh);border:5px solid var(--kadak);
+  box-shadow:0 0 0 2px var(--haldi),0 6px 16px rgba(0,0,0,.5);transition:transform .15s}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--doodh);
+  border:5px solid var(--kadak);box-shadow:0 0 0 2px var(--haldi)}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.14)}
+.ticks{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--ink-3);margin-top:-2px}
+.chips{display:flex;gap:8px;margin:14px 0 12px;flex-wrap:wrap}
+.chip{background:var(--glass);border:1px solid var(--line);border-radius:100px;padding:7px 14px;
+  font-family:var(--mono);font-size:12.5px;color:var(--ink-2);cursor:pointer;transition:.2s}
+.chip:hover{border-color:var(--haldi);color:var(--ink);transform:translateY(-1px)}
+.chip.on{background:var(--haldi);border-color:var(--haldi);color:#2B1503}
+.note{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.24);border:1px solid var(--line);
+  border-radius:var(--r-sm);padding:12px 14px;margin-bottom:12px}
+.note input{background:none;border:0;width:100%;font-size:15px;outline:none}
+.note input::placeholder{color:var(--ink-3)}
+.note svg{color:var(--ink-3)}
+.fine{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);text-align:center;margin:12px 0 0;line-height:1.5}
+.crumbs{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.crumb{position:absolute;top:44%;left:50%;width:9px;height:9px;border-radius:3px;
+  animation:pop .95s var(--ease) forwards}
+@keyframes pop{to{transform:translate(var(--tx),var(--ty)) rotate(var(--rot));opacity:0}}
+
+/* ============ marquee ============ */
+.strip{border-block:1px solid var(--line);background:rgba(0,0,0,.22);overflow:hidden;padding:15px 0}
+.track{display:flex;gap:0;width:max-content;animation:roll 46s linear infinite}
+.strip:hover .track{animation-play-state:paused}
+@keyframes roll{to{transform:translateX(-50%)}}
+.pill{display:flex;align-items:center;gap:9px;padding:0 22px;white-space:nowrap;font-size:14.5px;color:var(--ink-2);border-right:1px solid var(--line-2)}
+.pill b{color:var(--ink);font-weight:600}
+.pill i{font-family:var(--mono);font-size:12px;color:var(--haldi);font-style:normal}
+
+/* ============ bento ============ */
+.head{max-width:660px;margin-bottom:clamp(30px,4vw,52px)}
+.head h2{margin:16px 0 14px}
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.cell{padding:26px;border-radius:var(--r-md);position:relative;overflow:hidden}
+.cell h3{margin-bottom:9px}
+.cell p{margin:0;color:var(--ink-2);font-size:15px;line-height:1.55}
+.cell .badge{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;margin-bottom:16px;
+  background:var(--glass-2);border:1px solid var(--line);color:var(--haldi)}
+.c6{grid-column:span 6}.c4{grid-column:span 4}.c3{grid-column:span 3}.c5{grid-column:span 5}.c7{grid-column:span 7}
+@media(max-width:900px){.c6,.c4,.c3,.c5,.c7{grid-column:span 12}}
+.cell.hov{transition:transform .35s var(--ease),border-color .35s}
+.cell.hov:hover{transform:translateY(-5px);border-color:rgba(255,180,61,.42)}
+.photo{padding:0;min-height:250px;background:linear-gradient(150deg,#4A2411,#1C120C)}
+.photo img{width:100%;height:100%;min-height:250px;object-fit:cover;opacity:.82;transition:transform 1.1s var(--ease),opacity .5s}
+.photo:hover img{transform:scale(1.06);opacity:.95}
+.photo figcaption{position:absolute;left:16px;bottom:14px;right:16px;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--doodh);text-shadow:0 2px 12px rgba(0,0,0,.9)}
+.tint{position:absolute;inset:0;background:linear-gradient(0deg,rgba(23,16,12,.86),transparent 62%)}
+
+/* ============ steps ============ */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;counter-reset:s}
+@media(max-width:860px){.steps{grid-template-columns:1fr}}
+.step{padding:26px 24px 24px;border-radius:var(--r-md);position:relative}
+.step .n{font-family:var(--mono);font-size:12px;color:var(--haldi);letter-spacing:.2em}
+.step h3{margin:14px 0 9px}
+.step p{margin:0;color:var(--ink-2);font-size:15px}
+.step .bar{position:absolute;left:0;top:0;height:3px;width:34%;border-radius:99px;background:var(--haldi);opacity:.85}
+.step:nth-child(2) .bar{width:67%;background:var(--gulabi)}
+.step:nth-child(3) .bar{width:100%;background:var(--elaichi)}
+
+/* ============ receipt ============ */
+.hisaab{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(24px,4vw,56px);align-items:center}
+@media(max-width:900px){.hisaab{grid-template-columns:1fr}}
+.bill{font-family:var(--mono);font-size:14px;padding:26px 24px;border-radius:var(--r-md);
+  background:rgba(255,242,224,.045);position:relative}
+.bill::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:12px;
+  background:repeating-linear-gradient(-45deg,var(--kadak) 0 7px,transparent 7px 14px)}
+.bill h4{margin:0 0 4px;font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.02em}
+.bill .meta{color:var(--ink-3);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}
+.bill hr{border:0;border-top:1px dashed var(--line);margin:16px 0}
+.row{display:flex;justify-content:space-between;gap:14px;padding:5px 0;color:var(--ink-2)}
+.row b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.row.tot{color:var(--ink);font-size:16px;padding-top:12px}
+.row.tot b{color:var(--elaichi)}
+.strike{text-decoration:line-through;opacity:.55}
+.checks{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:13px}
+.checks li{display:flex;gap:12px;align-items:flex-start;color:var(--ink-2);font-size:15.5px}
+.checks svg{color:var(--elaichi);margin-top:3px}
+.checks b{color:var(--ink);font-weight:600}
+
+/* ============ wall ============ */
+.wall{columns:3;column-gap:14px}
+@media(max-width:900px){.wall{columns:2}}
+@media(max-width:620px){.wall{columns:1}}
+.card{break-inside:avoid;margin-bottom:14px;padding:22px;border-radius:var(--r-md);
+  transition:transform .4s var(--ease)}
+.card:hover{transform:rotate(-.7deg) translateY(-4px)}
+.card:nth-child(even):hover{transform:rotate(.7deg) translateY(-4px)}
+.card p{margin:0 0 16px;font-size:16px;line-height:1.5}
+.card .who{display:flex;align-items:center;gap:11px}
+.av{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-family:var(--display);
+  font-weight:700;font-size:14px;color:#2B1503;flex:none}
+.who small{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.05em}
+.who strong{font-size:14.5px;font-weight:600}
+.card .amt-tag{float:right;font-family:var(--mono);font-size:11.5px;color:var(--haldi);
+  border:1px solid rgba(255,180,61,.35);border-radius:99px;padding:3px 10px}
+
+/* ============ faq ============ */
+.faq{max-width:820px;margin:0 auto}
+.q{border-bottom:1px solid var(--line)}
+.q button{width:100%;background:none;border:0;text-align:left;cursor:pointer;padding:22px 44px 22px 0;
+  font-family:var(--display);font-weight:700;font-size:clamp(17px,2vw,21px);letter-spacing:-.02em;
+  position:relative;transition:color .2s}
+.q button:hover{color:var(--haldi)}
+.q button .pm{position:absolute;right:4px;top:50%;translate:0 -50%;width:26px;height:26px;
+  border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;transition:.3s var(--ease);color:var(--ink-2)}
+.q.open button .pm{rotate:45deg;background:var(--haldi);color:#2B1503;border-color:var(--haldi)}
+.a{max-height:0;overflow:hidden;transition:max-height .45s var(--ease)}
+.a p{margin:0 0 24px;color:var(--ink-2);max-width:62ch}
+
+/* ============ final cta ============ */
+.finale{text-align:center;padding:clamp(40px,6vw,72px) clamp(20px,4vw,56px);border-radius:var(--r-lg);position:relative;overflow:hidden}
+.finale::before{content:"";position:absolute;inset:-40%;background:
+  radial-gradient(circle at 30% 20%,rgba(255,180,61,.22),transparent 45%),
+  radial-gradient(circle at 75% 80%,rgba(255,61,127,.2),transparent 45%);pointer-events:none}
+.finale h2{font-size:clamp(38px,7vw,80px);position:relative}
+.finale .lede{margin:18px auto 30px;text-align:center}
+.linkbox{display:flex;gap:8px;max-width:470px;margin:0 auto;position:relative;flex-wrap:wrap}
+.linkbox .fld{flex:1 1 240px;display:flex;align-items:center;background:rgba(0,0,0,.34);
+  border:1px solid var(--line);border-radius:100px;padding:6px 6px 6px 18px;font-family:var(--mono);font-size:14px}
+.linkbox .fld span{color:var(--ink-3)}
+.linkbox input{background:none;border:0;outline:none;width:100%;min-width:60px;font-family:var(--mono);font-size:14px}
+.linkbox .btn{padding:13px 22px;font-size:15px}
+
+/* ============ footer ============ */
+footer{border-top:1px solid var(--line);padding:clamp(40px,5vw,64px) 0 34px;margin-top:clamp(60px,8vw,110px)}
+.fgrid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:30px}
+@media(max-width:800px){.fgrid{grid-template-columns:1fr 1fr}}
+.fgrid h5{margin:0 0 14px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);font-weight:400}
+.fgrid a{display:block;padding:5px 0;color:var(--ink-2);font-size:15px;transition:.2s}
+.fgrid a:hover{color:var(--haldi);translate:3px 0}
+.fbot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:44px;padding-top:22px;
+  border-top:1px solid var(--line-2);font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+
+/* ============ floating + toast ============ */
+.fab{position:fixed;right:20px;bottom:20px;z-index:70;opacity:0;transform:translateY(24px) scale(.9);
+  pointer-events:none;transition:.45s var(--ease)}
+.fab.show{opacity:1;transform:none;pointer-events:auto}
+.toast{position:fixed;left:50%;bottom:26px;z-index:90;translate:-50% 120%;opacity:0;
+  display:flex;align-items:center;gap:12px;padding:14px 20px;border-radius:100px;
+  background:rgba(23,16,12,.9);backdrop-filter:var(--blur);border:1px solid var(--line);
+  box-shadow:0 30px 60px -20px #000;transition:.5s var(--ease);font-size:15px;max-width:92vw}
+.toast.show{translate:-50% 0;opacity:1}
+.toast .dot{width:8px;height:8px;border-radius:50%;background:var(--elaichi);flex:none;
+  box-shadow:0 0 0 4px rgba(155,212,106,.2)}
+
+/* ============ payment modal ============ */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(10,7,5,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .3s var(--ease);
+}
+.modal-backdrop.open{opacity:1;pointer-events:auto}
+.modal-card{
+  background:#1E1612;border:1px solid rgba(255,242,224,.16);border-radius:28px;
+  max-width:390px;width:100%;padding:26px 22px;text-align:center;position:relative;
+  box-shadow:0 30px 70px -15px rgba(0,0,0,.9),0 0 0 1px rgba(255,180,61,.25) inset;
+  transform:scale(.92) translateY(16px);transition:transform .35s var(--ease);
+}
+.modal-backdrop.open .modal-card{transform:none}
+.modal-close{
+  position:absolute;top:16px;right:16px;width:34px;height:34px;border-radius:50%;
+  background:var(--glass-2);border:1px solid var(--line);color:var(--ink-2);
+  display:grid;place-items:center;cursor:pointer;font-size:18px;line-height:1;transition:.2s;
+}
+.modal-close:hover{background:var(--gulabi);color:#fff;border-color:var(--gulabi)}
+.modal-header h3{font-size:22px;margin:0 0 4px;letter-spacing:-.03em}
+.modal-header p{margin:0;font-size:13.5px;color:var(--ink-2)}
+
+.qr-card-wrapper{
+  background:#fff;border:6px solid #fff;border-radius:20px;
+  padding:14px;margin:16px auto 14px;max-width:240px;width:240px;height:240px;
+  box-shadow:0 14px 40px -10px rgba(0,0,0,.8);
+  display:flex;align-items:center;justify-content:center;
+}
+.qr-card-wrapper canvas, .qr-card-wrapper img{
+  width:100%!important;height:100%!important;display:block;border-radius:6px;
+}
+
+.upi-badge{
+  display:inline-flex;align-items:center;gap:8px;background:rgba(155,212,106,.12);
+  border:1px solid rgba(155,212,106,.3);border-radius:100px;padding:6px 14px;
+  font-family:var(--mono);font-size:12.5px;color:var(--elaichi);margin-bottom:14px;
+  cursor:pointer;transition:.2s;
+}
+.upi-badge:hover{background:rgba(155,212,106,.22);transform:scale(1.02)}
+.modal-actions{display:flex;flex-direction:column;gap:10px}
+
+/* ============ reveal ============ */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4.5 13.5H11l-1 8.5 9-12h-6.5z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></symbol>
+  <symbol id="i-rupee" viewBox="0 0 24 24"><path d="M6 4h12M6 9h12M16 4c0 5-4 5-7 5 3 0 7 3 7 7v4"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1L12 21.5l8.8-8.8a5 5 0 0 0 0-7.1z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2.5 4 6v6c0 5 3.4 8.6 8 9.5 4.6-.9 8-4.5 8-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8 8 0 0 1-11.6 7.1L3.5 20.5l1.9-5.9A8 8 0 1 1 21 11.5z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3H6.5A2.5 2.5 0 0 0 4 5.5v6A2.5 2.5 0 0 0 6.5 14"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-cup" viewBox="0 0 24 24"><path d="M5 4h13l-1.6 15.2A2 2 0 0 1 14.4 21H8.6a2 2 0 0 1-2-1.8z"/><path d="M6 9h11"/></symbol>
+</svg>
+
+<div class="atmo" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="wrap">
+
+<!-- ========== NAV ========== -->
+<header class="nav" id="nav">
+  <div class="shell">
+    <div class="nav-in">
+      <a class="brand" href="#top">
+        <svg class="ico" style="width:22px;height:22px;color:var(--haldi)" aria-hidden="true"><use href="#i-cup"/></svg>
+        Chai<span>pilado</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#why">Why Me</a>
+        <a href="#how">How to Fund Me</a>
+        <a href="#hisaab">My Budget</a>
+        <a href="#wall">Wall of Simps</a>
+        <a href="#faq">Excuses</a>
+      </nav>
+      <a class="btn" href="#pour">Fund My Chai</a>
+    </div>
+  </div>
+</header>
+
+<!-- ========== HERO ========== -->
+<main id="top">
+<section class="hero">
+  <div class="shell hero-grid">
+    <div>
+      <span class="tag"><svg class="ico" style="width:15px;height:15px;color:var(--elaichi)"><use href="#i-bolt"/></svg>
+        Zero productivity · <b>100% unapologetic vibes</b></span>
+      <h1>
+        <span class="line">Corporate is toxic.</span>
+        <span class="line">My <span class="uline"><em class="swoop">chai lifestyle</em>
+          <svg viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true"><path d="M4 16C70 6 216 4 296 12"/></svg>
+        </span> isn't.</span>
+      </h1>
+      <p class="lede">I have zero interest in the 9-to-5 grind or answering Slack pings. You work hard, make honest rupees, and transfer them directly to my tapri fund so I can stay unbothered, well-rested, and delightfully chaotic.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#pour">Buy me a chai <svg class="ico"><use href="#i-arrow"/></svg></a>
+        <a class="btn ghost" href="#why">Why I deserve this</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b data-count="128400" id="poured">0</b><small>cups subsidized</small></div>
+        <div class="stat"><b data-count="3410000" data-prefix="₹">₹0</b><small>wasted on luxury leisure</small></div>
+        <div class="stat"><b>0</b><small>hours worked this year</small></div>
+      </div>
+    </div>
+
+    <!-- ---------- the kadak meter ---------- -->
+    <div class="glass pad rv" id="pour">
+      <div class="crumbs" id="crumbs" aria-hidden="true"></div>
+      <div class="pad-top">
+        <span class="eyebrow">Chai Menu</span>
+        <span class="amt" id="amt">₹30</span>
+      </div>
+
+      <div class="glass-stage">
+        <svg class="tumbler" id="tumbler" viewBox="0 0 200 268" role="img" aria-label="A cutting-chai glass filling up as you pick my tea type">
+          <defs>
+            <clipPath id="inside">
+              <path d="M47 50 L64 226 Q65 234 74 234 L126 234 Q135 234 136 226 L153 50 Z"/>
+            </clipPath>
+            <linearGradient id="tea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#E4A45E"/><stop offset=".35" stop-color="#C0702F"/>
+              <stop offset="1" stop-color="#5E3016"/>
+            </linearGradient>
+            <linearGradient id="shine" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#FFF2E0" stop-opacity=".34"/>
+              <stop offset="1" stop-color="#FFF2E0" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="rim" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#FFF2E0" stop-opacity=".55"/>
+              <stop offset=".5" stop-color="#FFF2E0" stop-opacity=".16"/>
+              <stop offset="1" stop-color="#FFF2E0" stop-opacity=".55"/>
+            </linearGradient>
+          </defs>
+
+          <!-- steam -->
+          <g class="steam" id="steam" style="opacity:.35">
+            <path d="M84 34c-9-10 9-16 0-27"/>
+            <path d="M100 28c-10-11 10-17 0-29"/>
+            <path d="M116 34c-9-10 9-16 0-27"/>
+          </g>
+
+          <!-- liquid -->
+          <g clip-path="url(#inside)">
+            <g id="liquid" transform="translate(0,190)">
+              <path id="wave" d="M-120 6 q30 -11 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 v40 h-360 z" fill="#E9AE68"/>
+              <rect x="-120" y="6" width="440" height="300" fill="url(#tea)"/>
+              <ellipse cx="100" cy="7" rx="70" ry="6" fill="#FFF2E0" opacity=".22"/>
+            </g>
+          </g>
+
+          <!-- glass body -->
+          <path d="M44 46 L62 228 Q64 240 76 240 L124 240 Q136 240 138 228 L156 46 Z"
+                fill="rgba(255,242,224,.06)" stroke="url(#rim)" stroke-width="2.4"/>
+          <path d="M62 60 L74 226" stroke="url(#shine)" stroke-width="9" stroke-linecap="round"/>
+          <ellipse cx="100" cy="46" rx="56" ry="8.5" fill="none" stroke="url(#rim)" stroke-width="2.4"/>
+          <ellipse cx="100" cy="46" rx="56" ry="8.5" fill="rgba(255,242,224,.05)"/>
+          <path d="M52.5 110 L147.5 110 M56 170 L144 170" stroke="#FFF2E0" stroke-opacity=".1" stroke-width="2"/>
+        </svg>
+      </div>
+
+      <div class="tier" id="tier">
+        <h3 id="tierName">Roadside Cutting Chai</h3>
+        <p id="tierLine">Basic survival tier. Keeps me awake enough to scroll memes and avoid emails.</p>
+      </div>
+
+      <div class="range">
+        <input type="range" id="slider" min="1" max="10" value="1" step="1"
+               aria-label="Pick tea tier" style="--p:10%">
+        <div class="ticks"><span>ROADSIDE</span><span>GINGER-CARDAMOM</span><span>10 · ROYAL KETTLE</span></div>
+      </div>
+
+      <div class="chips" role="group" aria-label="Quick amounts">
+        <button class="chip on" data-n="1">1 Roadside</button>
+        <button class="chip" data-n="3">3 Adrak-Kadak</button>
+        <button class="chip" data-n="5">5 Malai Special</button>
+        <button class="chip" data-n="10">Royal Kettle</button>
+      </div>
+
+      <label class="note">
+        <svg class="ico"><use href="#i-chat"/></svg>
+        <input id="msg" maxlength="80" placeholder="Write a compliment praising my lifestyle.">
+      </label>
+
+      <button class="btn big" id="send">Buy Me This Chai · <span id="btnAmt">₹30</span></button>
+      <p class="fine">Instant UPI. No returns. No deliverable will ever be sent.<br>Thank you for funding my peaceful afternoon nap.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TICKER ========== -->
+<section class="strip" aria-label="Live sponsors">
+  <div class="track" id="track"></div>
+</section>
+
+<!-- ========== WHY / BENTO ========== -->
+<section class="sec" id="why">
+  <div class="shell">
+    <div class="head rv">
+      <span class="eyebrow">The Business Model</span>
+      <h2>Why should you <em class="swoop">sponsor me?</em></h2>
+      <p class="lede">Some people sell courses. Others write newsletters. I simply exist gracefully in coffee shops and tapris, consuming warm liquids on your credit card.</p>
+    </div>
+
+    <div class="bento">
+      <div class="glass cell hov c3 rv">
+        <div class="badge"><svg class="ico"><use href="#i-link"/></svg></div>
+        <h3>No deliverables. Ever.</h3>
+        <p>You give me money, I say thank you, and then I return to doing absolutely nothing. Pure transactional peace.</p>
+      </div>
+      <div class="glass cell hov c3 rv">
+        <div class="badge"><svg class="ico"><use href="#i-rupee"/></svg></div>
+        <h3>Direct UPI to Tapri</h3>
+        <p>Straight from your hardworking bank balance into the pocket of my neighborhood chaiwala. Economic velocity!</p>
+      </div>
+      <figure class="glass cell photo c6 rv">
+        <img src="https://images.unsplash.com/photo-1646294567230-b56cb0cd1f5b?auto=format&fit=crop&w=1100&q=80"
+             alt="Three small chai glasses on a dark table" loading="lazy"[cite: 1]>
+        <div class="tint"></div>
+        <figcaption>₹30 · The exact price of keeping me blissfully unemployed</figcaption>
+      </figure>
+
+      <figure class="glass cell photo c5 rv">
+        <img src="https://images.unsplash.com/photo-1693302050215-66ae33076745?auto=format&fit=crop&w=1100&q=80"
+             alt="Chai being poured into a glass" loading="lazy"[cite: 1]>
+        <div class="tint"></div>
+        <figcaption>Freshly brewed drama and endless leisure, streamed daily.</figcaption>
+      </figure>
+      <div class="glass cell hov c4 rv">
+        <div class="badge"><svg class="ico"><use href="#i-heart"/></svg></div>
+        <h3>Zero accountability</h3>
+        <p>I will not send you weekly email updates, exclusive perks, or early access to my thoughts. You're funding pure peace.</p>
+      </div>
+      <div class="glass cell hov c3 rv">
+        <div class="badge"><svg class="ico"><use href="#i-shield"/></svg></div>
+        <h3>100% Tax Non-Deductible</h3>
+        <p>You cannot write this off as business expenses. It is an unadulterated donation to my happiness.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== HOW ========== -->
+<section class="sec" id="how" style="padding-top:0">
+  <div class="shell">
+    <div class="head rv">
+      <span class="eyebrow">The Patron Lifecycle</span>
+      <h2>How you support my carefree life.</h2>
+    </div>
+    <div class="steps">
+      <div class="glass step rv"><div class="bar"></div>
+        <span class="n">STEP 01</span>
+        <h3>Feel empathetic</h3>
+        <p>Realize that working under fluorescent lights is tragic, while me sipping elaichi chai at 3 PM is art.</p>
+      </div>
+      <div class="glass step rv"><div class="bar"></div>
+        <span class="n">STEP 02</span>
+        <h3>Scan and transfer</h3>
+        <p>Send whatever amount of chai your conscience dictates. No login, no password, just straight UPI charity.</p>
+      </div>
+      <div class="glass step rv"><div class="bar"></div>
+        <span class="n">STEP 03</span>
+        <h3>Get back to work</h3>
+        <p>Go close your Jira tickets while I dunk fresh bun-maska and plan my next 4-hour nap.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== HISAAB / RECEIPT ========== -->
+<section class="sec" id="hisaab" style="padding-top:0">
+  <div class="shell hisaab">
+    <div class="glass bill rv">
+      <h4>CARE-FREE EXPENSES · HISAAB</h4>
+      <div class="meta">Order #69420 · Lifestyle: Pure Lux</div>
+      <hr>
+      <div class="row"><span>3 × Royal Zafrani Chai</span><b>₹90.00</b></div>
+      <div class="row"><span>Extra Maska Bun</span><b>₹40.00</b></div>
+      <div class="row"><span>Afternoon Nap Maintenance</span><b>₹0.00</b></div>
+      <div class="row"><span class="strike">Productive Labor</span><b class="strike">₹0.00</b></div>
+      <div class="row"><span class="strike">Replying to Emails</span><b class="strike">₹0.00</b></div>
+      <hr>
+      <div class="row tot"><span>Total Bill Paid By You</span><b>₹130.00</b></div>
+      <div class="row"><span>My Effort</span><b>0.00%</b></div>
+      <hr>
+      <div class="meta">Thank you for financing my refusal to hustle.</div>
+    </div>
+    <div class="rv">
+      <span class="eyebrow">Honest Math</span>
+      <h2 style="margin:16px 0 14px">Transparently <em class="swoop">parasitic</em> pricing.</h2>
+      <p class="lede">I don’t pretend this money is going into “server costs” or “gear upgrades.” It goes directly to boiled milk, sugar, and sitting on park benches judging people in suits.</p>
+      <ul class="checks">
+        <li><svg class="ico"><use href="#i-check"/></svg><span><b>100% guilt-free consumption.</b> I enjoy every single sip you pay for.</span></li>
+        <li><svg class="ico"><use href="#i-check"/></svg><span><b>Zero corporate meetings.</b> Because of you, I have never said “let's take this offline”.</span></li>
+        <li><svg class="ico"><use href="#i-check"/></svg><span><b>Continuous updates on nothing.</b> I will post photos of my cup to make you jealous.</span></li>
+        <li><svg class="ico"><use href="#i-check"/></svg><span><b>Karma points.</b> Sponsoring my leisure earns you spiritual good vibes.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ========== WALL ========== -->
+<section class="sec" id="wall" style="padding-top:0">
+  <div class="shell">
+    <div class="head rv">
+      <span class="eyebrow">Wall of enablers</span>
+      <h2>What my beloved sponsors say.</h2>
+      <p class="lede">People who willingly funded my afternoon relaxation instead of investing in index funds.</p>
+    </div>
+    <div class="wall">
+      <div class="glass card rv"><span class="amt-tag">3 chais</span>
+        <p>“I am stuck in a 4-hour quarterly review call. Please drink this adrak chai for me and enjoy the outdoors.”</p>
+        <div class="who"><span class="av" style="background:var(--haldi)">DM</span><span><strong>Devika M.</strong><small>@cubicle_captive</small></span></div>
+      </div>
+      <div class="glass card rv"><span class="amt-tag">1 chai</span>
+        <p>“I don't know who you are, but I admire your complete refusal to be a productive member of society.”</p>
+        <div class="who"><span class="av" style="background:var(--gulabi);color:#fff">SR</span><span><strong>Sameer R.</strong><small>@taxpayer_77</small></span></div>
+      </div>
+      <div class="glass card rv"><span class="amt-tag">10 chais</span>
+        <p>“Take a full royal kettle. If I have to suffer under Scrum masters, at least someone in the world should be happy.”</p>
+        <div class="who"><span class="av" style="background:var(--elaichi)">AK</span><span><strong>Aarav K.</strong><small>@agile_survivor</small></span></div>
+      </div>
+      <div class="glass card rv"><span class="amt-tag">5 chais</span>
+        <p>“Sent 5 chais. Please post a picture of the tea stall so I can live vicariously through your indolence.”</p>
+        <div class="who"><span class="av" style="background:var(--adrak)">NP</span><span><strong>Nisha P.</strong><small>@tired_consultant</small></span></div>
+      </div>
+      <div class="glass card rv"><span class="amt-tag">2 chais</span>
+        <p>“One for you, and one for the stray dog that sits next to you at the stall. Cheers.”</p>
+        <div class="who"><span class="av" style="background:var(--haldi)">TS</span><span><strong>Tanmay S.</strong><small>@burnout_king</small></span></div>
+      </div>
+      <div class="glass card rv"><span class="amt-tag">1 chai</span>
+        <p>“Here is ₹30. Stop looking at me like that and go order your ginger tea.”</p>
+        <div class="who"><span class="av" style="background:var(--gulabi);color:#fff">KJ</span><span><strong>Kabir J.</strong><small>@grindset_rehab</small></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FAQ ========== -->
+<section class="sec" id="faq" style="padding-top:0">
+  <div class="shell">
+    <div class="head rv" style="max-width:none;text-align:center;margin-inline:auto">
+      <span class="eyebrow" style="justify-content:center">Frequently Asked Queries</span>
+      <h2>Questions you are too polite to ask.</h2>
+    </div>
+    <div class="faq">
+      <div class="q rv open">
+        <button type="button">Why should I buy you a chai instead of working on my own goals?<span class="pm"><svg class="ico" style="width:14px;height:14px"><use href="#i-plus"/></svg></span></button>
+        <div class="a"><p>Because your goals sound exhausting, whereas my goal is simply drinking cardamom tea in the sun. Be a patron of the carefree arts.</p></div>
+      </div>
+      <div class="q rv">
+        <button type="button">What return on investment (ROI) do I get?<span class="pm"><svg class="ico" style="width:14px;height:14px"><use href="#i-plus"/></svg></span></button>
+        <div class="a"><p>Zero financial return. Absolutely negative CAGR. But emotionally? You get the satisfaction of knowing you personally financed someone’s refusal to participate in corporate warfare.</p></div>
+      </div>
+      <div class="q rv">
+        <button type="button">Can I request a specific flavor or snack for you?<span class="pm"><svg class="ico" style="width:14px;height:14px"><use href="#i-plus"/></svg></span></button>
+        <div class="a"><p>You can leave a note, but I will probably just order whatever has the most ginger and malai that day. Dictating my snacks violates my carefree ethos.</p></div>
+      </div>
+      <div class="q rv">
+        <button type="button">What if I want a refund?<span class="pm"><svg class="ico" style="width:14px;height:14px"><use href="#i-plus"/></svg></span></button>
+        <div class="a"><p>The chai is already consumed and metabolized. There are no refunds, only memories and good digestion.</p></div>
+      </div>
+      <div class="q rv">
+        <button type="button">Are you ever going to get a real job?<span class="pm"><svg class="ico" style="width:14px;height:14px"><use href="#i-plus"/></svg></span></button>
+        <div class="a"><p>That entirely depends on how many cups of tea you guys buy me today. Keep clicking the button and we won't have to find out.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FINALE ========== -->
+<section class="sec" style="padding-top:0">
+  <div class="shell">
+    <div class="glass finale rv">
+      <span class="eyebrow" style="justify-content:center;position:relative">Keep the kettle boiling</span>
+      <h2 style="margin-top:16px">Help me stay <em class="swoop">unemployed</em>.</h2>
+      <p class="lede">Share this link with someone who earns way too much money and needs to sponsor my lavish tea breaks.</p>
+      <div class="linkbox">
+        <label class="fld"><span>chaipilado.com/@</span><input id="handle" value="carefree_king" aria-label="Your handle" spellcheck="false"></label>
+        <button class="btn" id="copy">Share My Tip Jar <svg class="ico"><use href="#i-copy"/></svg></button>
+      </div>
+      <p class="fine" style="position:relative">Every ₹30 delay my corporate return by at least 45 minutes.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="shell">
+    <div class="fgrid">
+      <div>
+        <a class="brand" href="#top" style="margin-bottom:12px">
+          <svg class="ico" style="width:22px;height:22px;color:var(--haldi)"><use href="#i-cup"/></svg>
+          Chai<span>pilado</span>
+        </a>
+        <p style="color:var(--ink-3);max-width:34ch;font-size:14.5px;margin:0">A satirical tip jar dedicated to funding one person's refusal to do real work, powered entirely by tea and internet charity.</p>
+      </div>
+      <div><h5>Menu</h5>
+        <a href="#pour">Buy Roadside</a><a href="#pour">Buy Masala Chai</a><a href="#pour">Buy Royal Zafrani</a><a href="#wall">Wall of Simps</a></div>
+      <div><h5>Lifestyle</h5>
+        <a href="#why">Why Me</a><a href="#faq">FAQ & Excuses</a><a href="#top">Daily Nap Schedule</a><a href="#top">Tea Reviews</a></div>
+      <div><h5>Legal Nonsense</h5>
+        <a href="#top">Terms (None)</a><a href="#top">Privacy (I don't care)</a><a href="#top">Refunds (Impossible)</a><a href="#top">Contact My Tapri</a></div>
+    </div>
+    <div class="fbot">
+      <span>© 2026 Chaipilado · Unabashedly funded by generous internet strangers.</span>
+      <span>Living comfortably in bliss · Bengaluru, India</span>
+    </div>
+  </div>
+</footer>
+</div>
+
+<!-- ========== PAYMENT MODAL ========== -->
+<div class="modal-backdrop" id="payModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-card">
+    <button class="modal-close" id="modalClose" aria-label="Close modal">✕</button>
+    <div class="modal-header">
+      <span class="eyebrow" style="justify-content:center;margin-bottom:6px">Scan to Pay</span>
+      <h3 id="modalTitle">Fund <span id="modalAmt" style="color:var(--haldi)">₹30</span></h3>
+      <p id="modalTeaTier" style="color:var(--ink-2);font-size:13.5px">For: Roadside Cutting Chai</p>
+    </div>
+
+    <!-- Live Dynamic Generated QR Code container -->
+    <div class="qr-card-wrapper">
+      <div id="qrcodeTarget"></div>
+    </div>
+
+    <div>
+      <span class="upi-badge" id="copyUpi" title="Click to copy UPI ID">
+        <svg class="ico" style="width:14px;height:14px"><use href="#i-copy"/></svg>
+        <span id="upiText">bharat.1245@waaxis</span>
+      </span>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn big" id="donePaid">I've Sent the Money! 🫖</button>
+      <p class="fine" style="margin:4px 0 0">Scan with Google Pay, PhonePe, Paytm, BHIM, or WhatsApp.</p>
+    </div>
+  </div>
+</div>
+
+<button class="btn fab" id="fab" aria-label="Buy me a chai">Sponsor My Tea 🫖</button>
+<div class="toast" id="toast" role="status" aria-live="polite"><span class="dot"></span><span id="toastMsg"></span></div>
+
+<script>
+(() => {
+  const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rupee = n => '₹' + n.toLocaleString('en-IN');
+
+  /* ---------- satire tea tiers ---------- */
+  const TIERS = [
+    ['Roadside Cutting Chai',     'Basic survival tier. Keeps me awake enough to scroll memes and avoid emails.'],
+    ['Double Kadak Tapri Chai',   'Now we are talking. High caffeine, zero intention of opening a spreadsheet today.'],
+    ['Adrak-Elaichi Booster',     'Aromatic indulgence. Gives me the energy to decline incoming phone calls.'],
+    ['Irani Chai + Bun Maska',    'Elite comfort tier. The crusty bun and butter ensure total blissful lethargy.'],
+    ['Malai Kadak Special',       'Rich, thick, unapologetic. This is what true patron support tastes like.'],
+    ['Kashmiri Noon Chai',        'Exotic, salty-pink luxury. You just funded an aesthetic Instagram story.'],
+    ['Kulhad Tandoori Chai',      'Earthy and dramatic. Makes me look cultured while doing zero actual labor.'],
+    ['Royal Zafrani Kesar Chai',  'Pure aristocratic opulence. Infused with saffron paid for by your hard work.'],
+    ['Full Tapri Kettle Round',   'You just sponsored my entire afternoon party at the corner stall.'],
+    ['The Imperial Maharaja Pot', 'Legendary tier. I am naming my hammock after you. Carefree life unlocked forever.']
+  ];
+  const RATE = 30, SURF_LO = 226, SURF_HI = 68;
+  const S = document.getElementById('slider'),
+        liquid = document.getElementById('liquid'),
+        steam = document.getElementById('steam'),
+        amt = document.getElementById('amt'),
+        btnAmt = document.getElementById('btnAmt'),
+        tier = document.getElementById('tier'),
+        tName = document.getElementById('tierName'),
+        tLine = document.getElementById('tierLine'),
+        chips = [...document.querySelectorAll('.chip')];
+
+  /* Modal & QR elements */
+  const payModal = document.getElementById('payModal'),
+        modalClose = document.getElementById('modalClose'),
+        modalAmt = document.getElementById('modalAmt'),
+        modalTeaTier = document.getElementById('modalTeaTier'),
+        donePaid = document.getElementById('donePaid'),
+        copyUpi = document.getElementById('copyUpi'),
+        upiText = document.getElementById('upiText'),
+        qrcodeTarget = document.getElementById('qrcodeTarget');
+
+  let qrInstance = null;
+
+  function updateDynamicQR(amount, tierLabel) {
+    const upiUri = `upi://pay?pa=bharat.1245@waaxis&pn=Bharat%20Bagrodia&am=${amount}&cu=INR&tn=${encodeURIComponent('Chai Fund - ' + tierLabel)}`;
+    
+    qrcodeTarget.innerHTML = '';
+    if (typeof QRCode !== 'undefined') {
+      qrInstance = new QRCode(qrcodeTarget, {
+        text: upiUri,
+        width: 200,
+        height: 200,
+        colorDark: "#17100C",
+        colorLight: "#FFFFFF",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } else {
+      // Fallback via high availability QR image API
+      const fallbackImg = document.createElement('img');
+      fallbackImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=${encodeURIComponent(upiUri)}`;
+      fallbackImg.alt = "UPI QR Code";
+      qrcodeTarget.appendChild(fallbackImg);
+    }
+  }
+
+  function render(n, animateTier = true){
+    const total = n * RATE, frac = 0.16 + (n - 1) / 9 * 0.72;
+    S.style.setProperty('--p', ((n - 1) / 9 * 100) + '%');
+    liquid.setAttribute('transform', `translate(0,${SURF_LO - (frac - 0.16) / 0.72 * (SURF_LO - SURF_HI)})`);
+    steam.style.opacity = (0.22 + frac * 0.62).toFixed(2);
+    amt.textContent = btnAmt.textContent = rupee(total);
+    amt.style.color = n >= 8 ? 'var(--gulabi)' : n >= 5 ? 'var(--haldi)' : 'var(--doodh)';
+    const [name, line] = TIERS[n - 1];
+    if (tName.textContent !== name){
+      tName.textContent = name; tLine.textContent = line;
+      if (animateTier && !rm){ tier.classList.remove('flip'); void tier.offsetWidth; tier.classList.add('flip'); }
+    }
+    chips.forEach(c => c.classList.toggle('on', +c.dataset.n === n));
+  }
+  S.addEventListener('input', () => render(+S.value));
+  chips.forEach(c => c.addEventListener('click', () => { S.value = c.dataset.n; render(+c.dataset.n); }));
+  render(1, false);
+
+  /* ---------- toast ---------- */
+  const toast = document.getElementById('toast'), tMsg = document.getElementById('toastMsg');
+  let tTimer;
+  function say(text){
+    tMsg.textContent = text; toast.classList.add('show');
+    clearTimeout(tTimer); tTimer = setTimeout(() => toast.classList.remove('show'), 3600);
+  }
+
+  /* ---------- modal control ---------- */
+  function openPaymentModal() {
+    const n = +S.value;
+    const total = n * RATE;
+    const currentTierName = TIERS[n - 1][0];
+    modalAmt.textContent = rupee(total);
+    modalTeaTier.textContent = `For: ${currentTierName}`;
+    updateDynamicQR(total, currentTierName);
+    payModal.classList.add('open');
+  }
+
+  function closePaymentModal() {
+    payModal.classList.remove('open');
+  }
+
+  modalClose.addEventListener('click', closePaymentModal);
+  payModal.addEventListener('click', e => {
+    if (e.target === payModal) closePaymentModal();
+  });
+
+  copyUpi.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(upiText.textContent.trim());
+      say('UPI ID copied to clipboard!');
+    } catch {
+      say('UPI ID: ' + upiText.textContent.trim());
+    }
+  });
+
+  /* ---------- send trigger modal ---------- */
+  const send = document.getElementById('send'), crumbs = document.getElementById('crumbs'),
+        poured = document.getElementById('poured'), msg = document.getElementById('msg');
+  let count = 128400;
+
+  send.addEventListener('click', () => {
+    openPaymentModal();
+  });
+
+  donePaid.addEventListener('click', () => {
+    const n = +S.value;
+    closePaymentModal();
+    if (!rm){
+      const colors = ['#FFB43D','#FF3D7F','#9BD46A','#C9713A','#FFF2E0'];
+      for (let i = 0; i < 14; i++){
+        const c = document.createElement('span');
+        c.className = 'crumb';
+        c.style.background = colors[i % colors.length];
+        c.style.setProperty('--tx', (Math.random() * 260 - 130) + 'px');
+        c.style.setProperty('--ty', (-90 - Math.random() * 130) + 'px');
+        c.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
+        c.style.animationDelay = (i * 22) + 'ms';
+        crumbs.appendChild(c);
+        setTimeout(() => c.remove(), 1300);
+      }
+    }
+    count += n; 
+    poured.textContent = count.toLocaleString('en-IN');
+    const note = msg.value.trim();
+    say(n === 1 ? 'Payment registered! Heading straight to the tapri now.'
+      : n >= 8 ? `${n} teas funded! You just postponed my job search by an entire month.`
+      : `${n} teas funded! My carefree happening life is flourishing thanks to you.`);
+    if (note) msg.value = '';
+    S.value = 1; 
+    render(1);
+  });
+
+  /* ---------- ticker ---------- */
+  const FEED = [
+    ['@burntout_pm', 'take ₹90, go drink tea while I deal with clients', 3],
+    ['@agile_victim', 'funded full kettle. don’t ever get a job', 10],
+    ['@corporate_slave', 'enjoy your afternoon nap for me', 2],
+    ['@spreadsheet_andy', 'cheaper than therapy to see you chill', 5],
+    ['@junior_dev', 'drinking virtual tea with you from my cubicle', 1],
+    ['@overworked_ca', 'take my bonus, enjoy your maska bun', 4],
+    ['@salaryman', 'living vicariously through your tea breaks', 2],
+    ['@rich_auntie', 'beta, add extra ginger and stay happy', 6]
+  ];
+  const track = document.getElementById('track');
+  const row = FEED.map(([who, note, n]) =>
+    `<span class="pill"><i>${n}×</i><b>${who}</b>“${note}”</span>`).join('');
+  track.innerHTML = row + row;
+
+  /* ---------- nav + fab ---------- */
+  const nav = document.getElementById('nav'), fab = document.getElementById('fab');
+  const onScroll = () => {
+    nav.classList.toggle('stuck', scrollY > 20);
+    fab.classList.toggle('show', scrollY > 760);
+  };
+  addEventListener('scroll', onScroll, {passive:true}); onScroll();
+  fab.addEventListener('click', () => {
+    document.getElementById('pour').scrollIntoView({block:'center', behavior: rm ? 'auto' : 'smooth'});
+    setTimeout(() => S.focus({preventScroll:true}), rm ? 0 : 600);
+  });
+
+  /* ---------- accordion ---------- */
+  const QS = [...document.querySelectorAll('.q')];
+  QS.forEach(q => {
+    const btn = q.querySelector('button'), a = q.querySelector('.a');
+    const set = open => {
+      q.classList.toggle('open', open);
+      a.style.maxHeight = open ? a.scrollHeight + 'px' : '0px';
+      btn.setAttribute('aria-expanded', String(open));
+    };
+    q._set = set;
+    set(q.classList.contains('open'));
+    btn.addEventListener('click', () => {
+      const open = !q.classList.contains('open');
+      QS.forEach(o => { if (o !== q) o._set(false); });
+      set(open);
+    });
+  });
+  const remeasure = () => QS.forEach(q => {
+    if (q.classList.contains('open')) q.querySelector('.a').style.maxHeight = q.querySelector('.a').scrollHeight + 'px';
+  });
+  addEventListener('resize', remeasure);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
+
+  /* ---------- copy link ---------- */
+  const copy = document.getElementById('copy'), handle = document.getElementById('handle');
+  copy.addEventListener('click', async () => {
+    const h = (handle.value.trim() || 'carefree_king').replace(/[^a-z0-9_.]/gi,'').toLowerCase();
+    handle.value = h;
+    try { await navigator.clipboard.writeText(`https://chaipilado.com/@${h}`);
+      say('Link copied! Send it to your hardworking friends to fund me.'); }
+    catch { handle.select(); say('Clipboard blocked. Manually copy the link above!'); }
+  });
+  handle.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); copy.click(); } });
+
+  /* ---------- reveal + count up ---------- */
+  const io = new IntersectionObserver((entries, obs) => {
+    entries.forEach((e, i) => {
+      if (!e.isIntersecting) return;
+      e.target.style.transitionDelay = Math.min(i * 70, 280) + 'ms';
+      e.target.classList.add('in'); obs.unobserve(e.target);
+    });
+  }, {rootMargin:'0px 0px -8% 0px', threshold:.12});
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+  const cio = new IntersectionObserver((entries, obs) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target, target = +el.dataset.count, pre = el.dataset.prefix || '';
+      obs.unobserve(el);
+      if (rm){ el.textContent = pre + target.toLocaleString('en-IN'); return; }
+      const t0 = performance.now(), dur = 1500;
+      const step = t => {
+        const p = Math.min((t - t0) / dur, 1), eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = pre + Math.round(target * eased).toLocaleString('en-IN');
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }, {threshold:.6});
+  document.querySelectorAll('[data-count]').forEach(el => cio.observe(el));
+
+  /* ---------- drag the glass itself ---------- */
+  const tumbler = document.getElementById('tumbler');
+  let dragging = false;
+  const fromY = clientY => {
+    const r = tumbler.getBoundingClientRect();
+    const frac = 1 - (clientY - r.top) / r.height;
+    render(Math.max(1, Math.min(10, Math.round(frac * 10))));
+  };
+  const start = e => { dragging = true; fromY((e.touches ? e.touches[0] : e).clientY); e.preventDefault(); };
+  const move = e => { if (dragging) fromY((e.touches ? e.touches[0] : e).clientY); };
+  tumbler.addEventListener('mousedown', start);
+  tumbler.addEventListener('touchstart', start, {passive:false});
+  addEventListener('mousemove', move);
+  addEventListener('touchmove', move, {passive:true});
+  addEventListener('mouseup', () => dragging = false);
+  addEventListener('touchend', () => dragging = false);
+})();
+</script>
+</body>
+</html>
