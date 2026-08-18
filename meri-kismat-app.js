@@ -38,11 +38,11 @@ const SEARCH = PLACES.map((p) => (p.n + " " + p.sub + " " + p.alt).toLowerCase()
       for (let j = i + 1; j < st.length; j++) {
         const b = st[j], d = Math.hypot(a.x - b.x, a.y - b.y);
         if (d < link) {
-          x.strokeStyle = "rgba(170,158,255," + (0.09 * (1 - d / link)) + ")";
+          x.strokeStyle = "rgba(194,59,34," + (0.08 * (1 - d / link)) + ")";
           x.beginPath(); x.moveTo(a.x, a.y); x.lineTo(b.x, b.y); x.stroke();
         }
       }
-      x.fillStyle = "rgba(238,235,255," + (RM ? a.a : a.a * (0.7 + 0.3 * Math.sin(a.t))) + ")";
+      x.fillStyle = "rgba(201,146,18," + (RM ? a.a : a.a * (0.55 + 0.35 * Math.sin(a.t))) + ")";
       x.beginPath(); x.arc(a.x, a.y, a.r, 0, 7); x.fill();
     }
     requestAnimationFrame(frame);
@@ -893,6 +893,7 @@ function run() {
      ${act ? `<span class="chip"><span>Dasha</span><b>${act}</b></span>` : ""}`;
   showTz();
   $("#bcard").open = false;
+  document.body.classList.add("has-chart");
   $("#tools").scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "start" });
   toast("Chart ready");
 }
