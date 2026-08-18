@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MERI KISMAT — My Destiny Through Numbers</title>
+    <meta name="description" content="Free Pythagorean, Chaldean, and Lo Shu numerology reading. Life Path, Expression, Soul Urge, karmic debts, pinnacles, and personal year cycles — calculated in your browser." />
+    <link rel="canonical" href="https://www.monezy.in/meri-kismat.html" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-deep: #07050c;
+            --bg-panel: rgba(16, 12, 26, 0.88);
+            --bg-card: rgba(26, 20, 42, 0.72);
+            --bg-card-hover: rgba(36, 28, 56, 0.88);
+            --text-primary: #f3eef8;
+            --text-secondary: #b7adc8;
+            --text-muted: #7a708e;
+            --accent-purple: #8b5cf6;
+            --accent-gold: #d4a853;
+            --accent-cyan: #22d3ee;
+            --accent-rose: #f472b6;
+            --accent-green: #34d399;
+            --radius-xl: 28px;
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --shadow-card: 0 24px 60px rgba(0, 0, 0, 0.45);
+            --font-sans: 'Inter', system-ui, sans-serif;
+            --font-serif: 'Cormorant Garamond', Georgia, serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        a { color: inherit; }
+
+        .skip-link {
+            position: absolute;
+            left: -999px;
+            top: 8px;
+            z-index: 2000;
+            background: var(--accent-gold);
+            color: #14141a;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+        .skip-link:focus { left: 12px; }
+
+        .bg-canvas, .bg-stars, .bg-orbs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-canvas {
+            background:
+                radial-gradient(ellipse at 18% 12%, rgba(139, 92, 246, 0.16) 0%, transparent 42%),
+                radial-gradient(ellipse at 86% 8%, rgba(212, 168, 83, 0.1) 0%, transparent 38%),
+                radial-gradient(ellipse at 70% 88%, rgba(34, 211, 238, 0.08) 0%, transparent 40%),
+                radial-gradient(ellipse at 10% 80%, rgba(244, 114, 182, 0.06) 0%, transparent 36%);
+        }
+        .bg-stars {
+            background-image:
+                radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.28), transparent),
+                radial-gradient(1px 1px at 28% 55%, rgba(255,255,255,0.16), transparent),
+                radial-gradient(1.6px 1.6px at 52% 12%, rgba(255,255,255,0.32), transparent),
+                radial-gradient(1px 1px at 68% 78%, rgba(255,255,255,0.12), transparent),
+                radial-gradient(1px 1px at 88% 35%, rgba(255,255,255,0.22), transparent),
+                radial-gradient(1.2px 1.2px at 42% 92%, rgba(255,255,255,0.14), transparent);
+            background-size: 220px 220px;
+            animation: drift 80s linear infinite;
+            opacity: 0.7;
+        }
+        .bg-orbs::before, .bg-orbs::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.35;
+        }
+        .bg-orbs::before {
+            width: 280px; height: 280px; left: -40px; top: 20%;
+            background: #6d28d9;
+            animation: floaty 18s ease-in-out infinite;
+        }
+        .bg-orbs::after {
+            width: 240px; height: 240px; right: -30px; bottom: 10%;
+            background: #b45309;
+            animation: floaty 22s ease-in-out infinite reverse;
+        }
+        @keyframes drift { to { background-position: 220px 220px; } }
+        @keyframes floaty {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-28px); }
+        }
+
+        .app {
+            position: relative;
+            z-index: 1;
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 16px 20px 56px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            padding: 14px 22px;
+            background: var(--bg-panel);
+            backdrop-filter: blur(22px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-xl);
+            margin-bottom: 22px;
+            box-shadow: var(--shadow-card);
+        }
+        .brand { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+        .brand h1 {
+            font-family: var(--font-serif);
+            font-size: 1.85rem;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #d4a853, #f6e7a1 40%, #d4a853 75%, #b8960f);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .brand .tagline {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.08em;
+            background: rgba(255,255,255,0.04);
+            padding: 3px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .nav {
+            display: flex;
+            gap: 2px;
+            flex-wrap: wrap;
+            background: rgba(255,255,255,0.03);
+            border-radius: 999px;
+            padding: 3px;
+        }
+        .nav-btn {
+            padding: 7px 14px;
+            background: transparent;
+            border: 0;
+            color: var(--text-secondary);
+            font: 500 0.76rem var(--font-sans);
+            border-radius: 999px;
+            cursor: pointer;
+        }
+        .nav-btn:hover, .nav-btn:focus-visible { color: var(--text-primary); background: rgba(255,255,255,0.05); outline: none; }
+        .nav-btn.active {
+            color: #ddd6fe;
+            background: rgba(139, 92, 246, 0.22);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: 0;
+            border-radius: 999px;
+            font: 600 0.84rem var(--font-sans);
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+        .btn:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
+        .btn:hover { transform: translateY(-1px); }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+        .btn-gold { background: linear-gradient(135deg, #d4a853, #b8960f); color: #14141a; box-shadow: 0 8px 24px rgba(212,168,83,0.22); }
+        .btn-purple { background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #fff; box-shadow: 0 8px 24px rgba(124,58,237,0.28); }
+        .btn-ghost { background: rgba(255,255,255,0.05); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.08); }
+        .btn-outline { background: transparent; color: var(--accent-gold); border: 1px solid rgba(212,168,83,0.3); }
+        .btn-sm { padding: 7px 12px; font-size: 0.75rem; }
+
+        .hero { text-align: center; padding: 28px 12px 18px; }
+        .hero h2 {
+            font-family: var(--font-serif);
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            line-height: 1.15;
+            background: linear-gradient(135deg, #f8f4ff, #c4b5fd 50%, #d4a853);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero .subtitle { max-width: 640px; margin: 12px auto 22px; color: var(--text-secondary); }
+        .cta-group, .badge-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .badge-row { margin-top: 22px; }
+        .badge-row span {
+            font-size: 0.74rem;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.03);
+            padding: 4px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .badge-row .gold { color: var(--accent-gold); border-color: rgba(212,168,83,0.18); }
+
+        .profile-bar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(212,168,83,0.08));
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: var(--radius-lg);
+        }
+        .profile-bar.visible { display: flex; }
+        .profile-bar .who { font-weight: 600; }
+        .profile-bar .meta { color: var(--text-secondary); font-size: 0.85rem; }
+        .profile-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        .wizard {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.72);
+            backdrop-filter: blur(16px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .wizard.open { display: flex; }
+        .wizard-card {
+            background: var(--bg-panel);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-xl);
+            padding: 28px 30px;
+            max-width: 520px;
+            width: 100%;
+            max-height: 94vh;
+            overflow: auto;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.55);
+            animation: fadeUp 0.28s ease;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px) scale(0.98); }
+            to { opacity: 1; transform: none; }
+        }
+        .steps { display: flex; gap: 8px; justify-content: center; margin: 8px 0 18px; }
+        .step-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+        }
+        .step-dot.on { background: var(--accent-gold); box-shadow: 0 0 12px rgba(212,168,83,0.5); }
+        .wizard-card h2 { font-family: var(--font-serif); text-align: center; font-size: 1.55rem; }
+        .wizard-card .desc { color: var(--text-secondary); text-align: center; font-size: 0.9rem; margin-bottom: 18px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label {
+            display: block;
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font: 0.95rem var(--font-sans);
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+        }
+        .form-row { display: flex; gap: 10px; }
+        .form-row .form-group { flex: 1; min-width: 0; }
+        .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); }
+        .field-error { color: #fca5a5; font-size: 0.75rem; min-height: 1em; margin-top: 4px; }
+        .note { font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 10px; font-style: italic; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+        .mt-16 { margin-top: 16px; }
+        .mt-20 { margin-top: 20px; }
+        .section-title { font-family: var(--font-serif); font-size: 1.45rem; margin-bottom: 6px; }
+        .section-sub { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 16px; }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .card:hover { border-color: rgba(139,92,246,0.22); transform: translateY(-2px); }
+        .card-label {
+            font-size: 0.62rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+        .card-value {
+            font-size: 2.6rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            margin: 4px 0 6px;
+            font-variant-numeric: tabular-nums;
+        }
+        .gold { background: linear-gradient(135deg, #d4a853, #f0d78c); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .purple { background: linear-gradient(135deg, #8b5cf6, #c4b5fd); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .cyan { background: linear-gradient(135deg, #22d3ee, #67e8f9); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .rose { background: linear-gradient(135deg, #f472b6, #fb7185); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .green { background: linear-gradient(135deg, #34d399, #6ee7b7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .card-desc { font-size: 0.84rem; color: var(--text-secondary); }
+        .card-footer { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 999px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            background: rgba(139,92,246,0.12);
+            color: #c4b5fd;
+            border: 1px solid rgba(139,92,246,0.12);
+            margin: 2px 4px 2px 0;
+        }
+        .tag-gold { background: rgba(212,168,83,0.12); color: var(--accent-gold); border-color: rgba(212,168,83,0.12); }
+        .tag-rose { background: rgba(244,114,182,0.1); color: #f9a8d4; border-color: rgba(244,114,182,0.12); }
+        .tag-cyan { background: rgba(34,211,238,0.1); color: #67e8f9; border-color: rgba(34,211,238,0.12); }
+        .tag-green { background: rgba(52,211,153,0.1); color: #6ee7b7; border-color: rgba(52,211,153,0.12); }
+
+        .loshu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            max-width: 240px;
+            margin: 10px auto;
+        }
+        .loshu-cell {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            font-weight: 700;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+        .loshu-cell.has {
+            background: rgba(139,92,246,0.16);
+            border-color: rgba(139,92,246,0.28);
+            box-shadow: inset 0 0 18px rgba(139,92,246,0.12);
+        }
+        .loshu-cell.missing { opacity: 0.32; }
+        .loshu-cell .count { font-size: 0.58rem; color: #c4b5fd; font-weight: 500; }
+        .loshu-cell .pos { position: absolute; top: 4px; right: 6px; font-size: 0.5rem; color: var(--text-muted); font-weight: 500; }
+
+        .chart-bars { display: flex; align-items: flex-end; height: 120px; gap: 6px; padding-top: 8px; }
+        .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .chart-bar {
+            width: 100%;
+            max-width: 26px;
+            min-height: 4px;
+            border-radius: 6px 6px 0 0;
+            background: linear-gradient(180deg, #7c3aed, #c4b5fd);
+            transition: height 0.6s ease;
+        }
+        .chart-bar.mid { background: linear-gradient(180deg, #d4a853, #f0d78c); }
+        .chart-bar.high { background: linear-gradient(180deg, #22d3ee, #67e8f9); }
+        .chart-bar-wrap .label { font-size: 0.62rem; color: var(--text-muted); }
+
+        .timeline { position: relative; padding-left: 26px; }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px; top: 6px; bottom: 6px; width: 2px;
+            background: linear-gradient(#8b5cf6, rgba(139,92,246,0.05));
+        }
+        .timeline-item { position: relative; margin-bottom: 16px; padding-left: 12px; }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -22px; top: 7px;
+            width: 10px; height: 10px; border-radius: 50%;
+            background: var(--accent-purple);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+        }
+        .timeline-item.now::before { background: var(--accent-gold); box-shadow: 0 0 0 4px rgba(212,168,83,0.25); }
+        .timeline-item .title { font-weight: 600; }
+        .timeline-item .sub, .timeline-item .age { color: var(--text-secondary); font-size: 0.8rem; }
+
+        .ai-insight {
+            background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(34,211,238,0.05));
+            border: 1px solid rgba(139,92,246,0.16);
+            border-radius: var(--radius-lg);
+            padding: 22px 24px;
+        }
+        .ai-insight p { color: #ddd6fe; margin-bottom: 12px; }
+        .year-strip { display: grid; grid-template-columns: repeat(9, 1fr); gap: 8px; }
+        .year-cell {
+            text-align: center;
+            padding: 10px 4px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .year-cell.now { border-color: rgba(212,168,83,0.45); background: rgba(212,168,83,0.1); }
+        .year-cell .n { font-size: 1.2rem; font-weight: 700; }
+        .year-cell .y { font-size: 0.65rem; color: var(--text-muted); }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1100;
+            background: #1e1630;
+            color: var(--text-primary);
+            border: 1px solid rgba(212,168,83,0.3);
+            padding: 10px 16px;
+            border-radius: 12px;
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+            transition: 0.25s ease;
+        }
+        .toast.show { opacity: 1; transform: none; }
+
+        .site-foot {
+            margin-top: 36px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+        .site-foot a { color: var(--text-secondary); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.28); border-radius: 8px; }
+
+        @media (max-width: 980px) {
+            .grid-4 { grid-template-columns: 1fr 1fr; }
+            .year-strip { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 720px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .header { flex-direction: column; align-items: stretch; }
+            .nav { justify-content: center; }
+            .brand { justify-content: center; }
+            .hero h2 { font-size: 1.7rem; }
+            .form-row { flex-direction: column; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
+        @media print {
+            .header-actions, .wizard, .hero, .profile-actions, .bg-orbs, .bg-stars { display: none !important; }
+            body { background: #fff; color: #111; }
+            .card { break-inside: avoid; border: 1px solid #ddd; }
+        }
+    </style>
+</head>
+<body>
+<a class="skip-link" href="#mainContent">Skip to reading</a>
+<div class="bg-canvas"></div>
+<div class="bg-stars"></div>
+<div class="bg-orbs"></div>
+
+<div class="app" id="app">
+    <header class="header">
+        <div class="brand">
+            <h1>MERI KISMAT</h1>
+            <span class="tagline">My Destiny Through Numbers</span>
+        </div>
+        <div class="header-actions">
+            <nav class="nav" id="navTabs" aria-label="Reading sections">
+                <button class="nav-btn active" data-view="dashboard" type="button">Dashboard</button>
+                <button class="nav-btn" data-view="comparison" type="button">Systems</button>
+                <button class="nav-btn" data-view="loshu" type="button">Lo Shu</button>
+                <button class="nav-btn" data-view="timeline" type="button">Cycles</button>
+                <button class="nav-btn" data-view="insights" type="button">Synthesis</button>
+            </nav>
+            <button class="btn btn-gold" type="button" id="newReadingBtn">New reading</button>
+        </div>
+    </header>
+
+    <section class="hero" id="hero">
+        <h2>Discover your numerological blueprint</h2>
+        <p class="subtitle">
+            Life Path, Expression, Soul Urge, karmic debts, Lo Shu, and personal-year timing —
+            calculated locally from Pythagorean, Chaldean, and Chinese systems.
+        </p>
+        <div class="cta-group">
+            <button class="btn btn-purple" type="button" id="startReadingBtn">Start your reading</button>
+            <button class="btn btn-outline" type="button" id="sampleBtn">View sample</button>
+        </div>
+        <div class="badge-row">
+            <span class="gold">Life Path</span>
+            <span>Expression</span>
+            <span>Soul Urge</span>
+            <span class="gold">Karmic Debt</span>
+            <span>Lo Shu Grid</span>
+            <span class="gold">Personal Year</span>
+        </div>
+    </section>
+
+    <div class="profile-bar" id="profileBar"></div>
+    <main id="mainContent" tabindex="-1"></main>
+    <p class="site-foot">Entertainment and study tool only — not medical, legal, or financial advice.
+        <a href="index.html">Monezy home</a>
+    </p>
+</div>
+
+<div class="wizard" id="wizard" role="dialog" aria-modal="true" aria-labelledby="wizardTitle">
+    <div class="wizard-card">
+        <div class="steps" aria-hidden="true">
+            <span class="step-dot on" id="dot0"></span>
+            <span class="step-dot" id="dot1"></span>
+            <span class="step-dot" id="dot2"></span>
+        </div>
+        <h2 id="wizardTitle">Your reading</h2>
+        <p class="desc" id="wizardDesc">Enter the name on your birth certificate.</p>
+        <form id="wizardForm" novalidate>
+            <div class="wizard-step" data-step="0">
+                <div class="form-group">
+                    <label for="birthName">Full birth name</label>
+                    <input type="text" id="birthName" autocomplete="name" placeholder="e.g. Alexandra Rose" required maxlength="80" />
+                    <div class="field-error" id="errName"></div>
+                </div>
+                <div class="form-group">
+                    <label for="currentName">Current name (if different)</label>
+                    <input type="text" id="currentName" placeholder="e.g. Alex Rose" maxlength="80" />
+                </div>
+            </div>
+            <div class="wizard-step" data-step="1" hidden>
+                <div class="form-group">
+                    <label for="dob">Date of birth</label>
+                    <input type="date" id="dob" min="1900-01-01" max="2100-12-31" />
+                    <div class="field-error" id="errDob"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="day">Day</label>
+                        <input type="number" id="day" min="1" max="31" placeholder="22" />
+                    </div>
+                    <div class="form-group">
+                        <label for="month">Month</label>
+                        <input type="number" id="month" min="1" max="12" placeholder="3" />
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <input type="number" id="year" min="1900" max="2100" placeholder="1995" />
+                    </div>
+                </div>
+            </div>
+            <div class="wizard-step" data-step="2" hidden>
+                <p class="desc" id="confirmText"></p>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-ghost" id="wizardBack">Back</button>
+                <button type="button" class="btn btn-ghost" id="wizardCancel">Cancel</button>
+                <button type="button" class="btn btn-purple" id="wizardNext">Continue</button>
+            </div>
+            <p class="note">Processed in your browser. Saved only on this device if you keep a reading.</p>
+        </form>
+    </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+    const PY = { a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8 };
+    const CH = { a:1,b:2,c:3,d:4,e:5,f:8,g:3,h:5,i:1,j:1,k:2,l:3,m:4,n:5,o:7,p:8,q:1,r:2,s:3,t:4,u:6,v:6,w:6,x:5,y:1,z:7 };
+    const MASTERS = new Set([11, 22, 33]);
+    const KARMA = new Set([13, 14, 16, 19]);
+    const LO_SHU_ORDER = [4, 9, 2, 3, 5, 7, 8, 1, 6];
+    const LO_SHU_POS = { 4:'Wealth', 9:'Fame', 2:'Partnership', 3:'Family', 5:'Center', 7:'Children', 8:'Knowledge', 1:'Career', 6:'Helpers' };
+    const PLANES = {
+        physical: new Set('DEMW'.split('')),
+        mental: new Set('AHJNP'.split('')),
+        emotional: new Set('BIORSTXZ'.split('')),
+        intuitive: new Set('CFGKLQUVY'.split(''))
+    };
+    const STORAGE_KEY = 'meri-kismat-v4';
+
+    const SAMPLE = { birthName: 'Alexandra Rose', currentName: 'Alex Rose', day: 22, month: 3, year: 1995, isSample: true };
+
+    const state = {
+        profile: { ...SAMPLE },
+        calc: null,
+        view: 'dashboard',
+        wizardStep: 0,
+        isSample: true
+    };
+
+    const NUMBER_MEANING = {
+        1: 'Independent pioneer — originality, will, and self-direction.',
+        2: 'Diplomat and partner — cooperation, patience, and sensitivity.',
+        3: 'Communicator — creativity, joy, and self-expression.',
+        4: 'Builder — systems, discipline, and lasting foundations.',
+        5: 'Freedom seeker — change, curiosity, and versatility.',
+        6: 'Nurturer — responsibility, home, and harmony.',
+        7: 'Seeker — analysis, solitude, and inner truth.',
+        8: 'Powerhouse — authority, material mastery, and ambition.',
+        9: 'Humanitarian — compassion, completion, and wide vision.',
+        11: 'Master intuitive — inspiration, insight, and spiritual voltage.',
+        22: 'Master builder — large-scale dreams made practical.',
+        33: 'Master teacher — healing through selfless love.'
+    };
+    const YEAR_THEME = {
+        1: 'beginnings, independence, and planting new seeds',
+        2: 'patience, partnership, and quiet groundwork',
+        3: 'creativity, social life, and self-expression',
+        4: 'work, order, and laying foundations',
+        5: 'change, travel, and constructive freedom',
+        6: 'home, duty, and relationship repair',
+        7: 'study, rest, and inner work',
+        8: 'career harvest, money, and authority',
+        9: 'completion, release, and generosity'
+    };
+    const KARMA_MEANING = {
+        13: '13/4 — effort without shortcuts; rigidity must yield to patient work.',
+        14: '14/5 — freedom used well; appetite and restlessness need a container.',
+        16: '16/7 — ego unseated; pride gives way to humility and real insight.',
+        19: '19/1 — power with accountability; independence that still serves others.'
+    };
+    const CHALLENGE_MEANING = {
+        0: 'The silent challenge: choose a direction and act instead of waiting.',
+        1: 'Stand as yourself without dominating — or disappearing.',
+        2: 'Sensitivity as a gift; do not hide behind timidity.',
+        3: 'Speak and create even when self-doubt is loud.',
+        4: 'Accept limits and do the work; systems beat scattered effort.',
+        5: 'Freedom with follow-through; variety without scattering.',
+        6: 'Care without controlling; high standards with kindness.',
+        7: 'Trust inner knowing and still stay connected to people.',
+        8: 'Material drive with ethics; success that is not only status.'
+    };
+    const LETTER_MEANING = {
+        A:'Dynamic will and a pioneering mental start.', B:'Cooperation, sensitivity, and a need for belonging.',
+        C:'Spontaneous expression and social creativity.', D:'Discipline, structure, and a builder’s pace.',
+        E:'Restless curiosity and love of experience.', F:'Duty, caretaking, and emotional weight.',
+        G:'Reserve, analysis, and private thought.', H:'Executive awareness and practical ambition.',
+        I:'Intensity, idealism, and emotional depth.', J:'Leadership mixed with hesitation.',
+        K:'Intuitive inspiration and high potential.', L:'Reasoned creativity and verbal ease.',
+        M:'Controlled work ethic and contained feeling.', N:'Mental adventure and analysis.',
+        O:'Poise, responsibility, and contained emotion.', P:'Privacy, mind, and unspoken depth.',
+        Q:'Unusual authority and nonconformist power.', R:'Empathy and a humanitarian style.',
+        S:'Emotional leadership with an uneven course.', T:'Helpful intensity seeking meaning.',
+        U:'Artistic feeling and receptivity.', V:'Visionary drive on a high plane.',
+        W:'Verbal range with a tendency to accept limits.', X:'Crisis-prone responsibility and deep feeling.',
+        Y:'Perceptive, vacillating inner life.', Z:'Confident leadership with emotional radar.'
+    };
+    const LOSHU_MISS = {
+        1:'Voice and self-start may feel delayed; practice speaking first.',
+        2:'Empathy and pacing in relationships need conscious care.',
+        3:'Confidence and joy of expression want exercise.',
+        4:'Overthinking can stall execution; trust a simple plan.',
+        5:'Center and change-management; money and mood may swing early on.',
+        6:'Long-term bonds and beauty-making need tending.',
+        7:'Quiet skill and spiritual study want a regular practice.',
+        8:'Boundaries around trust, work, and power.',
+        9:'Finishing what you start; idealism with follow-through.'
+    };
+    const COLORS = { 1:'#ef4444', 2:'#fb923c', 3:'#facc15', 4:'#22c55e', 5:'#38bdf8', 6:'#818cf8', 7:'#a78bfa', 8:'#d4a853', 9:'#f472b6', 11:'#e5e7eb', 22:'#fde68a', 33:'#fbbf24' };
+
+    function digitSum(n) {
+        return String(Math.abs(n | 0)).split('').reduce((s, d) => s + (d | 0), 0);
+    }
+    function reduce(num, preserveMaster = true) {
+        let n = Math.abs(num | 0);
+        while (n > 9) {
+            if (preserveMaster && MASTERS.has(n)) return n;
+            n = digitSum(n);
+        }
+        return n;
+    }
+    function reduceDetailed(num, preserveMaster = true) {
+        let n = Math.abs(num | 0);
+        const compound = n;
+        const karmic = [];
+        const steps = [n];
+        while (n > 9) {
+            if (KARMA.has(n)) karmic.push(n);
+            if (preserveMaster && MASTERS.has(n)) break;
+            n = digitSum(n);
+            steps.push(n);
+        }
+        return { value: n, compound, karmic, steps };
+    }
+    function lettersOnly(name) {
+        return (name || '').toLowerCase().replace(/[^a-z]/g, '');
+    }
+    function isVowelAt(chars, i) {
+        const ch = chars[i];
+        if ('aeiou'.includes(ch)) return true;
+        if (ch !== 'y') return false;
+        const prev = chars[i - 1];
+        const next = chars[i + 1];
+        const nextVowel = next && 'aeiou'.includes(next);
+        if (!prev && nextVowel) return false;
+        if (nextVowel) return false;
+        return true;
+    }
+    function nameSum(name, table, pred) {
+        const chars = lettersOnly(name);
+        let sum = 0;
+        const parts = [];
+        for (let i = 0; i < chars.length; i++) {
+            if (pred && !pred(chars, i)) continue;
+            const v = table[chars[i]] || 0;
+            sum += v;
+            parts.push(v);
+        }
+        return { sum, parts, detailed: reduceDetailed(sum, true) };
+    }
+    function validDate(d, m, y) {
+        if (!Number.isInteger(d) || !Number.isInteger(m) || !Number.isInteger(y)) return false;
+        if (y < 1900 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) return false;
+        const dt = new Date(y, m - 1, d);
+        return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
+    }
+    function daysInMonth(m, y) {
+        return new Date(y, m, 0).getDate();
+    }
+    function fmtDate(d, m, y) {
+        try {
+            return new Date(y, m - 1, d).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+        } catch {
+            return `${d}/${m}/${y}`;
+        }
+    }
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[c]));
+    }
+    function ageOn(day, month, year, at = new Date()) {
+        let age = at.getFullYear() - year;
+        const before = at.getMonth() + 1 < month || (at.getMonth() + 1 === month && at.getDate() < day);
+        if (before) age--;
+        return Math.max(0, age);
+    }
+    function reduceLPTiming(lp) {
+        return reduce(lp, false);
+    }
+    function pinnacleAges(lifePath) {
+        const lp = reduceLPTiming(lifePath);
+        const firstEnd = 36 - lp;
+        return {
+            first: [0, firstEnd],
+            second: [firstEnd, firstEnd + 9],
+            third: [firstEnd + 9, firstEnd + 18],
+            fourth: [firstEnd + 18, null]
+        };
+    }
+    function whichPinnacle(age, ages) {
+        if (age < ages.second[0]) return 'first';
+        if (age < ages.third[0]) return 'second';
+        if (age < ages.fourth[0]) return 'third';
+        return 'fourth';
+    }
+    function loShuGrid(day, month, year) {
+        const raw = `${String(day).padStart(2,'0')}${String(month).padStart(2,'0')}${year}`;
+        const grid = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+        for (const ch of raw) {
+            const n = ch | 0;
+            if (n >= 1 && n <= 9) grid[n]++;
+        }
+        return grid;
+    }
+    function intensityTable(name) {
+        const counts = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+        for (const ch of lettersOnly(name)) {
+            const v = PY[ch];
+            if (v) counts[v]++;
+        }
+        return counts;
+    }
+    function karmicLessons(counts) {
+        return [1,2,3,4,5,6,7,8,9].filter((n) => counts[n] === 0);
+    }
+    function primeIntensifier(counts) {
+        const avg = {1:3,2:1,3:1.5,4:1,5:4,6:1.5,7:0.5,8:1,9:3};
+        let best = null, max = 0;
+        for (let i = 1; i <= 9; i++) {
+            if (counts[i] > max) { max = counts[i]; best = i; }
+        }
+        if (best === 5 && max < 6) {
+            let next = null, nmax = 0;
+            for (let i = 1; i <= 9; i++) {
+                if (i !== 5 && counts[i] > nmax) { nmax = counts[i]; next = i; }
+            }
+            return nmax > 0 ? next : null;
+        }
+        return max > 0 ? best : null;
+    }
+    function temperament(name) {
+        const groups = { physical:0, mental:0, emotional:0, intuitive:0 };
+        for (const ch of (name || '').toUpperCase().replace(/[^A-Z]/g, '')) {
+            for (const k of Object.keys(PLANES)) {
+                if (PLANES[k].has(ch)) { groups[k]++; break; }
+            }
+        }
+        const total = Object.values(groups).reduce((a,b) => a+b, 0) || 1;
+        const ranked = Object.entries(groups).sort((a,b) => b[1]-a[1]);
+        return { groups, total, dominant: ranked[0][0], ranked };
+    }
+    function firstLetter(name) {
+        const m = (name || '').match(/[a-zA-Z]/);
+        return m ? m[0].toUpperCase() : null;
+    }
+    function firstVowel(name) {
+        const chars = lettersOnly(name);
+        for (let i = 0; i < chars.length; i++) {
+            if (isVowelAt(chars, i)) return chars[i].toUpperCase();
+        }
+        return null;
+    }
+    function luckyFrom(n) {
+        const core = reduce(n, false);
+        return [core, reduce(core + 9, false) === core ? core : reduce(core * 2, false)].filter((v, i, a) => a.indexOf(v) === i);
+    }
+    function compatibility(a, b) {
+        const x = reduce(a, false), y = reduce(b, false);
+        const diff = Math.abs(x - y);
+        if (x === y) return { score: 95, note: 'Same root vibration — easy recognition, watch echo chambers.' };
+        if ([1,5,7].includes(x) && [1,5,7].includes(y)) return { score: 82, note: 'Mental/air mix — ideas flow; ground them.' };
+        if ([2,4,8].includes(x) && [2,4,8].includes(y)) return { score: 80, note: 'Earth/structure mix — loyal, can get rigid.' };
+        if ([3,6,9].includes(x) && [3,6,9].includes(y)) return { score: 84, note: 'Creative/heart mix — warmth with drama risk.' };
+        if (diff === 1 || diff === 8) return { score: 70, note: 'Adjacent lessons — growth with friction.' };
+        return { score: 64, note: 'Different tools — complementary if you translate, not compete.' };
+    }
+
+    function runAll(profile) {
+        const { day, month, year, birthName, currentName } = profile;
+        const now = new Date();
+        const cy = now.getFullYear(), cm = now.getMonth() + 1, cd = now.getDate();
+
+        // Life Path: reduce month, day, year to single digits, then add.
+        // Masters on the calendar day are kept as the Birthday number, but the
+        // path total uses singles so 13/4, 14/5, 16/7, 19/1 can appear (Goodwin).
+        const monthR = reduceDetailed(month, false);
+        const dayR = reduceDetailed(day, false);
+        const yearR = reduceDetailed(year, false);
+        const lpSum = monthR.value + dayR.value + yearR.value;
+        const lifePath = reduceDetailed(lpSum, true);
+
+        const exprBirth = nameSum(birthName, PY);
+        const soul = nameSum(birthName, PY, (c, i) => isVowelAt(c, i));
+        const pers = nameSum(birthName, PY, (c, i) => !isVowelAt(c, i));
+        const exprNow = nameSum(currentName || birthName, PY);
+        const firstName = (birthName.trim().split(/\s+/)[0] || birthName);
+        const growth = nameSum(firstName, PY);
+
+        const birthday = reduceDetailed(day, true);
+        const attitude = reduceDetailed(reduce(day, false) + reduce(month, false), true);
+        const maturity = reduceDetailed(lifePath.value + exprBirth.detailed.value, true);
+        const lpSingle = reduce(lifePath.value, false);
+        const exSingle = reduce(exprBirth.detailed.value, false);
+        const bridge = reduce(Math.abs(exSingle - lpSingle), false);
+
+        const chalBirth = nameSum(birthName, CH);
+        const chalNow = nameSum(currentName || birthName, CH);
+
+        const loShu = loShuGrid(day, month, year);
+        const missingLoShu = Object.entries(loShu).filter(([, v]) => v === 0).map(([n]) => +n);
+        const repeatedLoShu = Object.entries(loShu).filter(([, v]) => v > 1).map(([n, count]) => ({ number:+n, count }));
+
+        const personalYear = reduce(reduce(day, false) + reduce(month, false) + reduce(cy, false), false);
+        const personalMonth = reduce(personalYear + reduce(cm, false), false);
+        const personalDay = reduce(personalMonth + reduce(cd, false), false);
+        const universalYear = reduce(cy, false);
+
+        const m = reduce(month, false), d = reduce(day, false), y = reduce(year, false);
+        const pinnacles = {
+            first: reduceDetailed(m + d, true),
+            second: reduceDetailed(d + y, true),
+            third: null,
+            fourth: reduceDetailed(m + y, true)
+        };
+        pinnacles.third = reduceDetailed(pinnacles.first.value + pinnacles.second.value, true);
+        const challenges = {
+            first: Math.abs(d - m),
+            second: Math.abs(d - y),
+            fourth: Math.abs(m - y)
+        };
+        challenges.third = Math.abs(challenges.first - challenges.second);
+        const ages = pinnacleAges(lifePath.value);
+        const yearsOld = ageOn(day, month, year, now);
+
+        const karmicDebts = [...new Set([
+            ...lifePath.karmic,
+            ...dayR.karmic,
+            ...exprBirth.detailed.karmic,
+            ...soul.detailed.karmic,
+            ...birthday.karmic
+        ])];
+
+        const intensity = intensityTable(birthName);
+        const lessons = karmicLessons(intensity);
+        const hiddenPassion = primeIntensifier(intensity);
+        const temp = temperament(birthName);
+        const fl = firstLetter(birthName);
+        const fv = firstVowel(birthName);
+
+        const yearForecast = [];
+        for (let i = 0; i < 9; i++) {
+            const yr = cy - (personalYear - 1) + i;
+            yearForecast.push({ year: yr, number: i + 1, isNow: yr === cy });
+        }
+
+        const monthForecast = [];
+        for (let mo = 1; mo <= 12; mo++) {
+            monthForecast.push({ month: mo, number: reduce(personalYear + reduce(mo, false), false), isNow: mo === cm });
+        }
+
+        const nameShift = exprBirth.detailed.value !== exprNow.detailed.value;
+
+        return {
+            lifePath: lifePath.value, lifePathMeta: lifePath,
+            expression: exprBirth.detailed.value, expressionMeta: exprBirth,
+            soulUrge: soul.detailed.value, soulMeta: soul,
+            personality: pers.detailed.value, personalityMeta: pers,
+            currentExpression: exprNow.detailed.value, currentExprMeta: exprNow,
+            birthday: birthday.value, birthdayMeta: birthday, birthdayDay: day,
+            attitude: attitude.value, maturity: maturity.value, bridge,
+            chaldeanBirth: chalBirth.sum, chaldeanRootBirth: reduce(chalBirth.sum, false),
+            chaldeanCurrent: chalNow.sum, chaldeanRootCurrent: reduce(chalNow.sum, false),
+            loShu, missingLoShu, repeatedLoShu,
+            personalYear, personalMonth, personalDay, universalYear,
+            pinnacles, challenges, pinnacleAges: ages, age: yearsOld, currentPinnacle: whichPinnacle(yearsOld, ages),
+            karmicDebts, growthNumber: growth.detailed.value,
+            intensity, karmicLessons: lessons, hiddenPassion, temperament: temp,
+            firstLetter: fl, firstVowel: fv,
+            yearForecast, monthForecast, nameShift,
+            birthName, currentName: currentName || birthName, day, month, year,
+            lucky: luckyFrom(lifePath.value),
+            color: COLORS[lifePath.value] || COLORS[reduce(lifePath.value, false)]
+        };
+    }
+
+    function meaning(n) { return NUMBER_MEANING[n] || 'A distinctive vibration.'; }
+    function toast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(toast._t);
+        toast._t = setTimeout(() => el.classList.remove('show'), 2400);
+    }
+    function barHtml(counts, maxHint) {
+        const max = Math.max(maxHint || 1, ...Object.values(counts), 1);
+        return `<div class="chart-bars">${[1,2,3,4,5,6,7,8,9].map((n) => {
+            const count = counts[n] || 0;
+            const h = Math.max(4, Math.round((count / max) * 108));
+            const cls = count >= 3 ? 'high' : count === 2 ? 'mid' : '';
+            return `<div class="chart-bar-wrap"><div class="chart-bar ${cls}" style="height:${h}px" title="${n}: ${count}"></div><span class="label">${n}</span></div>`;
+        }).join('')}</div>`;
+    }
+    function loshuHtml(grid, wide) {
+        return `<div class="loshu-grid" style="${wide ? 'max-width:280px' : ''}">${LO_SHU_ORDER.map((n) => {
+            const c = grid[n] || 0;
+            return `<div class="loshu-cell ${c ? 'has' : 'missing'}" title="${LO_SHU_POS[n]}">
+                <span class="pos">${LO_SHU_POS[n]}</span>${n}<span class="count">${c}×</span>
+            </div>`;
+        }).join('')}</div>`;
+    }
+    function tags(items) { return items.filter(Boolean).join(' '); }
+
+    function renderDashboard() {
+        const c = state.calc;
+        const karmaTag = c.karmicDebts.length
+            ? c.karmicDebts.map((k) => `<span class="tag tag-rose">Karmic ${k}</span>`).join('')
+            : `<span class="tag tag-green">No compound karmic debt</span>`;
+        return `
+            <div class="grid-4">
+                <div class="card">
+                    <span class="card-label">Life Path · 40%</span>
+                    <div class="card-value gold">${c.lifePath}</div>
+                    <p class="card-desc">${escapeHtml(meaning(c.lifePath))}</p>
+                    <div>${karmaTag}</div>
+                    <div class="card-footer">${c.lifePathMeta.steps.join(' → ')}</div>
+                </div>
+                <div class="card">
+                    <span class="card-label">Expression · 30%</span>
+                    <div class="card-value purple">${c.expression}</div>
+                    <p class="card-desc">${escapeHtml(meaning(c.expression))}</p>
+                    ${c.nameShift ? `<span class="tag tag-gold">Current name → ${c.currentExpression}</span>` : ''}
+                    <div class="card-footer">${c.expressionMeta.parts.join('+')} = ${c.expressionMeta.sum}</div>
+                </div>
+                <div class="card">
+                    <span class="card-label">Soul Urge · 20%</span>
+                    <div class="card-value cyan">${c.soulUrge}</div>
+                    <p class="card-desc">${escapeHtml(meaning(c.soulUrge))} Vowels (Y when it sounds as a vowel).</p>
+                    <div class="card-footer">Vowels sum ${c.soulMeta.sum}</div>
+                </div>
+                <div class="card">
+                    <span class="card-label">Personality · 10% of outer style</span>
+                    <div class="card-value rose">${c.personality}</div>
+                    <p class="card-desc">${escapeHtml(meaning(c.personality))}</p>
+                    ${c.hiddenPassion ? `<span class="tag tag-gold">Hidden passion ${c.hiddenPassion}</span>` : ''}
+                </div>
+            </div>
+            <div class="grid-3 mt-20">
+                <div class="card">
+                    <span class="card-label">This cycle</span>
+                    <div class="card-value gold">${c.personalYear}</div>
+                    <p class="card-desc">Personal year of ${escapeHtml(YEAR_THEME[c.personalYear])}.</p>
+                    <div>${tags([
+                        `<span class="tag tag-cyan">Month ${c.personalMonth}</span>`,
+                        `<span class="tag">Day ${c.personalDay}</span>`,
+                        `<span class="tag tag-gold">Universal ${c.universalYear}</span>`
+                    ])}</div>
+                </div>
+                <div class="card">
+                    <span class="card-label">Bridge & maturity</span>
+                    <div class="card-value cyan">${c.bridge}</div>
+                    <p class="card-desc">Gap between life path ${c.lifePath} and expression ${c.expression}. Maturity ${c.maturity} arrives in the second half of life.</p>
+                    <span class="tag tag-gold">Birthday ${c.birthdayDay} → ${c.birthday}</span>
+                    <span class="tag">Attitude ${c.attitude}</span>
+                </div>
+                <div class="card">
+                    <span class="card-label">Lucky notes</span>
+                    <div style="display:flex;align-items:center;gap:12px;margin:10px 0;">
+                        <span style="width:36px;height:36px;border-radius:50%;background:${c.color};box-shadow:0 0 18px ${c.color}55"></span>
+                        <div>
+                            <div class="card-value green" style="font-size:1.8rem">${c.lucky.join(' · ')}</div>
+                            <p class="card-desc">Life-path colors & repeating digits — playful, not predictive.</p>
+                        </div>
+                    </div>
+                    <span class="tag">Growth ${c.growthNumber}</span>
+                    <span class="tag tag-cyan">Pinnacle ${c.pinnacles[c.currentPinnacle].value}</span>
+                </div>
+            </div>
+            <div class="grid-2 mt-20">
+                <div class="card">
+                    <span class="card-label">Lo Shu · birth date</span>
+                    ${loshuHtml(c.loShu)}
+                    <p class="card-desc" style="text-align:center">${c.missingLoShu.length ? `Missing ${c.missingLoShu.join(', ')}` : 'Complete grid — every digit 1–9 appears.'}</p>
+                </div>
+                <div class="card">
+                    <span class="card-label">Name intensity (Pythagorean)</span>
+                    ${barHtml(c.intensity, 6)}
+                    <p class="card-desc">${c.karmicLessons.length ? `Lessons (absent digits): ${c.karmicLessons.join(', ')}` : 'Every digit 1–9 appears in the birth name.'}</p>
+                </div>
+            </div>
+            <div class="card mt-20">
+                <span class="card-label">Planes of expression</span>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+                    ${['physical','mental','emotional','intuitive'].map((k) => {
+                        const v = c.temperament.groups[k];
+                        const pct = Math.round((v / c.temperament.total) * 100);
+                        const hot = c.temperament.dominant === k;
+                        return `<span class="tag ${hot ? 'tag-gold' : ''}">${k}: ${v} (${pct}%)</span>`;
+                    }).join('')}
+                </div>
+                <p class="card-footer">Dominant plane: ${c.temperament.dominant}. Letters grouped by Goodwin-style physical / mental / emotional / intuitive sets — not A–I blocks.</p>
+            </div>`;
+    }
+
+    function renderComparison() {
+        const c = state.calc;
+        const pin = c.pinnacles;
+        const ch = c.challenges;
+        return `
+            <h2 class="section-title">Three systems, one chart</h2>
+            <p class="section-sub">Pythagorean letters, Chaldean sound-numbers (1–8), and Lo Shu from the birth date digits.</p>
+            <div class="grid-3">
+                <div class="card">
+                    <span class="card-label">Pythagorean</span>
+                    <p>Life Path <strong class="gold" style="-webkit-text-fill-color:unset;background:none;color:var(--accent-gold)">${c.lifePath}</strong></p>
+                    <p>Expression <strong>${c.expression}</strong> · Soul Urge <strong>${c.soulUrge}</strong></p>
+                    <p>Personality <strong>${c.personality}</strong> · Birthday <strong>${c.birthday}</strong></p>
+                    <p class="card-footer">A=1 … I=9, then repeat. Masters 11, 22, 33 kept.</p>
+                </div>
+                <div class="card">
+                    <span class="card-label">Chaldean</span>
+                    <p>Birth compound <strong style="color:var(--accent-gold)">${c.chaldeanBirth}</strong> / root ${c.chaldeanRootBirth}</p>
+                    <p>Current compound <strong>${c.chaldeanCurrent}</strong> / root ${c.chaldeanRootCurrent}</p>
+                    <p class="card-footer">No letter is 9. Compound numbers are the reading; the root is the everyday tone.</p>
+                </div>
+                <div class="card">
+                    <span class="card-label">Lo Shu</span>
+                    <p>Present: ${[1,2,3,4,5,6,7,8,9].filter((n) => c.loShu[n]).join(', ') || '—'}</p>
+                    <p>Missing: ${c.missingLoShu.join(', ') || 'none'}</p>
+                    <p>Repeated: ${c.repeatedLoShu.length ? c.repeatedLoShu.map((r) => r.number + '×' + r.count).join(', ') : 'none'}</p>
+                </div>
+            </div>
+            <div class="grid-2 mt-20">
+                <div class="card">
+                    <span class="card-label">Birth name vs current name</span>
+                    <p class="card-desc">${c.nameShift
+                        ? `Expression shifts ${c.expression} → ${c.currentExpression}. The birth name remains the core chart; the used name is the costume you wear.`
+                        : 'Birth and current names reduce to the same expression — outer brand matches the original blueprint.'}</p>
+                    <div class="card-footer">${escapeHtml(c.birthName)} → ${c.expression} · ${escapeHtml(c.currentName)} → ${c.currentExpression}</div>
+                </div>
+                <div class="card">
+                    <span class="card-label">Name compatibility with itself</span>
+                    ${(() => {
+                        const rel = compatibility(c.lifePath, c.expression);
+                        return `<div class="card-value purple">${rel.score}</div><p class="card-desc">${rel.note}</p>`;
+                    })()}
+                    <p class="card-footer">How easily purpose (path) and talent (expression) cooperate.</p>
+                </div>
+            </div>
+            <div class="grid-2 mt-20">
+                <div class="card">
+                    <span class="card-label">Pinnacles</span>
+                    <div class="grid-2 mt-16">
+                        ${['first','second','third','fourth'].map((k, i) => `<div><span class="tag">${i+1}</span> ${pin[k].value}${pin[k].karmic.length ? ` <span class="tag tag-rose">${pin[k].karmic.join(',')}</span>` : ''}</div>`).join('')}
+                    </div>
+                    <p class="card-footer">First pinnacle ends at age ${c.pinnacleAges.first[1]}, then 9-year chapters (using reduced life path for timing).</p>
+                </div>
+                <div class="card">
+                    <span class="card-label">Challenges</span>
+                    <div class="grid-2 mt-16">
+                        <div><span class="tag tag-rose">1st</span> ${ch.first} — ${escapeHtml(CHALLENGE_MEANING[ch.first] || '')}</div>
+                        <div><span class="tag tag-rose">2nd</span> ${ch.second}</div>
+                        <div><span class="tag tag-gold">Main</span> ${ch.third} — ${escapeHtml(CHALLENGE_MEANING[ch.third] || '')}</div>
+                        <div><span class="tag tag-rose">4th</span> ${ch.fourth}</div>
+                    </div>
+                    <p class="card-footer">The third (main) challenge is the lifelong theme — not the smallest number.</p>
+                </div>
+            </div>
+            <div class="card mt-20">
+                <span class="card-label">Karmic compounds found</span>
+                ${c.karmicDebts.length ? c.karmicDebts.map((k) => `<p class="card-desc"><strong style="color:var(--accent-rose)">${k}</strong> — ${escapeHtml(KARMA_MEANING[k])}</p>`).join('')
+                    : '<p class="card-desc">No 13, 14, 16, or 19 appeared while reducing core totals. (The old build checked the already-reduced life path, so debts could never show.)</p>'}
+            </div>`;
+    }
+
+    function renderLoShu() {
+        const c = state.calc;
+        const plane = (nums, title, hint) => {
+            const ok = nums.filter((n) => c.loShu[n] > 0).length;
+            return `<div class="card">
+                <span class="card-label">${title} · ${ok}/3</span>
+                <p style="font-size:1.4rem;font-weight:700;margin:6px 0">${nums.join(' · ')}</p>
+                <p class="card-desc">${hint}</p>
+                <div>${nums.map((n) => `<span class="tag ${c.loShu[n] ? 'tag-green' : 'tag-rose'}">${n} ${c.loShu[n] ? 'in' : 'out'}</span>`).join('')}</div>
+            </div>`;
+        };
+        return `
+            <h2 class="section-title">Lo Shu grid</h2>
+            <p class="section-sub">Digits of ${fmtDate(c.day, c.month, c.year)} placed on the 3×3 magic square (rows/columns/diagonals sum to 15).</p>
+            <div class="grid-2">
+                <div class="card" style="text-align:center">${loshuHtml(c.loShu, true)}
+                    <p class="card-desc">${c.missingLoShu.length ? 'Empty cells are this-life practice areas, not defects.' : 'Every number is present — a rare, busy chart.'}</p>
+                </div>
+                <div class="card">
+                    <span class="card-label">Empty houses</span>
+                    ${c.missingLoShu.length ? c.missingLoShu.map((n) => `<p class="card-desc"><strong style="color:var(--accent-gold)">${n} · ${LO_SHU_POS[n]}</strong> — ${escapeHtml(LOSHU_MISS[n])}</p>`).join('')
+                        : '<p class="card-desc">No empty houses.</p>'}
+                    <span class="card-label" style="display:block;margin-top:12px">Stacked digits</span>
+                    ${c.repeatedLoShu.length ? c.repeatedLoShu.map((r) => `<span class="tag tag-cyan">${r.number} × ${r.count}</span>`).join('') : '<p class="card-desc">No repeats.</p>'}
+                </div>
+            </div>
+            <div class="grid-3 mt-20">
+                ${plane([4,9,2], 'Thought / head line', 'Planning, reputation, partnerships of mind.')}
+                ${plane([3,5,7], 'Heart line', 'Family feeling, balance, creativity.')}
+                ${plane([8,1,6], 'Practical line', 'Skill, vocation, allies.')}
+            </div>
+            <div class="grid-3 mt-20">
+                ${plane([4,3,8], 'Thoughtful action', 'Left column — ideas into craft.')}
+                ${plane([9,5,1], 'Will & success', 'Center column — visibility plus drive.')}
+                ${plane([2,7,6], 'Determination', 'Right column — people and persistence.')}
+            </div>
+            <div class="card mt-20">
+                <span class="card-label">Name karmic lessons (missing Pythagorean digits)</span>
+                <p class="card-desc">${c.karmicLessons.length ? c.karmicLessons.map((n) => `${n}: ${meaning(n)}`).join(' ') : 'Name contains all digits 1–9.'}</p>
+            </div>`;
+    }
+
+    function renderTimeline() {
+        const c = state.calc;
+        const ages = c.pinnacleAges;
+        const label = (range) => range[1] == null ? `${range[0]}+` : `${range[0]}–${range[1]}`;
+        const copy = {
+            first: 'Foundation — identity, training, first structures.',
+            second: 'Expansion — work in the world, status, experiment.',
+            third: 'Harvest / revision — the main adult chapter.',
+            fourth: 'Legacy — what you keep teaching and simplifying.'
+        };
+        return `
+            <h2 class="section-title">Timing & cycles</h2>
+            <p class="section-sub">You are ${c.age} · personal year ${c.personalYear} · pinnacle ${c.currentPinnacle} (${c.pinnacles[c.currentPinnacle].value}).</p>
+            <div class="grid-2">
+                <div class="card">
+                    <span class="card-label">${new Date().getFullYear()} weather</span>
+                    <p><strong>Personal year ${c.personalYear}</strong> — ${escapeHtml(YEAR_THEME[c.personalYear])}</p>
+                    <p>Month ${c.personalMonth} · Day ${c.personalDay} · Universal year ${c.universalYear}</p>
+                    <p class="card-desc" style="margin-top:8px">Personal year = reduced day + month + current calendar year. It is a weather report, not a verdict.</p>
+                </div>
+                <div class="card">
+                    <span class="card-label">Nine-year personal year ring</span>
+                    <div class="year-strip mt-16">
+                        ${c.yearForecast.map((y) => `<div class="year-cell ${y.isNow ? 'now' : ''}"><div class="n">${y.number}</div><div class="y">${y.year}</div></div>`).join('')}
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-20">
+                <span class="card-label">Personal months this year</span>
+                <div class="year-strip mt-16" style="grid-template-columns:repeat(6,1fr)">
+                    ${c.monthForecast.map((m) => {
+                        const name = new Date(2000, m.month - 1, 1).toLocaleString(undefined, { month: 'short' });
+                        return `<div class="year-cell ${m.isNow ? 'now' : ''}"><div class="n">${m.number}</div><div class="y">${name}</div></div>`;
+                    }).join('')}
+                </div>
+            </div>
+            <div class="card mt-20">
+                <span class="card-label">Pinnacles</span>
+                <div class="timeline mt-16">
+                    ${['first','second','third','fourth'].map((k) => `
+                        <div class="timeline-item ${c.currentPinnacle === k ? 'now' : ''}">
+                            <div class="title">Age ${label(ages[k])} · Pinnacle ${c.pinnacles[k].value} ${c.currentPinnacle === k ? '· now' : ''}</div>
+                            <div class="sub">${copy[k]} ${escapeHtml(meaning(c.pinnacles[k].value))}</div>
+                            <div class="age">Challenge ${c.challenges[k === 'third' ? 'third' : k === 'fourth' ? 'fourth' : k]}</div>
+                        </div>`).join('')}
+                </div>
+            </div>
+            <div class="grid-2 mt-20">
+                <div class="card">
+                    <span class="card-label">First letter ${c.firstLetter || '—'}</span>
+                    <p class="card-desc">${c.firstLetter ? escapeHtml(LETTER_MEANING[c.firstLetter]) : ''}</p>
+                </div>
+                <div class="card">
+                    <span class="card-label">First vowel ${c.firstVowel || '—'}</span>
+                    <p class="card-desc">${c.firstVowel ? escapeHtml(LETTER_MEANING[c.firstVowel]) : ''}</p>
+                </div>
+            </div>
+            <div class="grid-2 mt-20">
+                <div class="card">
+                    <span class="card-label">Karmic compounds</span>
+                    ${c.karmicDebts.length ? c.karmicDebts.map((k) => `<p class="card-desc">${escapeHtml(KARMA_MEANING[k])}</p>`).join('') : '<p class="card-desc">None on the core reductions.</p>'}
+                </div>
+                <div class="card">
+                    <span class="card-label">Main challenge ${c.challenges.third}</span>
+                    <p class="card-desc">${escapeHtml(CHALLENGE_MEANING[c.challenges.third] || '')}</p>
+                </div>
+            </div>`;
+    }
+
+    function renderInsights() {
+        const c = state.calc;
+        const paras = [];
+        paras.push(`<strong>${escapeHtml(c.birthName)}</strong> walks a <strong>Life Path ${c.lifePath}</strong> — ${escapeHtml(meaning(c.lifePath))} The date ${escapeHtml(fmtDate(c.day,c.month,c.year))} reduces ${c.lifePathMeta.steps.join(' → ')}.`);
+        paras.push(`The birth name expresses as <strong>${c.expression}</strong> (${escapeHtml(meaning(c.expression))}) while the heart (vowels) wants <strong>${c.soulUrge}</strong>. Others meet the consonant mask <strong>${c.personality}</strong>.`);
+        if (c.nameShift) paras.push(`Using <strong>${escapeHtml(c.currentName)}</strong> changes the outer expression to <strong>${c.currentExpression}</strong>. Keep the birth chart as the spine; treat the used name as a tool.`);
+        if (c.karmicDebts.length) paras.push(`Compound karmic numbers: <strong>${c.karmicDebts.join(', ')}</strong>. ${c.karmicDebts.map((k) => KARMA_MEANING[k]).join(' ')}`);
+        paras.push(`This is a <strong>${c.personalYear}</strong> personal year — ${escapeHtml(YEAR_THEME[c.personalYear])}. You are in the <strong>${c.currentPinnacle}</strong> pinnacle (${c.pinnacles[c.currentPinnacle].value}) at age ${c.age}.`);
+        paras.push(`Bridge <strong>${c.bridge}</strong> is the practice that joins purpose and talent. Maturity number <strong>${c.maturity}</strong> describes the flavor of later life: ${escapeHtml(meaning(c.maturity))}`);
+        if (c.missingLoShu.length) paras.push(`Lo Shu empty houses ${c.missingLoShu.map((n) => n + ' (' + LO_SHU_POS[n] + ')').join(', ')} are skills to rehearse, not missing pieces of worth.`);
+        else paras.push('The Lo Shu grid is complete — energy is spread across practical, heart, and mind lines.');
+        paras.push(`Hidden passion ${c.hiddenPassion || 'is balanced'} · growth number ${c.growthNumber} (first name) · first letter ${c.firstLetter || '—'} (${c.firstLetter ? LETTER_MEANING[c.firstLetter] : ''}) · Chaldean birth ${c.chaldeanBirth}/${c.chaldeanRootBirth}.`);
+        paras.push(`Dominant plane: <strong>${c.temperament.dominant}</strong>. Read this as a sketch of emphasis, not a personality prison.`);
+        return `
+            <h2 class="section-title">Synthesis</h2>
+            <p class="section-sub">One narrative from the core four, modifiers, timing, and Lo Shu — generated in your browser.</p>
+            <div class="ai-insight">${paras.map((p) => `<p>${p}</p>`).join('')}</div>
+            <div class="card mt-20">
+                <span class="card-label">How to use this</span>
+                <p class="card-desc">Treat numbers as questions. A 4 year asks “what am I building?” A missing 8 asks “where am I leaking power?” Nothing here replaces therapy, medicine, or a lawyer.</p>
+            </div>`;
+    }
+
+    const views = { dashboard: renderDashboard, comparison: renderComparison, loshu: renderLoShu, timeline: renderTimeline, insights: renderInsights };
+
+    function renderProfileBar() {
+        const p = state.profile;
+        const el = document.getElementById('profileBar');
+        el.classList.add('visible');
+        el.innerHTML = `
+            <div>
+                <div class="who">${escapeHtml(p.birthName)}${state.isSample ? ' <span class="tag">Sample</span>' : ''}</div>
+                <div class="meta">${escapeHtml(fmtDate(p.day, p.month, p.year))} · Life Path ${state.calc.lifePath} · Personal year ${state.calc.personalYear}</div>
+            </div>
+            <div class="profile-actions">
+                <button class="btn btn-ghost btn-sm" type="button" id="copyBtn">Copy summary</button>
+                <button class="btn btn-ghost btn-sm" type="button" id="shareBtn">Share link</button>
+                <button class="btn btn-ghost btn-sm" type="button" id="printBtn">Print</button>
+                <button class="btn btn-outline btn-sm" type="button" id="editBtn">Edit</button>
+            </div>`;
+        document.getElementById('copyBtn').onclick = copySummary;
+        document.getElementById('shareBtn').onclick = shareLink;
+        document.getElementById('printBtn').onclick = () => window.print();
+        document.getElementById('editBtn').onclick = () => openWizard();
+    }
+
+    function copySummary() {
+        const c = state.calc;
+        const text = `${c.birthName} (${fmtDate(c.day,c.month,c.year)})
+Life Path ${c.lifePath} · Expression ${c.expression} · Soul Urge ${c.soulUrge} · Personality ${c.personality}
+Personal year ${c.personalYear} · Maturity ${c.maturity} · Bridge ${c.bridge}
+Karmic: ${c.karmicDebts.join(', ') || 'none'} · Lo Shu missing: ${c.missingLoShu.join(', ') || 'none'}
+Chaldean ${c.chaldeanBirth}/${c.chaldeanRootBirth}`;
+        navigator.clipboard.writeText(text).then(() => toast('Summary copied')).catch(() => toast('Could not copy'));
+    }
+
+    function shareLink() {
+        const p = state.profile;
+        const url = new URL(location.href);
+        url.searchParams.set('name', p.birthName);
+        url.searchParams.set('as', p.currentName);
+        url.searchParams.set('dob', `${String(p.year).padStart(4,'0')}-${String(p.month).padStart(2,'0')}-${String(p.day).padStart(2,'0')}`);
+        url.hash = state.view;
+        const href = url.toString();
+        if (navigator.share) {
+            navigator.share({ title: 'MERI KISMAT', text: p.birthName, url: href }).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(href).then(() => toast('Link copied')).catch(() => toast(href));
+        }
+        history.replaceState(null, '', url);
+    }
+
+    function navigateTo(view, push = true) {
+        state.view = views[view] ? view : 'dashboard';
+        document.querySelectorAll('.nav-btn').forEach((b) => b.classList.toggle('active', b.dataset.view === state.view));
+        document.getElementById('mainContent').innerHTML = views[state.view]();
+        if (push) {
+            const url = new URL(location.href);
+            url.hash = state.view;
+            history.replaceState(null, '', url);
+        }
+        renderProfileBar();
+        document.getElementById('hero').style.display = state.isSample ? '' : 'none';
+    }
+
+    function persist() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ profile: state.profile, isSample: state.isSample })); } catch {}
+    }
+    function applyProfile(profile, isSample) {
+        state.profile = { ...profile };
+        state.isSample = !!isSample;
+        state.calc = runAll(state.profile);
+        persist();
+        navigateTo(state.view || 'dashboard');
+    }
+
+    let wizardStep = 0;
+    function setWizardStep(n) {
+        wizardStep = Math.max(0, Math.min(2, n));
+        document.querySelectorAll('.wizard-step').forEach((s) => { s.hidden = +s.dataset.step !== wizardStep; });
+        [0,1,2].forEach((i) => document.getElementById('dot' + i).classList.toggle('on', i <= wizardStep));
+        document.getElementById('wizardBack').style.visibility = wizardStep ? 'visible' : 'hidden';
+        document.getElementById('wizardNext').textContent = wizardStep === 2 ? 'Generate blueprint' : 'Continue';
+        const titles = ['Birth name', 'Birth date', 'Confirm'];
+        const descs = ['Use the full name on the birth certificate — nicknames belong in “current name”.', 'Type a date or use the picker. Invalid days (31 February) are rejected.', 'Numbers are calculated on this device only.'];
+        document.getElementById('wizardTitle').textContent = titles[wizardStep];
+        document.getElementById('wizardDesc').textContent = descs[wizardStep];
+        if (wizardStep === 2) {
+            const birthName = document.getElementById('birthName').value.trim();
+            const currentName = document.getElementById('currentName').value.trim() || birthName;
+            const day = +document.getElementById('day').value;
+            const month = +document.getElementById('month').value;
+            const year = +document.getElementById('year').value;
+            document.getElementById('confirmText').innerHTML = `<strong>${escapeHtml(birthName)}</strong><br>${escapeHtml(fmtDate(day, month, year))}${currentName !== birthName ? `<br>Known as ${escapeHtml(currentName)}` : ''}`;
+        }
+        document.getElementById('wizardCancel').textContent = 'Cancel';
+    }
+    function syncDobFromParts() {
+        const d = +document.getElementById('day').value, m = +document.getElementById('month').value, y = +document.getElementById('year').value;
+        if (validDate(d, m, y)) {
+            document.getElementById('dob').value = `${String(y).padStart(4,'0')}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        }
+    }
+    function syncPartsFromDob() {
+        const v = document.getElementById('dob').value;
+        if (!v) return;
+        const [y, m, d] = v.split('-').map(Number);
+        document.getElementById('year').value = y;
+        document.getElementById('month').value = m;
+        document.getElementById('day').value = d;
+    }
+    function validateStep(step) {
+        if (step === 0) {
+            const name = document.getElementById('birthName').value.trim();
+            const err = document.getElementById('errName');
+            if (lettersOnly(name).length < 2) { err.textContent = 'Enter at least two letters.'; return false; }
+            err.textContent = '';
+            return true;
+        }
+        if (step === 1) {
+            syncPartsFromDob();
+            const d = +document.getElementById('day').value, m = +document.getElementById('month').value, y = +document.getElementById('year').value;
+            const err = document.getElementById('errDob');
+            if (!validDate(d, m, y)) {
+                const max = (m >= 1 && m <= 12 && y >= 1900) ? daysInMonth(m, y) : 31;
+                err.textContent = `Enter a real date (that month has ${max} days).`;
+                return false;
+            }
+            err.textContent = '';
+            return true;
+        }
+        return true;
+    }
+    function openWizard() {
+        const p = state.profile;
+        document.getElementById('birthName').value = p.birthName;
+        document.getElementById('currentName').value = p.currentName;
+        document.getElementById('day').value = p.day;
+        document.getElementById('month').value = p.month;
+        document.getElementById('year').value = p.year;
+        syncDobFromParts();
+        document.getElementById('wizard').classList.add('open');
+        setWizardStep(0);
+        document.getElementById('birthName').focus();
+    }
+    function closeWizard() { document.getElementById('wizard').classList.remove('open'); }
+
+    function finishWizard() {
+        if (!validateStep(0) || !validateStep(1)) { setWizardStep(validateStep(0) ? 1 : 0); return; }
+        const birthName = document.getElementById('birthName').value.trim();
+        const currentName = document.getElementById('currentName').value.trim() || birthName;
+        const day = +document.getElementById('day').value;
+        const month = +document.getElementById('month').value;
+        const year = +document.getElementById('year').value;
+        closeWizard();
+        applyProfile({ birthName, currentName, day, month, year }, false);
+        toast('Blueprint ready');
+        navigateTo('dashboard');
+    }
+
+    function loadFromQuery() {
+        const q = new URLSearchParams(location.search);
+        const name = q.get('name');
+        const dob = q.get('dob');
+        if (name && dob) {
+            const [y, m, d] = dob.split('-').map(Number);
+            if (validDate(d, m, y) && lettersOnly(name).length >= 2) {
+                applyProfile({ birthName: name.slice(0, 80), currentName: (q.get('as') || name).slice(0, 80), day: d, month: m, year: y }, false);
+                return true;
+            }
+        }
+        try {
+            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+            if (saved && saved.profile && validDate(+saved.profile.day, +saved.profile.month, +saved.profile.year)) {
+                applyProfile(saved.profile, !!saved.isSample);
+                return true;
+            }
+        } catch {}
+        return false;
+    }
+
+    function init() {
+        document.getElementById('navTabs').addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-view]');
+            if (btn) navigateTo(btn.dataset.view);
+        });
+        document.getElementById('newReadingBtn').onclick = openWizard;
+        document.getElementById('startReadingBtn').onclick = openWizard;
+        document.getElementById('sampleBtn').onclick = () => { applyProfile(SAMPLE, true); toast('Sample: Alexandra Rose · 22 Mar 1995 (Life Path 13/4)'); };
+        document.getElementById('wizard').addEventListener('click', (e) => { if (e.target.id === 'wizard') closeWizard(); });
+        document.getElementById('wizardCancel').onclick = closeWizard;
+        document.getElementById('wizardBack').onclick = () => setWizardStep(wizardStep - 1);
+        document.getElementById('wizardNext').onclick = () => {
+            if (wizardStep < 2) {
+                if (!validateStep(wizardStep)) return;
+                setWizardStep(wizardStep + 1);
+            } else finishWizard();
+        };
+        document.getElementById('dob').addEventListener('change', syncPartsFromDob);
+        ['day','month','year'].forEach((id) => document.getElementById(id).addEventListener('change', syncDobFromParts));
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeWizard();
+        });
+        const hash = (location.hash || '').replace('#', '');
+        if (!loadFromQuery()) applyProfile(SAMPLE, true);
+        if (views[hash]) navigateTo(hash, false);
+    }
+    document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>
