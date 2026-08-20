@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atelier Planogram — Visual Merchandising</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,500&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="planogram/css/app.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <em>Atelier Planogram</em>
+      <span>Visual merchandising workbench</span>
+    </div>
+    <nav class="tabs" aria-label="Primary">
+      <button type="button" id="tab-workspace" class="active">Planogram</button>
+      <button type="button" id="tab-audit">Compliance audit</button>
+    </nav>
+    <div class="header-actions">
+      <div class="capacity" title="Units placed versus fixture capacity">
+        <strong id="cap-label">0/40 items placed</strong>
+        <span class="bar"><i id="cap-bar"></i></span>
+      </div>
+      <button type="button" class="btn ghost" id="btn-clear">Clear fixture</button>
+      <button type="button" class="btn" id="btn-auto">Auto-Generate Planogram</button>
+      <button type="button" class="btn ghost" id="btn-export">Export Visual Work Order</button>
+    </div>
+  </header>
+
+  <section id="workspace" class="workspace visible">
+    <aside class="rail">
+      <h2>Fixture template</h2>
+      <div id="fixture-picks" class="fixture-picks"></div>
+      <div class="rules">
+        <p>Rules applied when you auto-generate</p>
+        <label><input type="checkbox" id="rule-color" checked /> Sort by color flow (light → dark luminance)</label>
+        <label><input type="checkbox" id="rule-cross" checked /> Cross-merchandising (matching bags on shelf / pegs)</label>
+        <label><input type="checkbox" id="rule-pair" checked /> Coordinate pairing (tops upper, bottoms lower)</label>
+      </div>
+      <h2>Catalog · 15 SKUs</h2>
+      <div id="catalog" class="catalog"></div>
+    </aside>
+    <div class="stage">
+      <p class="hint">Drag apparel onto snap points. Facings render as front cutouts, sideways hanger stacks, folded stacks with count badges, or mannequin silhouettes.</p>
+      <div class="canvas-wrap">
+        <svg id="fixture-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fixture planogram canvas"></svg>
+      </div>
+    </div>
+    <aside class="inspector">
+      <h2>Slot inspector</h2>
+      <div id="inspector-panel" class="panel"></div>
+    </aside>
+  </section>
+
+  <section id="audit" class="audit">
+    <div class="audit-grid">
+      <article class="audit-card">
+        <h3>Store display photo</h3>
+        <div class="photo-drop">
+          <p id="photo-hint" class="hint">Upload a mock floor photo to compare against the target planogram.</p>
+          <img id="photo-preview" alt="Uploaded store display" style="display:none" />
+          <input id="photo-input" type="file" accept="image/*" />
+        </div>
+      </article>
+      <article class="audit-card">
+        <h3>Target planogram</h3>
+        <svg id="audit-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Target planogram"></svg>
+      </article>
+    </div>
+    <aside class="checklist">
+      <p class="hint">Mark each placed SKU Pass or Fail. Score uses marked items only.</p>
+      <p class="score" id="audit-score">0%</p>
+      <p class="hint" id="audit-score-meta">No SKUs scored yet</p>
+      <div id="audit-list"></div>
+    </aside>
+  </section>
+
+  <div id="print-root"></div>
+
+  <script src="planogram/js/catalog.js"></script>
+  <script src="planogram/js/fixtures.js"></script>
+  <script src="planogram/js/algorithm.js"></script>
+  <script src="planogram/js/app.js"></script>
+</body>
+</html>
